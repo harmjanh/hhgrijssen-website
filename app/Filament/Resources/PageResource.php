@@ -20,6 +20,8 @@ class PageResource extends Resource
 {
     protected static ?string $model = Page::class;
 
+    protected static ?string $recordTitleAttribute = 'title';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -67,7 +69,7 @@ class PageResource extends Resource
                             ]),
                         Forms\Components\Tabs\Tab::make('Content')
                             ->schema([
-                                Forms\Components\Textarea::make('content')
+                                Forms\Components\RichEditor::make('content')
                                     ->nullable()
                                     ->visible(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord),
                             ])->visible(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord),
@@ -110,9 +112,9 @@ class PageResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListPages::route('/'),
+            'index' => Pages\ListPages::route('/'),
             // 'create' => Pages\CreatePage::route('/create'),
-            'edit'   => Pages\EditPage::route('/{record}/edit'),
+            'edit'  => Pages\EditPage::route('/{record}/edit'),
         ];
     }
 }

@@ -15,6 +15,8 @@ class NewsResource extends Resource
 {
     protected static ?string $model = News::class;
 
+    protected static ?string $recordTitleAttribute = 'title';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -41,7 +43,7 @@ class NewsResource extends Resource
                             ]),
                         Forms\Components\Tabs\Tab::make('Content')
                             ->schema([
-                                Forms\Components\Textarea::make('content')
+                                Forms\Components\RichEditor::make('content')
                                     ->nullable(),
                             ])
                             ->visible(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord),
@@ -55,10 +57,6 @@ class NewsResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label('Title')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('content')
-                    ->label('Content')
                     ->sortable()
                     ->searchable(),
                 ImageColumn::make('image')
