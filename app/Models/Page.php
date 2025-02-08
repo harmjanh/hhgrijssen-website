@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Page extends Model
 {
-    protected $fillable = ['title', 'content', 'slug', 'page_type_id'];
+    protected $fillable = ['title', 'content', 'slug', 'page_type_id', 'parent_id', 'sort_order', 'is_active', 'header_image'];
 
     public function pageType()
     {
@@ -21,8 +21,23 @@ class Page extends Model
         });
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
     public function menuable(): MorphOne
     {
         return $this->morphOne(Menu::class, 'menuable');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Page::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Page::class, 'parent_id');
     }
 }

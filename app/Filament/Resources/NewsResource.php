@@ -32,6 +32,7 @@ class NewsResource extends Resource
                                     ->maxLength(255),
                                 Forms\Components\FileUpload::make('image')
                                     ->nullable()
+                                    ->directory('news')
                                     ->image(),
                                 Forms\Components\Toggle::make('is_published')
                                     ->label('Published')
@@ -40,6 +41,9 @@ class NewsResource extends Resource
                                     ->nullable(),
                                 Forms\Components\DateTimePicker::make('visible_until')
                                     ->nullable(),
+                                Forms\Components\Textarea::make('description')
+                                    ->nullable()
+                                    ->maxLength(255),
                             ]),
                         Forms\Components\Tabs\Tab::make('Content')
                             ->schema([

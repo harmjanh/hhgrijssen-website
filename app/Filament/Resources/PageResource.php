@@ -15,6 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PageResource extends Resource
 {
@@ -38,7 +39,14 @@ class PageResource extends Resource
                                 Forms\Components\TextInput::make('slug')
                                     ->required()
                                     ->unique(Page::class, 'slug', ignoreRecord: true)
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->afterStateUpdated(function (string $state, Forms\Set $set, ?string $operation) {
+                                            $set('slug', Str::slug($state));
+                                    }),
+                                Forms\Components\FileUpload::make('header_image')
+                                    ->nullable()
+                                    ->image()
+                                    ->imageEditor(),
                                 Forms\Components\Select::make('page_type_id')
                                     ->relationship('pageType', 'name')
                                     ->required()
@@ -66,6 +74,18 @@ class PageResource extends Resource
                                             throw new \Exception("The selected page type has reached its maximum count of pages.");
                                         }
                                     }),
+                                Forms\Components\Select::make('parent_id')
+                                    ->relationship('parent', 'title')
+                                    ->label('Parent Page')
+                                    ->nullable()
+                                    ->options(function ($get, $record) {
+                                        // Exclude the current page from parent options to prevent self-reference
+                                        $query = Page::query();
+                                        if ($record) {
+                                            $query->where('id', '!=', $record->id);
+                                        }
+                                        return $query->pluck('title', 'id');
+                                    }),
                             ]),
                         Forms\Components\Tabs\Tab::make('Content')
                             ->schema([
@@ -90,6 +110,8 @@ class PageResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('pageType.name'),
+                Tables\Columns\TextColumn::make('parent.title')
+                    ->label('Parent Page'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
