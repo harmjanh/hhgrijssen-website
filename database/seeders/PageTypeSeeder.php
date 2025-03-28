@@ -18,6 +18,9 @@ class PageTypeSeeder extends Seeder
             ['name' => 'news_overview', 'max_count' => 1],
             ['name' => 'content', 'max_count' => null],
             ['name' => 'contact', 'max_count' => 1],
+            ['name' => 'agenda', 'max_count' => 1],
+            ['name' => 'live', 'max_count' => 1],
+            ['name' => 'archive', 'max_count' => 1],
         ];
 
         foreach ($pageTypes as $type) {

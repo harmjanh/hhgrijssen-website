@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(SettingsSeeder::class);
         $this->call(PageTypeSeeder::class);
+        $this->call(AgendaSeeder::class);
     }
 }
