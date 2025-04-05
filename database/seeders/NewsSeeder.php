@@ -3,10 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\News;
+use Database\Factories\NewsFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Database\Factories\NewsFactory;
 
 class NewsSeeder extends Seeder
 {

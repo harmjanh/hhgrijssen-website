@@ -1,0 +1,13 @@
+{
+    "include": [
+        "app",
+        "config",
+        "database",
+        "resources",
+        "public",
+        "packages"
+    ],
+    "exclude": [
+        "tests"
+    ]
+}

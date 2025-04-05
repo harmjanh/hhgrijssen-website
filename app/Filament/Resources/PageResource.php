@@ -3,17 +3,15 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PageResource\Pages;
-use App\Filament\Resources\PageResource\RelationManagers;
 use App\Models\Page;
 use App\Models\PageType;
-use Filament\Actions\DeleteAction;
+use Exception;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -41,7 +39,7 @@ class PageResource extends Resource
                                     ->unique(Page::class, 'slug', ignoreRecord: true)
                                     ->maxLength(255)
                                     ->afterStateUpdated(function (string $state, Forms\Set $set, ?string $operation) {
-                                            $set('slug', Str::slug($state));
+                                        $set('slug', Str::slug($state));
                                     }),
                                 Forms\Components\FileUpload::make('header_image')
                                     ->nullable()
@@ -71,7 +69,7 @@ class PageResource extends Resource
                                         $pageType = PageType::find($state);
                                         if ($pageType && $pageType->max_count !== null && $pageType->pages()->count() >= $pageType->max_count) {
                                             $set('page_type_id', null);
-                                            throw new \Exception("The selected page type has reached its maximum count of pages.");
+                                            throw new Exception('The selected page type has reached its maximum count of pages.');
                                         }
                                     }),
                                 Forms\Components\Select::make('parent_id')
@@ -84,6 +82,7 @@ class PageResource extends Resource
                                         if ($record) {
                                             $query->where('id', '!=', $record->id);
                                         }
+
                                         return $query->pluck('title', 'id');
                                     }),
                             ]),
@@ -136,7 +135,7 @@ class PageResource extends Resource
         return [
             'index' => Pages\ListPages::route('/'),
             // 'create' => Pages\CreatePage::route('/create'),
-            'edit'  => Pages\EditPage::route('/{record}/edit'),
+            'edit' => Pages\EditPage::route('/{record}/edit'),
         ];
     }
 }

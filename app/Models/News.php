@@ -15,10 +15,10 @@ class News extends Model
 
     public function scopeVisible($query)
     {
-        return $query->where(function($query) {
+        return $query->where(function ($query) {
             $query->whereNull('visible_from')
                 ->orWhere('visible_from', '<=', now());
-        })->where(function($query) {
+        })->where(function ($query) {
             $query->whereNull('visible_until')
                 ->orWhere('visible_until', '>=', now());
         })->published();

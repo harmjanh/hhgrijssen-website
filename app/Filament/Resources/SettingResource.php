@@ -60,7 +60,7 @@ class SettingResource extends Resource
     {
         return [
             'index' => Pages\ListSettings::route('/'),
-            'edit'  => Pages\EditSetting::route('/{record}/edit'),
+            'edit' => Pages\EditSetting::route('/{record}/edit'),
         ];
     }
 }

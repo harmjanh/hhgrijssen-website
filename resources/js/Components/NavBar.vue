@@ -49,10 +49,10 @@
                 </Popover> -->
 
                 <div v-for="page in pages" :key="page.id">
-                    <a :href="'/' + page.slug" v-if="page.children.length === 0"
+                    <a :href="'/' + page.slug" v-if="page.children?.length === 0"
                         class="text-sm/6 font-semibold text-gray-900">{{ page.title }}</a>
 
-                    <Popover class="relative" v-if="page.children.length > 0">
+                    <Popover class="relative" v-if="page.children?.length > 0">
                         <PopoverButton class="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
                             {{ page.title }}
                             <ChevronDownIcon class="size-5 flex-none text-gray-400" aria-hidden="true" />
@@ -78,8 +78,16 @@
 
             </PopoverGroup>
             <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-                <a href="/admin" class="text-sm/6 font-semibold text-gray-900">Log in <span
-                        aria-hidden="true">&rarr;</span></a>
+                <!-- Not logged in -->
+                <a v-if="!$page.props.auth.user" :href="route('login')" class="text-sm/6 font-semibold text-gray-900">
+                    Log in <span aria-hidden="true">&rarr;</span>
+                </a>
+
+                <!-- Logged in with no role -->
+                <a v-else-if="$page.props.auth.user" :href="route('dashboard')"
+                    class="text-sm/6 font-semibold text-gray-900">
+                    Dashboard <span aria-hidden="true">&rarr;</span>
+                </a>
             </div>
         </nav>
         <Dialog class="lg:hidden" @close="mobileMenuOpen = false" :open="mobileMenuOpen">
@@ -135,9 +143,20 @@
                             </Disclosure>
                         </div>
                         <div class="py-6">
-                            <a href="#"
+                            <!-- Not logged in -->
+                            <a v-if="!$page.props.auth.user" :href="route('login')"
                                 class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log
                                 in</a>
+
+                            <!-- Logged in with no role -->
+                            <a v-else-if="$page.props.auth.user && !$page.props.auth.user.role"
+                                :href="route('dashboard')"
+                                class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Dashboard</a>
+
+                            <!-- Logged in with admin role -->
+                            <a v-else-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'"
+                                :href="'/admin'"
+                                class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Admin</a>
                         </div>
                     </div>
                 </div>
@@ -169,6 +188,7 @@ import {
     XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/vue/20/solid'
+import { usePage } from '@inertiajs/vue3'
 
 defineProps({
     pages: {

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Models\Page;
+use Inertia\Inertia;
 
 class NewsController extends Controller
 {

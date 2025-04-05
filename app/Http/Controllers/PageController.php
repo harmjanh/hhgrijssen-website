@@ -2,15 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Page;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Application;
 use App\Actions\News\LoadNewsItemsAction;
+use App\Models\Page;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 class PageController extends Controller
 {
+    public function show(string $slug)
+    {
+        $page = Page::where('slug', $slug)->firstOrFail();
+
+        return Inertia::render('Page', [
+            'page' => $this->getPageData($page),
+            'pages' => $this->getPages(),
+
+        ]);
+    }
+
     public function home(LoadNewsItemsAction $loadNewsItemsAction)
     {
         $page = Page::where('slug', 'home')->firstOrFail();
@@ -26,22 +36,11 @@ class PageController extends Controller
         ]);
     }
 
-    public function show(string $slug)
-    {
-        $page = Page::where('slug', $slug)->firstOrFail();
-
-        return Inertia::render('Page', [
-            'page' => $this->getPageData($page),
-            'pages' => $this->getPages()
-
-        ]);
-    }
-
     private function getPages()
     {
         return Page::select(['id', 'title', 'slug'])
             ->with('children')
-         ->active()
+            ->active()
             ->whereNull('parent_id')
             ->orderBy('sort_order')
             ->get();

@@ -99,7 +99,7 @@ class NewsResource extends Resource
     {
         return [
             'index' => Pages\ListNews::route('/'),
-            'edit'  => Pages\EditNews::route('/{record}/edit'),
+            'edit' => Pages\EditNews::route('/{record}/edit'),
         ];
     }
 }

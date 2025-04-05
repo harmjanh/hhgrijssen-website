@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class SettingsSeeder extends Seeder
@@ -14,7 +13,7 @@ class SettingsSeeder extends Seeder
     {
         $map = [
             [
-                'key'   => 'homepage_number_articles',
+                'key' => 'homepage_number_articles',
                 'value' => '5',
             ],
         ];

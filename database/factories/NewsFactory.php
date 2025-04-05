@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class NewsFactory extends Factory
 {
@@ -13,9 +12,9 @@ class NewsFactory extends Factory
 
         return [
             'title' => $title,
-            'description' => substr( fake()->paragraph(), 0, 200),
+            'description' => substr(fake()->paragraph(), 0, 200),
             'content' => collect(range(1, rand(3, 6)))
-                ->map(fn() => fake()->paragraph(rand(4, 10)))
+                ->map(fn () => fake()->paragraph(rand(4, 10)))
                 ->join("\n\n"),
             'image' => fake()->boolean(80) ? fake()->image(
                 storage_path('app/public/news'),
