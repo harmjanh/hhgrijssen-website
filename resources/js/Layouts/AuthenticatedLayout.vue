@@ -36,6 +36,11 @@ const showingNavigationDropdown = ref(false);
                                     Dashboard
                                 </NavLink>
 
+                                <NavLink :href="route('declarations.index')"
+                                    :active="route().current('declarations.*')">
+                                    Declaraties
+                                </NavLink>
+
                                 <NavLink v-if="$page.props.auth.user?.role === 'admin'" href="/admin">
                                     Admin
                                 </NavLink>
@@ -108,6 +113,11 @@ const showingNavigationDropdown = ref(false);
                     <div class="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('declarations.index')"
+                            :active="route().current('declarations.*')">
+                            Declaraties
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink v-if="$page.props.auth.user?.role === 'admin'" href="/admin">
