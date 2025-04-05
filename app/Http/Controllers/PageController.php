@@ -21,6 +21,19 @@ class PageController extends Controller
         ]);
     }
 
+    public function agenda()
+    {
+        $page = Page::query()
+            ->join('page_types', 'pages.page_type_id', '=', 'page_types.id')
+            ->where('page_types.name', 'agenda')
+            ->firstOrFail();
+
+        return Inertia::render('Agenda/Index', [
+            'page' => $this->getPageData($page),
+            'pages' => $this->getPages(),
+        ]);
+    }
+
     public function home(LoadNewsItemsAction $loadNewsItemsAction)
     {
         $page = Page::where('slug', 'home')->firstOrFail();

@@ -1,13 +1,14 @@
 <?php
 
+use App\Http\Controllers\AddressSubmissionController;
+use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\CoinOrderController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeclarationAttachmentController;
 use App\Http\Controllers\DeclarationController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AddressSubmissionController;
-use App\Http\Controllers\CoinOrderController;
 use App\Models\Page;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,10 @@ Route::middleware('auth')->group(function () {
 Route::get('nieuws', [NewsController::class, 'index'])->name('news.index');
 Route::get('nieuws/{news}', [NewsController::class, 'show'])->name('news.show');
 
+Route::get('agenda', [PageController::class, 'agenda'])->name('agenda');
+// Agenda routes
+Route::get('api/agenda/items', [AgendaController::class, 'getItems'])->name('agenda.items');
+
 require __DIR__ . '/auth.php';
 
 // auth routes
@@ -55,17 +60,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('declarations.attachments.download');
 
     // Address Submission Routes
-    Route::get('/address-submissions/create', [AddressSubmissionController::class, 'create'])->name('address-submissions.create');
-    Route::post('/address-submissions', [AddressSubmissionController::class, 'store'])->name('address-submissions.store');
-    Route::get('/address-submissions/{submission}', [AddressSubmissionController::class, 'show'])->name('address-submissions.show');
-    Route::get('/address-submissions', [AddressSubmissionController::class, 'index'])->name('address-submissions.index');
+    Route::get('address-submissions/create', [AddressSubmissionController::class, 'create'])->name('address-submissions.create');
+    Route::post('address-submissions', [AddressSubmissionController::class, 'store'])->name('address-submissions.store');
+    Route::get('address-submissions/{submission}', [AddressSubmissionController::class, 'show'])->name('address-submissions.show');
+    Route::get('address-submissions', [AddressSubmissionController::class, 'index'])->name('address-submissions.index');
 
     // Coin Order Routes
-    Route::get('/coin-orders/create', [CoinOrderController::class, 'create'])->name('coin-orders.create');
-    Route::post('/coin-orders', [CoinOrderController::class, 'store'])->name('coin-orders.store');
-    Route::get('/coin-orders/{coinOrder}/success', [CoinOrderController::class, 'success'])->name('coin-orders.success');
-    Route::post('/coin-orders/webhook', [CoinOrderController::class, 'webhook'])->name('coin-orders.webhook');
-    Route::get('/coin-orders', [CoinOrderController::class, 'index'])->name('coin-orders.index');
+    Route::get('coin-orders/create', [CoinOrderController::class, 'create'])->name('coin-orders.create');
+    Route::post('coin-orders', [CoinOrderController::class, 'store'])->name('coin-orders.store');
+    Route::get('coin-orders/{coinOrder}/success', [CoinOrderController::class, 'success'])->name('coin-orders.success');
+    Route::post('coin-orders/webhook', [CoinOrderController::class, 'webhook'])->name('coin-orders.webhook');
+    Route::get('coin-orders', [CoinOrderController::class, 'index'])->name('coin-orders.index');
 });
 
 // this is the last route to catch all page slugs

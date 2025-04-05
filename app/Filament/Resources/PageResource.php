@@ -13,7 +13,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class PageResource extends Resource
 {
@@ -37,10 +36,7 @@ class PageResource extends Resource
                                 Forms\Components\TextInput::make('slug')
                                     ->required()
                                     ->unique(Page::class, 'slug', ignoreRecord: true)
-                                    ->maxLength(255)
-                                    ->afterStateUpdated(function (string $state, Forms\Set $set, ?string $operation) {
-                                        $set('slug', Str::slug($state));
-                                    }),
+                                    ->maxLength(255),
                                 Forms\Components\FileUpload::make('header_image')
                                     ->nullable()
                                     ->image()
