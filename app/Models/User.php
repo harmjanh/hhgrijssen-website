@@ -24,6 +24,12 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'role',
+        'street',
+        'number',
+        'zipcode',
+        'city',
+        'phonenumber',
+        'bankaccountnumber',
     ];
 
     /**
@@ -34,6 +40,7 @@ class User extends Authenticatable implements FilamentUser
     protected $hidden = [
         'password',
         'remember_token',
+        'bankaccountnumber',
     ];
 
     public function canAccessPanel(Panel $panel): bool
@@ -47,6 +54,36 @@ class User extends Authenticatable implements FilamentUser
     public function hasRole(string $role): bool
     {
         return $this->role === $role;
+    }
+
+    /**
+     * Set the bank account number with encryption
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setBankaccountnumberAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['bankaccountnumber'] = encrypt($value);
+        } else {
+            $this->attributes['bankaccountnumber'] = null;
+        }
+    }
+
+    /**
+     * Get the decrypted bank account number
+     *
+     * @param  string  $value
+     * @return string|null
+     */
+    public function getBankaccountnumberAttribute($value)
+    {
+        if ($value) {
+            return decrypt($value);
+        }
+
+        return null;
     }
 
     /**

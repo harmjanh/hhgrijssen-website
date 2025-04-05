@@ -8,6 +8,7 @@
         "php": "^8.2",
         "filament/filament": "^3.2",
         "inertiajs/inertia-laravel": "^2.0",
+        "intervention/validation": "^4.5",
         "johngrogg/ics-parser": "^3.4",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",

@@ -6,6 +6,13 @@ export interface User {
     email: string;
     email_verified_at?: string;
     role?: string;
+    is_admin: boolean;
+    street?: string;
+    number?: string;
+    zipcode?: string;
+    city?: string;
+    phonenumber?: string;
+    bankaccountnumber?: string;
 }
 
 export type PageProps<

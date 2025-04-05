@@ -15,6 +15,12 @@ const user = usePage().props.auth.user;
 const form = useForm({
     name: user.name,
     email: user.email,
+    street: user.street || '',
+    number: user.number || '',
+    zipcode: user.zipcode || '',
+    city: user.city || '',
+    phonenumber: user.phonenumber || '',
+    bankaccountnumber: user.bankaccountnumber || '',
 });
 </script>
 
@@ -30,22 +36,12 @@ const form = useForm({
             </p>
         </header>
 
-        <form
-            @submit.prevent="form.patch(route('profile.update'))"
-            class="mt-6 space-y-6"
-        >
+        <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
             <div>
                 <InputLabel for="name" value="Name" />
 
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
+                <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus
+                    autocomplete="name" />
 
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
@@ -53,35 +49,77 @@ const form = useForm({
             <div>
                 <InputLabel for="email" value="Email" />
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
+                <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required
+                    autocomplete="username" />
 
                 <InputError class="mt-2" :message="form.errors.email" />
+            </div>
+
+            <div>
+                <InputLabel for="street" value="Street" />
+
+                <TextInput id="street" type="text" class="mt-1 block w-full" v-model="form.street"
+                    autocomplete="street-address" />
+
+                <InputError class="mt-2" :message="form.errors.street" />
+            </div>
+
+            <div>
+                <InputLabel for="number" value="House Number" />
+
+                <TextInput id="number" type="text" class="mt-1 block w-full" v-model="form.number"
+                    autocomplete="address-line2" />
+
+                <InputError class="mt-2" :message="form.errors.number" />
+            </div>
+
+            <div>
+                <InputLabel for="zipcode" value="Postal Code" />
+
+                <TextInput id="zipcode" type="text" class="mt-1 block w-full" v-model="form.zipcode"
+                    autocomplete="postal-code" />
+
+                <InputError class="mt-2" :message="form.errors.zipcode" />
+            </div>
+
+            <div>
+                <InputLabel for="city" value="City" />
+
+                <TextInput id="city" type="text" class="mt-1 block w-full" v-model="form.city"
+                    autocomplete="address-level2" />
+
+                <InputError class="mt-2" :message="form.errors.city" />
+            </div>
+
+            <div>
+                <InputLabel for="phonenumber" value="Phone Number" />
+
+                <TextInput id="phonenumber" type="tel" class="mt-1 block w-full" v-model="form.phonenumber"
+                    autocomplete="tel" />
+
+                <InputError class="mt-2" :message="form.errors.phonenumber" />
+            </div>
+
+            <div>
+                <InputLabel for="bankaccountnumber" value="Bank Account Number" />
+
+                <TextInput id="bankaccountnumber" type="text" class="mt-1 block w-full" v-model="form.bankaccountnumber"
+                    autocomplete="off" />
+
+                <InputError class="mt-2" :message="form.errors.bankaccountnumber" />
             </div>
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
                 <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">
                     Your email address is unverified.
-                    <Link
-                        :href="route('verification.send')"
-                        method="post"
-                        as="button"
-                        class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                    >
-                        Click here to re-send the verification email.
+                    <Link :href="route('verification.send')" method="post" as="button"
+                        class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800">
+                    Click here to re-send the verification email.
                     </Link>
                 </p>
 
-                <div
-                    v-show="status === 'verification-link-sent'"
-                    class="mt-2 text-sm font-medium text-green-600 dark:text-green-400"
-                >
+                <div v-show="status === 'verification-link-sent'"
+                    class="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
                     A new verification link has been sent to your email address.
                 </div>
             </div>
@@ -89,16 +127,9 @@ const form = useForm({
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
 
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p
-                        v-if="form.recentlySuccessful"
-                        class="text-sm text-gray-600 dark:text-gray-400"
-                    >
+                <Transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0"
+                    leave-active-class="transition ease-in-out" leave-to-class="opacity-0">
+                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600 dark:text-gray-400">
                         Saved.
                     </p>
                 </Transition>
