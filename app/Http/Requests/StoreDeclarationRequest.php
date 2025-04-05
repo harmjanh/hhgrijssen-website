@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeclarationStoreRequest extends FormRequest
+class StoreDeclarationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,15 +22,16 @@ class DeclarationStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'street' => 'required|string|max:255',
-            'number' => 'required|string|max:50',
-            'zipcode' => 'required|string|max:20',
-            'city' => 'required|string|max:255',
-            'bankaccountnumber' => 'required|string|max:50',
-            'amount' => 'required|numeric|min:0.01',
-            'explanation' => 'required|string',
-            'attachments.*' => 'nullable|file|max:10240', // 10MB max per file
+            'name' => ['required', 'string', 'max:255'],
+            'street' => ['required', 'string', 'max:255'],
+            'number' => ['required', 'string', 'max:50'],
+            'zipcode' => ['required', 'string', 'max:20'],
+            'city' => ['required', 'string', 'max:255'],
+            'bankaccountnumber' => ['required', 'string', 'max:50', 'iban'],
+            'amount' => ['required', 'numeric', 'min:0.01'],
+            'explanation' => ['required', 'string'],
+            'attachments' => ['nullable', 'array', 'max:10'], // Maximum 10 files
+            'attachments.*' => ['nullable', 'file', 'max:10240', 'mimes:jpeg,png,jpg,gif,pdf,doc,docx'], // 10MB max per file, specific mime types
         ];
     }
 
@@ -52,7 +53,9 @@ class DeclarationStoreRequest extends FormRequest
             'amount.numeric' => 'Bedrag moet een nummer zijn',
             'amount.min' => 'Bedrag moet groter zijn dan 0',
             'explanation.required' => 'Toelichting is verplicht',
+            'attachments.max' => 'U kunt maximaal 10 bestanden uploaden',
             'attachments.*.max' => 'Bestanden mogen niet groter zijn dan 10MB',
+            'attachments.*.mimes' => 'Alleen afbeeldingen (JPEG, PNG, JPG, GIF), PDF en Word documenten zijn toegestaan',
         ];
     }
 }

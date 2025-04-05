@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\StoreDeclaration;
-use App\Http\Requests\DeclarationStoreRequest;
+use App\Http\Requests\StoreDeclarationRequest;
 use App\Models\Declaration;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +53,7 @@ class DeclarationController extends Controller
     /**
      * Store a newly created declaration in storage.
      */
-    public function store(DeclarationStoreRequest $request, StoreDeclaration $storeDeclaration)
+    public function store(StoreDeclarationRequest $request, StoreDeclaration $storeDeclaration)
     {
         $this->authorize('create', Declaration::class);
 
