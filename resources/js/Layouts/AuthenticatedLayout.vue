@@ -41,6 +41,11 @@ const showingNavigationDropdown = ref(false);
                                     Declaraties
                                 </NavLink>
 
+                                <NavLink :href="route('address-submissions.index')"
+                                    :active="route().current('address-submissions.*')">
+                                    Adreswijziging
+                                </NavLink>
+
                                 <NavLink v-if="$page.props.auth.user?.role === 'admin'" href="/admin">
                                     Admin
                                 </NavLink>
@@ -118,6 +123,11 @@ const showingNavigationDropdown = ref(false);
                         <ResponsiveNavLink :href="route('declarations.index')"
                             :active="route().current('declarations.*')">
                             Declaraties
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('address-submissions.create')"
+                            :active="route().current('address-submissions.*')">
+                            Adreswijziging
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink v-if="$page.props.auth.user?.role === 'admin'" href="/admin">

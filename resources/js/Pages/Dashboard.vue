@@ -4,7 +4,7 @@ import { Head } from '@inertiajs/vue3';
 
 interface Props {
     stats: {
-        total_users: number;
+        total_declarations: number;
     };
 }
 
@@ -30,10 +30,10 @@ defineProps<Props>();
                             <!-- Stats Card -->
                             <div class="p-6 bg-white rounded-lg shadow dark:bg-gray-700">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                    Total Users
+                                    Aantal declaraties
                                 </h3>
                                 <p class="mt-2 text-3xl font-bold text-indigo-600 dark:text-indigo-400">
-                                    {{ stats.total_users }}
+                                    {{ stats.total_declarations }}
                                 </p>
                             </div>
                             <!-- Add more stat cards here -->

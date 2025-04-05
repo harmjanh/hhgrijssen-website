@@ -6,6 +6,7 @@ use App\Http\Controllers\DeclarationController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AddressSubmissionController;
 use App\Models\Page;
 use Illuminate\Support\Facades\Route;
 
@@ -51,6 +52,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Declaration attachment routes
     Route::get('declarations/{declaration}/attachments/{attachment}/download', [DeclarationAttachmentController::class, 'download'])
         ->name('declarations.attachments.download');
+
+    // Address Submission Routes
+    Route::get('/address-submissions/create', [AddressSubmissionController::class, 'create'])->name('address-submissions.create');
+    Route::post('/address-submissions', [AddressSubmissionController::class, 'store'])->name('address-submissions.store');
+    Route::get('/address-submissions/{submission}', [AddressSubmissionController::class, 'show'])->name('address-submissions.show');
+    Route::get('/address-submissions', [AddressSubmissionController::class, 'index'])->name('address-submissions.index');
 });
 
 // this is the last route to catch all page slugs
