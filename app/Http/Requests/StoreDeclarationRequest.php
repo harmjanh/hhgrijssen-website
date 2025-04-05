@@ -30,8 +30,8 @@ class StoreDeclarationRequest extends FormRequest
             'bankaccountnumber' => ['required', 'string', 'max:50', 'iban'],
             'amount' => ['required', 'numeric', 'min:0.01'],
             'explanation' => ['required', 'string'],
-            'attachments' => ['nullable', 'array', 'max:10'], // Maximum 10 files
-            'attachments.*' => ['nullable', 'file', 'max:10240', 'mimes:jpeg,png,jpg,gif,pdf,doc,docx'], // 10MB max per file, specific mime types
+            'attachments' => ['required', 'array', 'max:10'], // Maximum 10 files
+            'attachments.*' => ['required', 'file', 'max:10240', 'mimes:jpeg,png,jpg,gif,pdf,doc,docx'], // 10MB max per file, specific mime types
         ];
     }
 

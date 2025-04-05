@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeclarationAttachmentController;
 use App\Http\Controllers\DeclarationController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
@@ -46,6 +47,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('declarations/create', [DeclarationController::class, 'create'])->name('declarations.create');
     Route::post('declarations', [DeclarationController::class, 'store'])->name('declarations.store');
     Route::get('declarations/{declaration}', [DeclarationController::class, 'show'])->name('declarations.show');
+
+    // Declaration attachment routes
+    Route::get('declarations/{declaration}/attachments/{attachment}/download', [DeclarationAttachmentController::class, 'download'])
+        ->name('declarations.attachments.download');
 });
 
 // this is the last route to catch all page slugs

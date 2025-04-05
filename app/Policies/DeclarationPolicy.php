@@ -23,7 +23,7 @@ class DeclarationPolicy
      */
     public function view(User $user, Declaration $declaration): bool
     {
-        return $user->id === $declaration->user_id || $user->is_admin;
+        return $user->id === $declaration->user_id || $user->hasRole('admin');
     }
 
     /**
@@ -39,7 +39,7 @@ class DeclarationPolicy
      */
     public function update(User $user, Declaration $declaration): bool
     {
-        return $user->id === $declaration->user_id || $user->is_admin;
+        return $user->id === $declaration->user_id || $user->hasRole('admin');
     }
 
     /**
@@ -47,6 +47,6 @@ class DeclarationPolicy
      */
     public function delete(User $user, Declaration $declaration): bool
     {
-        return $user->id === $declaration->user_id || $user->is_admin;
+        return $user->id === $declaration->user_id || $user->hasRole('admin');
     }
 }

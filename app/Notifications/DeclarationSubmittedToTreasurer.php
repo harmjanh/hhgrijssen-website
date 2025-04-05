@@ -48,7 +48,7 @@ class DeclarationSubmittedToTreasurer extends Notification implements ShouldQueu
             ->line('Bankrekening: ' . $declaration->bankaccountnumber)
             ->line('Bedrag: €' . number_format($declaration->amount, 2, ',', '.'))
             ->line('Omschrijving: ' . $declaration->explanation)
-            ->action('Bekijk declaratie', route('declarations.show', $declaration))
+            ->action('Bekijk declaratie', route('filament.admin.resources.declarations.view', $declaration))
             ->line('Gelieve deze declaratie te verwerken.');
     }
 
