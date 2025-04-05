@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import PageHeader from '@/Components/PageHeader.vue';
 import { Head } from '@inertiajs/vue3';
 
 interface Props {
@@ -13,13 +14,12 @@ defineProps<Props>();
 
 <template>
 
-    <Head title="Dashboard" />
+    <Head title="Gemeente portal HHG Rijssen" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                Dashboard
-            </h2>
+            <PageHeader title="Gemeente portal HHG Rijssen"
+                description="Bestellen munten, adressen wijzigen en declaraties indienen" />
         </template>
 
         <div class="py-12">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import PageHeader from '@/Components/PageHeader.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 interface Declaration {
@@ -57,22 +58,21 @@ const getStatusText = (status: Declaration['status']) => {
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Mijn declaraties
-                </h2>
-                <Link :href="route('declarations.create')">
-                <PrimaryButton>
-                    Nieuwe declaratie
-                </PrimaryButton>
-                </Link>
-            </div>
+            <PageHeader title="Mijn Declaraties" description="Overzicht van al uw ingediende declaraties" />
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
+                        <div class="flex justify-end mb-4">
+                            <Link :href="route('declarations.create')">
+                            <PrimaryButton>
+                                Nieuwe declaratie
+                            </PrimaryButton>
+                            </Link>
+                        </div>
+
                         <div v-if="declarations.length === 0" class="text-center py-8">
                             <p class="text-gray-500">U heeft nog geen declaraties ingediend.</p>
                         </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import PageHeader from '@/Components/PageHeader.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -53,9 +54,8 @@ const submit = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Nieuwe Adreswijziging
-            </h2>
+            <PageHeader title="Nieuwe Adreswijziging"
+                description="Vul het formulier in om een adreswijziging door te geven" />
         </template>
 
         <div class="py-12">

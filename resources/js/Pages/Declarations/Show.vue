@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import PageHeader from '@/Components/PageHeader.vue';
 
 interface DeclarationAttachment {
     id: number;
@@ -81,20 +82,19 @@ const formatFileSize = (bytes: number) => {
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Declaratie details
-                </h2>
-                <Link :href="route('declarations.index')" class="text-indigo-600 hover:text-indigo-900">
-                Terug naar overzicht
-                </Link>
-            </div>
+            <PageHeader title="Declaratie Details" description="Bekijk de details van uw ingediende declaratie" />
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
+                        <div class="flex justify-end mb-4">
+                            <Link :href="route('declarations.index')" class="text-indigo-600 hover:text-indigo-900">
+                            Terug naar overzicht
+                            </Link>
+                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <h3 class="text-lg font-medium text-gray-900">Persoonlijke gegevens</h3>

@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import PageHeader from '@/Components/PageHeader.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -74,9 +75,8 @@ const submit = () => {
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Nieuwe declaratie
-            </h2>
+            <PageHeader title="Nieuwe Declaratie"
+                description="Vul het formulier in om een nieuwe declaratie in te dienen" />
         </template>
 
         <div class="py-12">
