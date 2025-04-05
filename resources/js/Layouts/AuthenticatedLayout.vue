@@ -42,8 +42,12 @@ const showingNavigationDropdown = ref(false);
                                 </NavLink>
 
                                 <NavLink :href="route('address-submissions.index')"
-                                    :active="route().current('address-submissions.*')">
-                                    Adreswijziging
+                                    :active="route().current('address-submissions.index')">
+                                    Adreswijzigingen
+                                </NavLink>
+
+                                <NavLink :href="route('coin-orders.index')" :active="route().current('coin-orders.*')">
+                                    Munten Bestellen
                                 </NavLink>
 
                                 <NavLink v-if="$page.props.auth.user?.role === 'admin'" href="/admin">
@@ -125,9 +129,14 @@ const showingNavigationDropdown = ref(false);
                             Declaraties
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('address-submissions.create')"
-                            :active="route().current('address-submissions.*')">
-                            Adreswijziging
+                        <ResponsiveNavLink :href="route('address-submissions.index')"
+                            :active="route().current('address-submissions.index')">
+                            Adreswijzigingen
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('coin-orders.index')"
+                            :active="route().current('coin-orders.*')">
+                            Munten Bestellen
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink v-if="$page.props.auth.user?.role === 'admin'" href="/admin">
