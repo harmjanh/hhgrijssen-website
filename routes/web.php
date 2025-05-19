@@ -71,6 +71,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('coin-orders/{coinOrder}/success', [CoinOrderController::class, 'success'])->name('coin-orders.success');
     Route::post('coin-orders/webhook', [CoinOrderController::class, 'webhook'])->name('coin-orders.webhook');
     Route::get('coin-orders', [CoinOrderController::class, 'index'])->name('coin-orders.index');
+    Route::get('coin-orders/{coinOrder}/download', [CoinOrderController::class, 'download'])->name('coin-orders.download');
 });
 
 // this is the last route to catch all page slugs

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Mollie\Laravel\Facades\Mollie;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CoinOrderController extends Controller
 {
@@ -124,5 +125,24 @@ class CoinOrderController extends Controller
             'orders' => $orders,
             'prices' => config('coins.prices'),
         ]);
+    }
+
+    /**
+     * Download the coin order as a PDF.
+     */
+    public function download(CoinOrder $coinOrder)
+    {
+        $pdf = PDF::loadView('pdf.coin-order', [
+            'order' => $coinOrder,
+        ]);
+
+        // Save the PDF to a temporary file
+        $tempFile = tempnam(sys_get_temp_dir(), 'pdf_');
+        file_put_contents($tempFile, $pdf->output());
+
+        // Return the file as a download
+        return response()->download($tempFile, "bestelling-{$coinOrder->id}.pdf", [
+            'Content-Type' => 'application/pdf',
+        ])->deleteFileAfterSend(true);
     }
 }
