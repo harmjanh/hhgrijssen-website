@@ -11,6 +11,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\BulkAction;
 
 class DeclarationResource extends Resource
 {
@@ -144,6 +146,24 @@ class DeclarationResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                BulkAction::make('updateStatus')
+                ->label('Update Status')
+                ->form([
+                    Select::make('status')
+                        ->label('Status')
+                        ->options([
+                            'pending' => 'In behandeling',
+                            'approved' => 'Goedgekeurd',
+                            'rejected' => 'Afgekeurd',
+                        ])
+                        ->required(),
+                ])
+                ->action(function ($records, $data) {
+                    foreach ($records as $record) {
+                        $record->update(['status' => $data['status']]);
+                    }
+                })
+                ->deselectRecordsAfterCompletion(),
             ]);
     }
 

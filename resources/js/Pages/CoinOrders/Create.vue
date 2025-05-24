@@ -81,14 +81,14 @@ const submit = () => {
                                     <div>
                                         <InputLabel for="blue_coins" value="Blauwe Munten (€0.60 per stuk)" />
                                         <NumberInput id="blue_coins" class="mt-1 block w-full" v-model="form.blue_coins"
-                                            min="0" required />
+                                            :min="0" required />
                                         <InputError :message="form.errors.blue_coins" class="mt-2" />
                                     </div>
 
                                     <div>
                                         <InputLabel for="red_coins" value="Rode Munten (€0.90 per stuk)" />
-                                        <NumberInput id="red_coins" class="mt-1 block w-full" v-model="form.red_coins"
-                                            min="0" required />
+                                        <Numb   erInput id="red_coins" class="mt-1 block w-full" v-model="form.red_coins"
+                                            :min="0" required />
                                         <InputError :message="form.errors.red_coins" class="mt-2" />
                                     </div>
                                 </div>

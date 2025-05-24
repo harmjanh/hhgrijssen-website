@@ -58,7 +58,7 @@ const getStatusText = (status: Declaration['status']) => {
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <PageHeader title="Mijn Declaraties" description="Overzicht van al uw ingediende declaraties" />
+            <PageHeader title="Mijn declaraties" description="Overzicht van al uw ingediende declaraties" />
         </template>
 
         <div class="py-12">
@@ -88,6 +88,10 @@ const getStatusText = (status: Declaration['status']) => {
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Bedrag
                                         </th>
+                                        <th scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status
+                                        </th>
 
                                         <th scope="col" class="relative px-6 py-3">
                                             <span class="sr-only">Bekijken</span>
@@ -101,6 +105,9 @@ const getStatusText = (status: Declaration['status']) => {
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ formatAmount(declaration.amount) }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ getStatusText(declaration.status) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <Link :href="route('declarations.show', declaration.id)"

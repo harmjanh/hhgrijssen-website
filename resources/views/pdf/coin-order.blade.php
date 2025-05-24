@@ -88,13 +88,13 @@
     </div>
 
     <div class="customer-info">
-        <h2>Klantgegevens</h2>
+        <h2>Uw gegevens</h2>
         <p><strong>Naam:</strong> {{ $order->name }}</p>
         <p><strong>E-mail:</strong> {{ $order->email }}</p>
     </div>
 
     <div class="order-details">
-        <h2>Bestelde Coins</h2>
+        <h2>Bestelde munten</h2>
         <table>
             <thead>
                 <tr>
@@ -107,7 +107,7 @@
             <tbody>
                 @if($order->blue_coins > 0)
                 <tr>
-                    <td>Blauwe Coins</td>
+                    <td>Blauwe munten</td>
                     <td>{{ $order->blue_coins }}</td>
                     <td>€{{ number_format(config('coins.prices.blue_coin'), 2) }}</td>
                     <td>€{{ number_format($order->blue_coins * config('coins.prices.blue_coin'), 2) }}</td>
@@ -115,7 +115,7 @@
                 @endif
                 @if($order->red_coins > 0)
                 <tr>
-                    <td>Rode Coins</td>
+                    <td>Rode munten</td>
                     <td>{{ $order->red_coins }}</td>
                     <td>€{{ number_format(config('coins.prices.red_coin'), 2) }}</td>
                     <td>€{{ number_format($order->red_coins * config('coins.prices.red_coin'), 2) }}</td>
@@ -139,7 +139,6 @@
             <p>&copy; {{ date('Y') }} HHG Rijssen</p>
         </div>
         <div class="footer-info">
-            <p>Status: {{ ucfirst($order->status) }}</p>
             <p>Bestelling #{{ $order->id }}</p>
         </div>
         <div class="footer-address">

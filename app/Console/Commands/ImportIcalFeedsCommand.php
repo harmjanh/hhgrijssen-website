@@ -18,64 +18,54 @@ class ImportIcalFeedsCommand extends Command
     public function handle()
     {
         $agenda = Agenda::first();
-
-        // $feeds = [
-        //     'feed1' => 'https://example.com/feed1.ics',
-        //     'feed2' => 'https://example.com/feed2.ics',
-        //     // Add your feed URLs here
-        // ];
-
         $url = $agenda->ical_url;
+        $this->info("Fetching iCal from: $url");
 
-        // foreach ($feeds as $source => $url) {
         try {
             $ical = new ICal($url, [
-                // 'defaultSpan'                 => 2,     // Default value
-                // 'defaultTimeZone'            => 'Europe/Amsterdam',
-                // // 'defaultWeekStart'           => 'SU',  // Default value
-                // 'disableCharacterReplacement' => false, // Default value
-                // 'skipRecurrence'             => false, // Default value
-                // 'useTimeZoneWithRRules'      => false, // Default value
+                'skipRecurrence' => false,
             ]);
-            $events = $ical->events();
-            // Log::info($events);
-            // die;
-            foreach ($events as $event) {
-                $recurrenceId = $event->additionalProperties['recurrence_id'] ?? '';
-                $eventId = $event->uid . '_' . $recurrenceId;
-                $agendaItem = AgendaItem::query()
-                    ->where('uid', $eventId)
-                    ->where('agenda_id', $agenda->id)
-                    ->first();
-
-                if ($agendaItem) {
-                    dd($agendaItem, $event);
-                    $agendaItem->update([
-                        'title' => $event->summary ?? '',
-                        'description' => $event->description ?? '',
-                        'start_date' => date('Y-m-d H:i:s', strtotime($event->dtstart)),
-                        'end_date' => $event->dtend ? date('Y-m-d H:i:s', strtotime($event->dtend)) : null,
-                        'location' => $event->location ?? '',
-                    ]);
-                } else {
-                    AgendaItem::create(
-                        [
-                            'uid' => $eventId,
-                            'agenda_id' => $agenda->id,
-                            'title' => $event->summary ?? '',
-                            'description' => $event->description ?? '',
-                            'start_date' => date('Y-m-d H:i:s', strtotime($event->dtstart)),
-                            'end_date' => $event->dtend ? date('Y-m-d H:i:s', strtotime($event->dtend)) : null,
-                            'location' => $event->location ?? '',
-                        ]
-                    );
-                }
-            }
-
-            $this->info("Successfully imported events from {$agenda->title}");
-        } catch (Exception $e) {
-            $this->error("Failed to import {$agenda->title}: " . $e->getMessage());
+        } catch (\Exception $e) {
+            $this->error("Failed to parse iCal: " . $e->getMessage());
+            return 1;
         }
-        // }
+
+        $events = $ical->events();
+        $importedKeys = [];
+
+        foreach ($events as $event) {
+            $uid = $event->uid;
+            $start = $ical->iCalDateToDateTime($event->dtstart_array[3]);
+            $end = $ical->iCalDateToDateTime($event->dtend_array[3] ?? $event->dtstart_array[3]);
+
+            $importedKeys[] = $uid . '|'  . ($start ? $start->format('YmdHis') : '');
+
+            AgendaItem::updateOrCreate(
+                ['uid' => $uid, 'start_date' => $start, 'agenda_id' => $agenda->id],
+                [
+                    'title'       => $event->summary ?? 'No title',
+                    'description' => $event->description ?? '',
+                    'location'    => $event->location ?? '',
+                    'end_date'         => $end,
+                    // Add other fields as needed
+                ]
+            );
+        }
+
+
+        // Delete events not present in the current feed
+        $existing = AgendaItem::all();
+        $deleted = 0;
+        foreach ($existing as $item) {
+            $key = $item->uid . '|' . ($item->start_date ? $item->start_date->format('YmdHis') : '');
+            if (!in_array($key, $importedKeys)) {
+                $item->delete();
+                $deleted++;
+            }
+        }
+
+        $this->info("Imported/updated " . count($importedKeys) . " events.");
+        $this->info("Deleted $deleted events not present in the feed.");
+        return 0;
     }
 }

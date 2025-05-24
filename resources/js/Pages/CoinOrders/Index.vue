@@ -74,7 +74,7 @@ const downloadPdf = async (orderId: number) => {
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <PageHeader title="Mijn Munten Bestellingen" description="Overzicht van al uw munten bestellingen" />
+            <PageHeader title="Mijn bestelde munten" description="Overzicht van al uw munt bestellingen" />
         </template>
 
         <div class="py-12">

@@ -171,13 +171,13 @@ const submit = () => {
                                 <div>
                                     <InputLabel for="other_people" value="Andere Personen die Verhuizen" />
                                     <TextArea id="other_people" class="mt-1 block w-full" v-model="form.other_people"
-                                        rows="3" />
+                                        :rows="3" />
                                     <InputError :message="form.errors.other_people" class="mt-2" />
                                 </div>
 
                                 <div class="mt-4">
                                     <InputLabel for="notes" value="Opmerking" />
-                                    <TextArea id="notes" class="mt-1 block w-full" v-model="form.notes" rows="3" />
+                                    <TextArea id="notes" class="mt-1 block w-full" v-model="form.notes" :rows="3" />
                                     <InputError :message="form.errors.notes" class="mt-2" />
                                 </div>
                             </div>

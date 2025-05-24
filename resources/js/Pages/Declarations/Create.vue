@@ -138,7 +138,7 @@ const submit = () => {
                             <div>
                                 <InputLabel for="explanation" value="Toelichting" />
                                 <TextArea id="explanation" class="mt-1 block w-full" v-model="form.explanation" required
-                                    rows="4" />
+                                    :rows="4" />
                                 <InputError :message="form.errors.explanation" class="mt-2" />
                             </div>
 
