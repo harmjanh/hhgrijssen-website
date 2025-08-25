@@ -1,8 +1,9 @@
 <template>
-    <div class="bg-white py-24 sm:py-32">
+    <div class="bg-white py-24 sm:py-32 border-t border-gray-900/10">
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="mx-auto max-w-2xl lg:max-w-4xl">
-                <h2 class="text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Nieuws
+                <h2 class="text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Laatste
+                    berichten
                 </h2>
                 <div class="mt-16 space-y-20 lg:mt-20 lg:space-y-20">
                     <article v-for="news in newsItems" :key="news.id"
@@ -12,7 +13,7 @@
                                 class="absolute inset-0 size-full rounded-2xl bg-gray-50 object-cover" />
                             <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10" />
                         </div>
-                        <div>
+                        <div class="w-full flex flex-col">
                             <div class="flex items-center gap-x-4 text-xs">
                                 <time :datetime="news.updated_at" class="text-gray-500">{{
                                     formatDate(news.updated_at) }}</time>
@@ -29,7 +30,7 @@
                                 </h3>
                                 <p class="mt-5 text-sm/6 text-gray-600">{{ news.description }}</p>
                             </div>
-                            <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+                            <div class="mt-6 flex border-t border-gray-900/5 pt-6 mt-auto">
                                 <div class="relative flex items-center gap-x-4">
 
                                     <a :href="'/nieuws/' + news.id"

@@ -3,6 +3,8 @@ import { Head, Link } from '@inertiajs/vue3';
 import NavBar from "@/Components/NavBar.vue";
 import PageFooter from "@/Components/PageFooter.vue";
 import NewsItems from "@/Components/NewsItems.vue";
+import Visit from "@/Components/Visit.vue";
+
 import { LifebuoyIcon, NewspaperIcon, PhoneIcon } from '@heroicons/vue/20/solid'
 
 defineProps<{
@@ -37,6 +39,8 @@ function handleImageError() {
 </script>
 
 <template>
+
+    <Head title="Welkom!" />
     <NavBar :pages="pages" />
 
     <!-- header -->
@@ -77,11 +81,13 @@ function handleImageError() {
     </div>
 
     <div class="mx-auto w-3/5 py-12">
-        <h1 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 text-left">{{ page.title }}</h1>
-        <div class="prose max-w-none text-left text-gray-700" v-html="page.content"></div>
+        <!-- <h1 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 text-left">{{ page.title }}</h1> -->
+        <div class="prose max-w-none text-left text-gray-700 text-xl/8" v-html="page.content"></div>
     </div>
 
     <NewsItems :newsItems="newsItems" />
+
+    <Visit />
 
     <PageFooter :pages="pages" />
 </template>

@@ -30,4 +30,9 @@ class AgendaItem extends Model
     {
         return $this->belongsTo(Agenda::class);
     }
+
+    public function service()
+    {
+        return $this->hasOne(Service::class);
+    }
 }

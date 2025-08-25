@@ -14,10 +14,22 @@ class PageController extends Controller
     {
         $page = Page::where('slug', $slug)->firstOrFail();
 
+        // Check if this is a live page and redirect to the live method
+        if ($page->pageType->name === 'live') {
+            return $this->live($page);
+        }
+
         return Inertia::render('Page', [
             'page' => $this->getPageData($page),
             'pages' => $this->getPages(),
+        ]);
+    }
 
+    public function live(Page $page)
+    {
+        return Inertia::render('Page/Live', [
+            'page' => $this->getPageData($page),
+            'pages' => $this->getPages(),
         ]);
     }
 

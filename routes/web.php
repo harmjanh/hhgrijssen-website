@@ -9,7 +9,7 @@ use App\Http\Controllers\DeclarationController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
-use App\Models\Page;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 
 $redirects = [
@@ -37,6 +37,7 @@ Route::get('nieuws', [NewsController::class, 'index'])->name('news.index');
 Route::get('nieuws/{news}', [NewsController::class, 'show'])->name('news.show');
 
 Route::get('agenda', [PageController::class, 'agenda'])->name('agenda');
+Route::get('live', [PageController::class, 'live'])->name('live');
 // Agenda routes
 Route::get('api/agenda/items', [AgendaController::class, 'getItems'])->name('agenda.items');
 

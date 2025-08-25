@@ -33,7 +33,7 @@ defineProps({
 
     <div class="mx-auto w-3/5 py-12">
         <h1 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 text-left">{{ page.title }}</h1>
-        <div class="prose max-w-none text-left text-gray-700" v-html="page.content"></div>
+        <div class="prose max-w-none text-left text-gray-700 text-xl/8" v-html="page.content"></div>
     </div>
 
     <PageFooter :pages="pages" />

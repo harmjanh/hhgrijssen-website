@@ -20,6 +20,7 @@ defineProps<{
 </script>
 
 <template>
+
     <Head :title="newsItem.title" />
 
     <NavBar :pages="pages" />
@@ -35,7 +36,7 @@ defineProps<{
 
     <div class="mx-auto w-3/5 py-12">
         <h1 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 text-left">{{ newsItem.title }}</h1>
-        <div class="prose max-w-none text-left text-gray-700" v-html="newsItem.content"></div>
+        <div class="prose max-w-none text-left text-gray-700 text-xl/8" v-html="newsItem.content"></div>
     </div>
 
     <PageFooter :pages="pages" />
