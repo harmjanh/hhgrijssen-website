@@ -9,6 +9,7 @@ use App\Http\Controllers\DeclarationController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\YouTubeVideoController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,32 @@ Route::get('nieuws/{news}', [NewsController::class, 'show'])->name('news.show');
 
 Route::get('agenda', [PageController::class, 'agenda'])->name('agenda');
 Route::get('live', [PageController::class, 'live'])->name('live');
+
+// YouTube OAuth callback route
+Route::get('youtube/oauth/callback', function () {
+    $code = request('code');
+    $error = request('error');
+
+    if ($error) {
+        return response()->json(['error' => 'OAuth authorization failed: ' . $error], 400);
+    }
+
+    if (!$code) {
+        return response()->json(['error' => 'No authorization code provided'], 400);
+    }
+
+    try {
+        $youtubeService = app(\App\Services\YouTubeService::class);
+        $token = $youtubeService->completeOAuthFlow($code);
+
+        return response()->json([
+            'message' => 'YouTube OAuth authentication successful!',
+            'token_saved' => true
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Authentication failed: ' . $e->getMessage()], 500);
+    }
+})->name('youtube.oauth.callback');
 // Agenda routes
 Route::get('api/agenda/items', [AgendaController::class, 'getItems'])->name('agenda.items');
 
