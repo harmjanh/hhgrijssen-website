@@ -139,7 +139,7 @@ class YouTubeOAuthService
     /**
      * Get stored token
      */
-    private function getStoredToken(): ?array
+    public function getStoredToken(): ?array
     {
         $storageType = $this->config['token_storage']['type'];
 

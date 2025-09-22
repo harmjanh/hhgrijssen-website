@@ -57,6 +57,13 @@ return [
             'throw' => false,
         ],
 
+        'youtube' => [
+            'driver' => 'local',
+            'root' => storage_path('app/youtube'),
+            'serve' => false,
+            'throw' => false,
+        ],
+
     ],
 
     /*

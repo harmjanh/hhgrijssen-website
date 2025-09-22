@@ -13,6 +13,7 @@ return [
     'api_key' => env('YOUTUBE_API_KEY', 'YOUR_API_KEY'),
     'channel_id' => env('YOUTUBE_CHANNEL_ID', null),
     'application_name' => env('YOUTUBE_APPLICATION_NAME', 'Church Website'),
+    'yt_dlp_path' => env('YT_DLP_PATH', '/opt/homebrew/bin/yt-dlp'),
 
     // OAuth 2.0 Configuration for private video access
     'oauth' => [
