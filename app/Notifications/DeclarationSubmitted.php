@@ -36,18 +36,45 @@ class DeclarationSubmitted extends Notification implements ShouldQueue
     {
         $declaration = $this->declaration;
         $user = $declaration->user;
+        $name = $user ? $user->name : $declaration->name;
 
-        return (new MailMessage)
+        // Calculate amounts for display
+        $timeslotPrice = 130.00;
+        $kilometerPrice = 0.35;
+        $numberOfTimeslots = (!empty($declaration->time_of_service_1) && !empty($declaration->time_of_service_2)) ? 2 : 1;
+        $timeslotTotal = $numberOfTimeslots * $timeslotPrice;
+        $kilometerTotal = $declaration->kilometers * $kilometerPrice;
+
+        $mailMessage = (new MailMessage)
             ->subject('Nieuwe declaratie ingediend')
-            ->greeting('Beste ' . $user->name)
+            ->greeting('Beste ' . $name)
             ->line('Uw declaratie is succesvol ingediend.')
             ->line('Details van uw declaratie:')
-            ->line('Bedrag: €' . number_format($declaration->amount, 2, ',', '.'))
+            ->line('Datum van dienst: ' . ($declaration->date_of_service ? $declaration->date_of_service->format('d-m-Y') : 'N/A'))
+            ->line('Tijd van dienst: ' . ($declaration->time_of_service_1 ? $declaration->time_of_service_1->format('H:i') : 'N/A'));
+
+        if ($declaration->time_of_service_2) {
+            $mailMessage->line('Tijd van dienst 2: ' . $declaration->time_of_service_2->format('H:i'));
+        }
+
+        $mailMessage->line('Kilometers: ' . $declaration->kilometers)
+            ->line('')
+            ->line('Declaratie berekening:')
+            ->line('Aantal diensten: ' . $numberOfTimeslots . ' x €' . number_format($timeslotPrice, 2) . ' = €' . number_format($timeslotTotal, 2))
+            ->line('Kilometers: ' . $declaration->kilometers . ' km x €' . number_format($kilometerPrice, 2) . ' = €' . number_format($kilometerTotal, 2))
+            ->line('Totaal declaratie: €' . number_format($declaration->amount, 2))
+            ->line('')
             ->line('Omschrijving: ' . $declaration->explanation)
             ->line('Status: In behandeling')
-            ->line('U ontvangt een bericht zodra uw declaratie is verwerkt.')
-            ->action('Bekijk declaratie', route('declarations.show', $declaration))
-            ->line('Bedankt voor uw declaratie.');
+            ->line('U ontvangt een bericht zodra uw declaratie is verwerkt.');
+
+        if ($user) {
+            $mailMessage->action('Bekijk declaratie', route('declarations.show', $declaration));
+        }
+
+        $mailMessage->line('Bedankt voor uw declaratie.');
+
+        return $mailMessage;
     }
 
     /**

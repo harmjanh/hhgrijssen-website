@@ -7,6 +7,7 @@ use App\Models\Service;
 use App\Models\AgendaItem;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -30,9 +31,39 @@ class ServiceResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('agenda_item_id')
                             ->label('Agenda Item')
-                            ->options(AgendaItem::whereDoesntHave('service')->pluck('title', 'id'))
+                            ->options(function ($get, $record) {
+                                $query = AgendaItem::query();
+
+                                // Exclude agenda items that already have a service
+                                // But include the current service's agenda item when editing
+                                $query->where(function ($q) use ($record) {
+                                    $q->whereDoesntHave('service');
+
+                                    // Include the current service's agenda item when editing
+                                    if ($record && $record->agenda_item_id) {
+                                        $q->orWhere('id', $record->agenda_item_id);
+                                    }
+                                });
+
+                                // Order by start date descending (most recent first)
+                                $query->orderBy('start_date', 'desc');
+
+                                // Build options array with title and date
+                                return $query->get()->mapWithKeys(function ($item) {
+                                    return [$item->id => "{$item->title} - {$item->start_date->format('d-m-Y H:i')}"];
+                                })->toArray();
+                            })
                             ->searchable()
                             ->required()
+                            ->live()
+                            ->afterStateUpdated(function ($state, Set $set) {
+                                if ($state) {
+                                    $agendaItem = AgendaItem::find($state);
+                                    if ($agendaItem) {
+                                        $set('pastor', $agendaItem->title);
+                                    }
+                                }
+                            })
                             ->placeholder('Select an agenda item')
                             ->helperText('Choose an agenda item that doesn\'t already have a service'),
 
@@ -176,6 +207,8 @@ class ServiceResource extends Resource
     {
         return parent::getEloquentQuery()
             ->with('agendaItem')
-            ->orderBy('agendaItem.start_date', 'desc');
+            ->join('agenda_items', 'services.agenda_item_id', '=', 'agenda_items.id')
+            ->select('services.*')
+            ->orderBy('agenda_items.start_date', 'desc');
     }
 }

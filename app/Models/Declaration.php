@@ -19,6 +19,7 @@ class Declaration extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'email',
         'street',
         'number',
         'zipcode',
@@ -28,6 +29,10 @@ class Declaration extends Model
         'explanation',
         'status',
         'admin_notes',
+        'date_of_service',
+        'time_of_service_1',
+        'time_of_service_2',
+        'kilometers',
     ];
 
     /**
@@ -45,6 +50,14 @@ class Declaration extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Check if this is a public declaration (no user_id).
+     */
+    public function isPublic(): bool
+    {
+        return is_null($this->user_id);
     }
 
     /**

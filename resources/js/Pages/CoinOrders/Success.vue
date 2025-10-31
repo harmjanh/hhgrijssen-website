@@ -7,8 +7,8 @@ interface Props {
         id: number;
         name: string;
         email: string;
-        blue_coins: number;
-        red_coins: number;
+        silver_coins: number;
+        gold_coins: number;
         total_amount: number;
         status: string;
     };
@@ -70,12 +70,12 @@ defineProps<Props>();
                                     <h5 class="text-sm font-medium text-gray-500">Bestelde Munten</h5>
                                     <dl class="mt-2 space-y-2">
                                         <div class="flex justify-between">
-                                            <dt class="text-sm text-gray-600">Blauwe Munten</dt>
-                                            <dd class="text-sm text-gray-900">{{ order.blue_coins }} x €0.60</dd>
+                                            <dt class="text-sm text-gray-600">Zilveren Munten</dt>
+                                            <dd class="text-sm text-gray-900">{{ order.silver_coins }} x €0.75</dd>
                                         </div>
                                         <div class="flex justify-between">
-                                            <dt class="text-sm text-gray-600">Rode Munten</dt>
-                                            <dd class="text-sm text-gray-900">{{ order.red_coins }} x €0.90</dd>
+                                            <dt class="text-sm text-gray-600">Gouden Munten</dt>
+                                            <dd class="text-sm text-gray-900">{{ order.gold_coins }} x €1.25</dd>
                                         </div>
                                         <div class="flex justify-between border-t border-gray-200 pt-2">
                                             <dt class="text-sm font-medium text-gray-900">Totaal</dt>

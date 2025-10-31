@@ -10,8 +10,8 @@ return [
     |
     */
     'prices' => [
-        'blue_coin' => env('BLUE_COIN_PRICE', 0.60),
-        'red_coin' => env('RED_COIN_PRICE', 0.90),
+        'silver_coin' => env('SILVER_COIN_PRICE', 0.75),
+        'gold_coin' => env('GOLD_COIN_PRICE', 1.25),
         'payment_fee' => env('PAYMENT_FEE', 0.35),
     ],
 ];

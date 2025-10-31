@@ -105,4 +105,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(CoinOrder::class);
     }
+
+    public function roomReservations(): HasMany
+    {
+        return $this->hasMany(RoomReservation::class);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Actions;
 
 use App\Models\Declaration;
+use App\Models\DeclarationAttachment;
 use App\Models\User;
 use App\Notifications\DeclarationSubmitted;
 use App\Notifications\DeclarationSubmittedToTreasurer;
@@ -58,13 +59,31 @@ class StoreDeclaration
             foreach ($request->file('attachments') as $file) {
                 $path = $file->store('declarations/' . $declaration->id, 'public');
 
-                $declaration->attachments()->create([
+                $attachment = $declaration->attachments()->create([
                     'filename' => $file->getClientOriginalName(),
                     'path' => $path,
                     'mime_type' => $file->getMimeType(),
                     'size' => $file->getSize(),
                 ]);
+
+                // Automatically convert images to PDF
+                if (str_starts_with($file->getMimeType(), 'image/')) {
+                    $this->convertImageToPdf($attachment);
+                }
             }
+        }
+    }
+
+    /**
+     * Convert image attachment to PDF
+     */
+    private function convertImageToPdf(DeclarationAttachment $attachment): void
+    {
+        try {
+            $pdfService = app(\App\Services\ImageToPdfService::class);
+            $pdfService->convertImageToPdf($attachment);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Failed to convert image to PDF: " . $e->getMessage());
         }
     }
 }

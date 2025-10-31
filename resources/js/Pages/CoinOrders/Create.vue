@@ -15,8 +15,8 @@ interface Props {
         email: string;
     };
     prices: {
-        blue_coin: number;
-        red_coin: number;
+        silver_coin: number;
+        gold_coin: number;
         payment_fee: number;
     };
 }
@@ -26,13 +26,13 @@ const props = defineProps<Props>();
 const form = useForm({
     name: props.user.name,
     email: props.user.email,
-    blue_coins: 0,
-    red_coins: 0,
+    silver_coins: 0,
+    gold_coins: 0,
 });
 
 const totalAmount = computed(() => {
-    return (form.blue_coins * props.prices.blue_coin) +
-        (form.red_coins * props.prices.red_coin) +
+    return (form.silver_coins * props.prices.silver_coin) +
+        (form.gold_coins * props.prices.gold_coin) +
         props.prices.payment_fee;
 });
 
@@ -46,7 +46,7 @@ const submit = () => {
 <template>
     <AuthenticatedLayout>
         <template #header>
-            <PageHeader title="Bestel Munten" description="Bestel blauwe en rode munten voor gebruik in de kerk" />
+            <PageHeader title="Bestel Munten" description="Bestel zilveren en gouden munten voor gebruik in de kerk" />
         </template>
 
         <div class="py-12">
@@ -79,17 +79,17 @@ const submit = () => {
                                 <h3 class="text-lg font-medium text-gray-900">Selecteer Munten</h3>
                                 <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
                                     <div>
-                                        <InputLabel for="blue_coins" value="Blauwe Munten (€0.60 per stuk)" />
-                                        <NumberInput id="blue_coins" class="mt-1 block w-full" v-model="form.blue_coins"
+                                        <InputLabel for="silver_coins" value="Zilveren Munten (€0.75 per stuk)" />
+                                        <NumberInput id="silver_coins" class="mt-1 block w-full" v-model="form.silver_coins"
                                             :min="0" required />
-                                        <InputError :message="form.errors.blue_coins" class="mt-2" />
+                                        <InputError :message="form.errors.silver_coins" class="mt-2" />
                                     </div>
 
                                     <div>
-                                        <InputLabel for="red_coins" value="Rode Munten (€0.90 per stuk)" />
-                                        <Numb   erInput id="red_coins" class="mt-1 block w-full" v-model="form.red_coins"
+                                        <InputLabel for="gold_coins" value="Gouden Munten (€1.25 per stuk)" />
+                                        <NumberInput id="gold_coins" class="mt-1 block w-full" v-model="form.gold_coins"
                                             :min="0" required />
-                                        <InputError :message="form.errors.red_coins" class="mt-2" />
+                                        <InputError :message="form.errors.gold_coins" class="mt-2" />
                                     </div>
                                 </div>
                             </div>
@@ -99,13 +99,13 @@ const submit = () => {
                                 <h3 class="text-lg font-medium text-gray-900">Bestelling Overzicht</h3>
                                 <dl class="mt-4 space-y-2">
                                     <div class="flex justify-between">
-                                        <dt class="text-gray-600">Blauwe Munten</dt>
-                                        <dd class="text-gray-900">€{{ (form.blue_coins * prices.blue_coin).toFixed(2) }}
+                                        <dt class="text-gray-600">Zilveren Munten</dt>
+                                        <dd class="text-gray-900">€{{ (form.silver_coins * prices.silver_coin).toFixed(2) }}
                                         </dd>
                                     </div>
                                     <div class="flex justify-between">
-                                        <dt class="text-gray-600">Rode Munten</dt>
-                                        <dd class="text-gray-900">€{{ (form.red_coins * prices.red_coin).toFixed(2) }}
+                                        <dt class="text-gray-600">Gouden Munten</dt>
+                                        <dd class="text-gray-900">€{{ (form.gold_coins * prices.gold_coin).toFixed(2) }}
                                         </dd>
                                     </div>
                                     <div class="flex justify-between">

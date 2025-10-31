@@ -8,8 +8,8 @@ interface Order {
     id: number;
     name: string;
     email: string;
-    blue_coins: number;
-    red_coins: number;
+    silver_coins: number;
+    gold_coins: number;
     total_amount: number;
     status: string;
     created_at: string;
@@ -18,8 +18,8 @@ interface Order {
 interface Props {
     orders: Order[];
     prices: {
-        blue_coin: number;
-        red_coin: number;
+        silver_coin: number;
+        gold_coin: number;
         payment_fee: number;
     };
 }
@@ -129,15 +129,15 @@ const downloadPdf = async (orderId: number) => {
                                 <div class="mt-4">
                                     <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                         <div>
-                                            <dt class="text-sm font-medium text-gray-500">Blauwe Munten</dt>
+                                            <dt class="text-sm font-medium text-gray-500">Zilveren Munten</dt>
                                             <dd class="mt-1 text-sm text-gray-900">
-                                                {{ order.blue_coins }} x €{{ prices.blue_coin.toFixed(2) }}
+                                                {{ order.silver_coins }} x €{{ prices.silver_coin.toFixed(2) }}
                                             </dd>
                                         </div>
                                         <div>
-                                            <dt class="text-sm font-medium text-gray-500">Rode Munten</dt>
+                                            <dt class="text-sm font-medium text-gray-500">Gouden Munten</dt>
                                             <dd class="mt-1 text-sm text-gray-900">
-                                                {{ order.red_coins }} x €{{ prices.red_coin.toFixed(2) }}
+                                                {{ order.gold_coins }} x €{{ prices.gold_coin.toFixed(2) }}
                                             </dd>
                                         </div>
                                         <div>

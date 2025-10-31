@@ -39,8 +39,8 @@ class CoinOrderController extends Controller
 
         // Calculate total amount
         $totalAmount = CoinOrder::calculateTotalAmount(
-            $data['blue_coins'],
-            $data['red_coins']
+            $data['silver_coins'],
+            $data['gold_coins']
         );
 
         // Create the coin order
@@ -48,8 +48,8 @@ class CoinOrderController extends Controller
             'user_id' => $user->id,
             'name' => $data['name'],
             'email' => $data['email'],
-            'blue_coins' => $data['blue_coins'],
-            'red_coins' => $data['red_coins'],
+            'silver_coins' => $data['silver_coins'],
+            'gold_coins' => $data['gold_coins'],
             'total_amount' => $totalAmount,
             'status' => 'pending',
         ]);

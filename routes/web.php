@@ -9,6 +9,8 @@ use App\Http\Controllers\DeclarationController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicDeclarationController;
+use App\Http\Controllers\RoomReservationController;
 use App\Http\Controllers\YouTubeVideoController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +41,11 @@ Route::get('nieuws/{news}', [NewsController::class, 'show'])->name('news.show');
 
 Route::get('agenda', [PageController::class, 'agenda'])->name('agenda');
 Route::get('live', [PageController::class, 'live'])->name('live');
+
+// Public Declaration Routes
+Route::get('declaratie', [PublicDeclarationController::class, 'create'])->name('public-declarations.create');
+Route::post('declaratie', [PublicDeclarationController::class, 'store'])->name('public-declarations.store');
+Route::get('declaratie/bedankt', [PublicDeclarationController::class, 'success'])->name('public-declarations.success');
 
 // YouTube OAuth callback route
 Route::get('youtube/oauth/callback', function () {
@@ -100,6 +107,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('coin-orders/webhook', [CoinOrderController::class, 'webhook'])->name('coin-orders.webhook');
     Route::get('coin-orders', [CoinOrderController::class, 'index'])->name('coin-orders.index');
     Route::get('coin-orders/{coinOrder}/download', [CoinOrderController::class, 'download'])->name('coin-orders.download');
+
+    // Room Reservation Routes
+    Route::get('room-reservations', [RoomReservationController::class, 'index'])->name('room-reservations.index');
+    Route::get('room-reservations/create', [RoomReservationController::class, 'create'])->name('room-reservations.create');
+    Route::post('room-reservations', [RoomReservationController::class, 'store'])->name('room-reservations.store');
+    Route::get('room-reservations/{roomReservation}', [RoomReservationController::class, 'show'])->name('room-reservations.show');
+    Route::get('room-reservations/{roomReservation}/edit', [RoomReservationController::class, 'edit'])->name('room-reservations.edit');
+    Route::put('room-reservations/{roomReservation}', [RoomReservationController::class, 'update'])->name('room-reservations.update');
+    Route::delete('room-reservations/{roomReservation}', [RoomReservationController::class, 'destroy'])->name('room-reservations.destroy');
+    Route::get('api/room-reservations/available-rooms', [RoomReservationController::class, 'getAvailableRooms'])->name('room-reservations.available-rooms');
 });
 
 // this is the last route to catch all page slugs

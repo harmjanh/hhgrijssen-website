@@ -24,8 +24,8 @@ class CoinOrderRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
-            'blue_coins' => ['required', 'integer', 'min:0'],
-            'red_coins' => ['required', 'integer', 'min:0'],
+            'silver_coins' => ['required', 'integer', 'min:0'],
+            'gold_coins' => ['required', 'integer', 'min:0'],
         ];
     }
 }

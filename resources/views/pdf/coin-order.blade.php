@@ -105,20 +105,20 @@
                 </tr>
             </thead>
             <tbody>
-                @if($order->blue_coins > 0)
+                @if($order->silver_coins > 0)
                 <tr>
-                    <td>Blauwe munten</td>
-                    <td>{{ $order->blue_coins }}</td>
-                    <td>€{{ number_format(config('coins.prices.blue_coin'), 2) }}</td>
-                    <td>€{{ number_format($order->blue_coins * config('coins.prices.blue_coin'), 2) }}</td>
+                    <td>Zilveren munten</td>
+                    <td>{{ $order->silver_coins }}</td>
+                    <td>€{{ number_format(config('coins.prices.silver_coin'), 2) }}</td>
+                    <td>€{{ number_format($order->silver_coins * config('coins.prices.silver_coin'), 2) }}</td>
                 </tr>
                 @endif
-                @if($order->red_coins > 0)
+                @if($order->gold_coins > 0)
                 <tr>
-                    <td>Rode munten</td>
-                    <td>{{ $order->red_coins }}</td>
-                    <td>€{{ number_format(config('coins.prices.red_coin'), 2) }}</td>
-                    <td>€{{ number_format($order->red_coins * config('coins.prices.red_coin'), 2) }}</td>
+                    <td>Gouden munten</td>
+                    <td>{{ $order->gold_coins }}</td>
+                    <td>€{{ number_format(config('coins.prices.gold_coin'), 2) }}</td>
+                    <td>€{{ number_format($order->gold_coins * config('coins.prices.gold_coin'), 2) }}</td>
                 </tr>
                 @endif
                 <tr>

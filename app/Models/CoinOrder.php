@@ -19,8 +19,8 @@ class CoinOrder extends Model
         'user_id',
         'name',
         'email',
-        'blue_coins',
-        'red_coins',
+        'silver_coins',
+        'gold_coins',
         'total_amount',
         'payment_id',
         'status',
@@ -28,8 +28,8 @@ class CoinOrder extends Model
 
     protected $casts = [
         'total_amount' => 'float',
-        'blue_coins' => 'integer',
-        'red_coins' => 'integer',
+        'silver_coins' => 'integer',
+        'gold_coins' => 'integer',
     ];
 
     /**
@@ -43,12 +43,12 @@ class CoinOrder extends Model
     /**
      * Calculate the total amount for the order.
      */
-    public static function calculateTotalAmount(int $blueCoins, int $redCoins): float
+    public static function calculateTotalAmount(int $silverCoins, int $goldCoins): float
     {
-        $blueCoinPrice = config('coins.prices.blue_coin');
-        $redCoinPrice = config('coins.prices.red_coin');
+        $silverCoinPrice = config('coins.prices.silver_coin');
+        $goldCoinPrice = config('coins.prices.gold_coin');
         $paymentFee = config('coins.prices.payment_fee');
 
-        return ($blueCoins * $blueCoinPrice) + ($redCoins * $redCoinPrice) + $paymentFee;
+        return ($silverCoins * $silverCoinPrice) + ($goldCoins * $goldCoinPrice) + $paymentFee;
     }
 }
