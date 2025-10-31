@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\News\LoadNewsItemsAction;
 use App\Models\Page;
+use App\Models\Service;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,11 +26,48 @@ class PageController extends Controller
         ]);
     }
 
-    public function live(Page $page)
+    public function live(?Page $page = null)
     {
+        // Get the live page if not provided
+        if (!$page) {
+            $page = Page::query()
+                ->join('page_types', 'pages.page_type_id', '=', 'page_types.id')
+                ->where('page_types.name', 'live')
+                ->firstOrFail();
+        }
+
+        // Get upcoming services with their agenda items, ordered by start date
+        $upcomingServices = Service::with('agendaItem')
+            ->whereHas('agendaItem', function ($query) {
+                // $query->where('start_date', '>=', now());
+            })
+            ->join('agenda_items', 'services.agenda_item_id', '=', 'agenda_items.id')
+            ->select('services.*')
+            ->orderBy('agenda_items.start_date', 'asc')
+            ->limit(3)
+            ->get()
+            ->map(function ($service) {
+                // Calculate end_date: use agenda item's end_date or default to 1 hour after start
+                $endDate = $service->agendaItem->end_date
+                    ? $service->agendaItem->end_date->timestamp
+                    : $service->agendaItem->start_date->copy()->addHours(1)->timestamp;
+
+                return [
+                    'id' => $service->id,
+                    'pastor' => $service->pastor,
+                    'liturgy' => $service->liturgy,
+                    'start_date' => $service->agendaItem->start_date->format('d-m-Y'),
+                    'start_time' => $service->agendaItem->start_date->format('H:i'),
+                    'end_date' => $endDate,
+                    'title' => $service->agendaItem->title,
+                    'youtube_url' => $service->youtube_url,
+                ];
+            });
+
         return Inertia::render('Page/Live', [
             'page' => $this->getPageData($page),
             'pages' => $this->getPages(),
+            'upcomingServices' => $upcomingServices,
         ]);
     }
 

@@ -62,9 +62,9 @@ function handleImageError() {
                         Brood des levens</h1>
                     <!--<p class="mt-8 text-pretty text-lg font-medium text-gray-400 sm:text-xl/8">Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat.</p>-->
                     <div class="mt-10 flex items-center justify-center gap-x-6">
-                        <a href="#"
+                        <a href="/kerkdiensten-live-luisteren"
                             class="rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400">
-                            Kom meer te weten <span aria-hidden="true">→</span></a>
+                            Luister mee <span aria-hidden="true">→</span></a>
                         <!--<a href="#" class="text-sm/6 font-semibold text-white">Kom meer te weten <span aria-hidden="true">→</span></a>-->
                     </div>
                 </div>

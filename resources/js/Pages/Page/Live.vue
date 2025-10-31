@@ -3,7 +3,7 @@ import { Head } from '@inertiajs/vue3';
 import NavBar from '@/Components/NavBar.vue';
 import PageFooter from '@/Components/PageFooter.vue';
 
-defineProps({
+const props = defineProps({
     page: {
         type: Object,
         required: true
@@ -11,8 +11,21 @@ defineProps({
     pages: {
         type: Array,
         default: () => [],
+    },
+    upcomingServices: {
+        type: Array,
+        default: () => [],
     }
 });
+
+// Check if service is still active (not ended yet)
+const isServiceActive = (service) => {
+    if (!service.end_date) {
+        return false;
+    }
+    const now = Math.floor(Date.now() / 1000); // Current time in seconds
+    return service.end_date > now;
+};
 </script>
 
 <template>
@@ -79,78 +92,46 @@ defineProps({
         </div>
 
         <!-- Order of Service Sections -->
-        <div class="mb-16">
+        <div class="mb-16" v-if="upcomingServices.length > 0">
             <h2 class="mb-8 text-2xl font-semibold text-gray-900 text-center">Komende diensten</h2>
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <!-- Section 1 -->
-                <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                    <div class="flex items-center mb-4">
-                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                            <span class="text-blue-600 font-semibold text-sm">1</span>
+                <div v-for="(service, index) in upcomingServices" :key="service.id"
+                    class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 flex flex-col h-full">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div :class="[
+                                'w-8 h-8 rounded-full flex items-center justify-center mr-3',
+                                index === 0 ? 'bg-blue-100' : index === 1 ? 'bg-green-100' : 'bg-purple-100'
+                            ]">
+                                <span :class="[
+                                    'font-semibold text-sm',
+                                    index === 0 ? 'text-blue-600' : index === 1 ? 'text-green-600' : 'text-purple-600'
+                                ]">{{ index + 1 }}</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">{{ service.title }}</h3>
+                                <p class="text-sm text-gray-500">{{ service.start_date }} om {{ service.start_time }}
+                                </p>
+                                <p class="text-sm text-gray-600 mt-1" v-if="service.pastor">{{ service.pastor }}</p>
+                            </div>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900">Opening & Welkom</h3>
                     </div>
-                    <div class="space-y-3 text-sm text-gray-600">
-                        <div class="flex justify-between">
-                            <span>Votum & Groet</span>
-                            <span class="text-gray-400">5 min</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Psalm 100</span>
-                            <span class="text-gray-400">3 min</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Gebed</span>
-                            <span class="text-gray-400">4 min</span>
-                        </div>
+                    <div class="flex-grow space-y-3 text-sm text-gray-600 mb-4" v-if="service.liturgy">
+                        <div class="prose prose-sm max-w-none" v-html="service.liturgy"></div>
                     </div>
-                </div>
+                    <div v-else class="flex-grow text-sm text-gray-400 italic mb-4">
+                        Nog geen liturgie beschikbaar
+                    </div>
 
-                <!-- Section 2 -->
-                <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                    <div class="flex items-center mb-4">
-                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                            <span class="text-green-600 font-semibold text-sm">2</span>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-900">Woord & Gebed</h3>
-                    </div>
-                    <div class="space-y-3 text-sm text-gray-600">
-                        <div class="flex justify-between">
-                            <span>Schriftlezing</span>
-                            <span class="text-gray-400">8 min</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Preek</span>
-                            <span class="text-gray-400">25 min</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Gebed</span>
-                            <span class="text-gray-400">5 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section 3 -->
-                <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                    <div class="flex items-center mb-4">
-                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                            <span class="text-purple-600 font-semibold text-sm">3</span>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-900">Afsluiting</h3>
-                    </div>
-                    <div class="space-y-3 text-sm text-gray-600">
-                        <div class="flex justify-between">
-                            <span>Psalm 134</span>
-                            <span class="text-gray-400">3 min</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Zegen</span>
-                            <span class="text-gray-400">2 min</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Uitgang</span>
-                            <span class="text-gray-400">-</span>
-                        </div>
+                    <div class="mt-auto" v-if="service.youtube_url && isServiceActive(service)">
+                        <a :href="service.youtube_url" target="_blank"
+                            class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                            </svg>
+                            Bekijk Live
+                        </a>
                     </div>
                 </div>
             </div>
