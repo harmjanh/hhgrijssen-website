@@ -102,9 +102,14 @@ class PageController extends Controller
     private function getPages()
     {
         return Page::select(['id', 'title', 'slug'])
-            ->with('children')
+            ->with(['children' => function ($query) {
+                $query->where('exclude_from_navigation', false)
+                    ->active()
+                    ->orderBy('sort_order');
+            }])
             ->active()
             ->whereNull('parent_id')
+            ->where('exclude_from_navigation', false)
             ->orderBy('sort_order')
             ->get();
     }

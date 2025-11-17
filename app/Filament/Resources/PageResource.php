@@ -81,6 +81,10 @@ class PageResource extends Resource
 
                                         return $query->pluck('title', 'id');
                                     }),
+                                Forms\Components\Checkbox::make('exclude_from_navigation')
+                                    ->label('Uitsluiten van navigatie')
+                                    ->helperText('Als deze optie is aangevinkt, wordt deze pagina niet getoond in de navigatie.')
+                                    ->default(false),
                             ]),
                         Forms\Components\Tabs\Tab::make('Content')
                             ->schema([
@@ -107,6 +111,13 @@ class PageResource extends Resource
                 Tables\Columns\TextColumn::make('pageType.name'),
                 Tables\Columns\TextColumn::make('parent.title')
                     ->label('Parent Page'),
+                Tables\Columns\IconColumn::make('exclude_from_navigation')
+                    ->label('Uit navigatie')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-x-circle')
+                    ->falseIcon('heroicon-o-check-circle')
+                    ->trueColor('danger')
+                    ->falseColor('success'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

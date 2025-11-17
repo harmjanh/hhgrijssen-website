@@ -96,7 +96,7 @@ const isServiceActive = (service) => {
             <h2 class="mb-8 text-2xl font-semibold text-gray-900 text-center">Komende diensten</h2>
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div v-for="(service, index) in upcomingServices" :key="service.id"
-                    class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 flex flex-col h-full">
+                    class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 text-xl/8 flex flex-col h-full">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center">
                             <div :class="[
@@ -112,12 +112,14 @@ const isServiceActive = (service) => {
                                 <h3 class="text-lg font-semibold text-gray-900">{{ service.title }}</h3>
                                 <p class="text-sm text-gray-500">{{ service.start_date }} om {{ service.start_time }}
                                 </p>
-                                <p class="text-sm text-gray-600 mt-1" v-if="service.pastor">{{ service.pastor }}</p>
+                                <p class="text-sm text-gray-600 mt-1"
+                                    v-if="service.pastor && service.pastor !== service.title">{{ service.pastor
+                                    }}</p>
                             </div>
                         </div>
                     </div>
                     <div class="flex-grow space-y-3 text-sm text-gray-600 mb-4" v-if="service.liturgy">
-                        <div class="prose prose-sm max-w-none" v-html="service.liturgy"></div>
+                        <div class="prose prose-sm max-w-none text-xl/8" v-html="service.liturgy"></div>
                     </div>
                     <div v-else class="flex-grow text-sm text-gray-400 italic mb-4">
                         Nog geen liturgie beschikbaar
