@@ -15,9 +15,21 @@ class PageController extends Controller
     {
         $page = Page::where('slug', $slug)->firstOrFail();
 
+        // Check if page requires authentication
+        if ($page->requires_authentication && !auth()->check()) {
+            abort(403, 'Deze pagina is alleen toegankelijk voor ingelogde gebruikers.');
+        }
+
         // Check if this is a live page and redirect to the live method
         if ($page->pageType->name === 'live') {
             return $this->live($page);
+        }
+
+        // If page requires authentication, use AuthenticatedLayout
+        if ($page->requires_authentication) {
+            return Inertia::render('Page/Authenticated', [
+                'page' => $this->getPageData($page),
+            ]);
         }
 
         return Inertia::render('Page', [
@@ -110,6 +122,7 @@ class PageController extends Controller
             ->active()
             ->whereNull('parent_id')
             ->where('exclude_from_navigation', false)
+            ->where('requires_authentication', false)
             ->orderBy('sort_order')
             ->get();
     }
@@ -122,5 +135,23 @@ class PageController extends Controller
             'type' => $page->pageType->name,
             'header_image' => $page->header_image,
         ];
+    }
+
+    /**
+     * Get pages that require authentication for authenticated users
+     */
+    public static function getAuthenticatedPages()
+    {
+        return Page::select(['id', 'title', 'slug'])
+            ->with(['children' => function ($query) {
+                $query->where('requires_authentication', true)
+                    ->active()
+                    ->orderBy('sort_order');
+            }])
+            ->active()
+            ->where('requires_authentication', true)
+            ->whereNull('parent_id')
+            ->orderBy('sort_order')
+            ->get();
     }
 }

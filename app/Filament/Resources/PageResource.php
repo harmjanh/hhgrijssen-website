@@ -85,6 +85,10 @@ class PageResource extends Resource
                                     ->label('Uitsluiten van navigatie')
                                     ->helperText('Als deze optie is aangevinkt, wordt deze pagina niet getoond in de navigatie.')
                                     ->default(false),
+                                Forms\Components\Checkbox::make('requires_authentication')
+                                    ->label('Alleen voor ingelogde gebruikers')
+                                    ->helperText('Als deze optie is aangevinkt, is deze pagina alleen toegankelijk voor ingelogde gebruikers en wordt getoond in de ingelogde omgeving.')
+                                    ->default(false),
                             ]),
                         Forms\Components\Tabs\Tab::make('Content')
                             ->schema([
@@ -118,6 +122,13 @@ class PageResource extends Resource
                     ->falseIcon('heroicon-o-check-circle')
                     ->trueColor('danger')
                     ->falseColor('success'),
+                Tables\Columns\IconColumn::make('requires_authentication')
+                    ->label('Authenticatie vereist')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-lock-closed')
+                    ->falseIcon('heroicon-o-lock-open')
+                    ->trueColor('warning')
+                    ->falseColor('gray'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

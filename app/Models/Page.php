@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Page extends Model
 {
-    protected $fillable = ['title', 'content', 'slug', 'page_type_id', 'parent_id', 'sort_order', 'is_active', 'header_image', 'exclude_from_navigation'];
+    protected $fillable = ['title', 'content', 'slug', 'page_type_id', 'parent_id', 'sort_order', 'is_active', 'header_image', 'exclude_from_navigation', 'requires_authentication'];
 
     public function pageType()
     {

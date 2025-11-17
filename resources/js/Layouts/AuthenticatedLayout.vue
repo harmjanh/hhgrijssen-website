@@ -11,7 +11,9 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 
 const showingNavigationDropdown = ref(false);
 
-const user = usePage().props.auth.user;
+const page = usePage();
+const user = page.props.auth.user;
+const authenticatedPages = page.props.authenticatedPages || [];
 
 const navigation = [
     { name: 'Website', href: '/', icon: '' },
@@ -87,6 +89,66 @@ const adminNavigation = user?.role === 'admin' ? [
                                         </a>
                                     </div>
                                 </div>
+
+                                <!-- Authenticated Pages -->
+                                <template v-if="authenticatedPages.length > 0">
+                                    <div class="pt-4 mt-4 border-t border-gray-200">
+                                        <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            Informatie
+                                        </h3>
+                                        <div class="mt-2 space-y-1">
+                                            <template v-for="pageItem in authenticatedPages" :key="pageItem.id">
+                                                <!-- Page without children -->
+                                                <a v-if="!pageItem.children || pageItem.children.length === 0" 
+                                                    :href="'/' + pageItem.slug"
+                                                    :class="[
+                                                        route().current('page.show', { slug: pageItem.slug }) || $page.url === '/' + pageItem.slug
+                                                            ? 'bg-gray-100 text-gray-900'
+                                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                                                        'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                                                    ]">
+                                                    <svg class="mr-3 h-6 w-6" :class="[
+                                                        route().current('page.show', { slug: pageItem.slug }) || $page.url === '/' + pageItem.slug 
+                                                            ? 'text-gray-500' 
+                                                            : 'text-gray-400 group-hover:text-gray-500'
+                                                    ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                        stroke="currentColor" aria-hidden="true">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    </svg>
+                                                    {{ pageItem.title }}
+                                                </a>
+                                                <!-- Page with children -->
+                                                <Disclosure v-else as="div" class="space-y-1">
+                                                    <DisclosureButton :class="[
+                                                        'group flex items-center w-full px-2 py-2 text-sm font-medium rounded-md',
+                                                        'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                                    ]">
+                                                        <svg class="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" aria-hidden="true">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        </svg>
+                                                        {{ pageItem.title }}
+                                                        <ChevronDownIcon class="ml-auto h-5 w-5 text-gray-400" />
+                                                    </DisclosureButton>
+                                                    <DisclosurePanel class="space-y-1 pl-9">
+                                                        <a v-for="child in pageItem.children" :key="child.id"
+                                                            :href="'/' + child.slug"
+                                                            :class="[
+                                                                route().current('page.show', { slug: child.slug }) || $page.url === '/' + child.slug
+                                                                    ? 'bg-gray-100 text-gray-900'
+                                                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                                                                'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                                                            ]">
+                                                            {{ child.title }}
+                                                        </a>
+                                                    </DisclosurePanel>
+                                                </Disclosure>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
 
                                 <!-- Admin navigation -->
                                 <template v-if="adminNavigation.length > 0">
@@ -214,6 +276,66 @@ const adminNavigation = user?.role === 'admin' ? [
                                         </a>
                                     </div>
                                 </div>
+
+                                <!-- Authenticated Pages in mobile menu -->
+                                <template v-if="authenticatedPages.length > 0">
+                                    <div class="pt-4 mt-4 border-t border-gray-200">
+                                        <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            Informatie
+                                        </h3>
+                                        <div class="mt-2 space-y-1">
+                                            <template v-for="pageItem in authenticatedPages" :key="pageItem.id">
+                                                <!-- Page without children -->
+                                                <a v-if="!pageItem.children || pageItem.children.length === 0" 
+                                                    :href="'/' + pageItem.slug"
+                                                    :class="[
+                                                        route().current('page.show', { slug: pageItem.slug }) || $page.url === '/' + pageItem.slug
+                                                            ? 'bg-gray-100 text-gray-900'
+                                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                                                        'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+                                                    ]">
+                                                    <svg class="mr-4 h-6 w-6" :class="[
+                                                        route().current('page.show', { slug: pageItem.slug }) || $page.url === '/' + pageItem.slug 
+                                                            ? 'text-gray-500' 
+                                                            : 'text-gray-400 group-hover:text-gray-500'
+                                                    ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                        stroke="currentColor" aria-hidden="true">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    </svg>
+                                                    {{ pageItem.title }}
+                                                </a>
+                                                <!-- Page with children -->
+                                                <Disclosure v-else as="div" class="space-y-1">
+                                                    <DisclosureButton :class="[
+                                                        'group flex items-center w-full px-2 py-2 text-base font-medium rounded-md',
+                                                        'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                                    ]">
+                                                        <svg class="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                            stroke="currentColor" aria-hidden="true">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        </svg>
+                                                        {{ pageItem.title }}
+                                                        <ChevronDownIcon class="ml-auto h-5 w-5 text-gray-400" />
+                                                    </DisclosureButton>
+                                                    <DisclosurePanel class="space-y-1 pl-9">
+                                                        <a v-for="child in pageItem.children" :key="child.id"
+                                                            :href="'/' + child.slug"
+                                                            :class="[
+                                                                route().current('page.show', { slug: child.slug }) || $page.url === '/' + child.slug
+                                                                    ? 'bg-gray-100 text-gray-900'
+                                                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                                                                'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+                                                            ]">
+                                                            {{ child.title }}
+                                                        </a>
+                                                    </DisclosurePanel>
+                                                </Disclosure>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
 
                                 <!-- Admin navigation in mobile menu -->
                                 <template v-if="adminNavigation.length > 0">
