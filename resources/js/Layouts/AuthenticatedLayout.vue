@@ -190,11 +190,11 @@ const adminNavigation = user?.role === 'admin' ? [
                         <!-- Profile section -->
                         <div class="border-t border-gray-200 p-4">
                             <div class="flex items-center justify-between">
-                                <div class="flex-shrink-0">
-                                    <p class="text-sm font-medium text-gray-900">{{ user.name }}</p>
-                                    <p class="text-sm text-gray-500">{{ user.email }}</p>
+                                <div class="flex-shrink-0 min-w-0 flex-1">
+                                    <p class="text-sm font-medium text-gray-900 truncate">{{ user.name }}</p>
+                                    <p class="text-sm text-gray-500 truncate">{{ user.email }}</p>
                                 </div>
-                                <Dropdown align="right" width="48">
+                                <Dropdown align="right" width="48" direction="up">
                                     <template #trigger>
                                         <button class="text-gray-500 hover:text-gray-700">
                                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
@@ -376,11 +376,11 @@ const adminNavigation = user?.role === 'admin' ? [
                         <!-- Mobile profile section -->
                         <div class="flex-shrink-0 flex border-t border-gray-200 p-4">
                             <div class="flex items-center justify-between w-full">
-                                <div>
-                                    <p class="text-base font-medium text-gray-700">{{ user.name }}</p>
-                                    <p class="text-sm font-medium text-gray-500">{{ user.email }}</p>
+                                <div class="min-w-0 flex-1 mr-2">
+                                    <p class="text-base font-medium text-gray-700 truncate">{{ user.name }}</p>
+                                    <p class="text-sm font-medium text-gray-500 truncate">{{ user.email }}</p>
                                 </div>
-                                <Dropdown align="right" width="48">
+                                <Dropdown align="right" width="48" direction="up">
                                     <template #trigger>
                                         <button class="text-gray-500 hover:text-gray-700">
                                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"

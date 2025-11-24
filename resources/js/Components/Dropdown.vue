@@ -6,11 +6,13 @@ const props = withDefaults(
         align?: 'left' | 'right';
         width?: '48';
         contentClasses?: string;
+        direction?: 'up' | 'down';
     }>(),
     {
         align: 'right',
         width: '48',
         contentClasses: 'py-1 bg-white dark:bg-gray-700',
+        direction: 'down',
     },
 );
 
@@ -31,12 +33,20 @@ const widthClass = computed(() => {
 
 const alignmentClasses = computed(() => {
     if (props.align === 'left') {
-        return 'ltr:origin-top-left rtl:origin-top-right start-0';
+        return props.direction === 'up' 
+            ? 'ltr:origin-bottom-left rtl:origin-bottom-right start-0'
+            : 'ltr:origin-top-left rtl:origin-top-right start-0';
     } else if (props.align === 'right') {
-        return 'ltr:origin-top-right rtl:origin-top-left end-0';
+        return props.direction === 'up'
+            ? 'ltr:origin-bottom-right rtl:origin-bottom-left end-0'
+            : 'ltr:origin-top-right rtl:origin-top-left end-0';
     } else {
-        return 'origin-top';
+        return props.direction === 'up' ? 'origin-bottom' : 'origin-top';
     }
+});
+
+const positionClasses = computed(() => {
+    return props.direction === 'up' ? 'mb-2 bottom-full' : 'mt-2 top-full';
 });
 
 const open = ref(false);
@@ -65,8 +75,8 @@ const open = ref(false);
         >
             <div
                 v-show="open"
-                class="absolute z-50 mt-2 rounded-md shadow-lg"
-                :class="[widthClass, alignmentClasses]"
+                class="absolute z-50 rounded-md shadow-lg"
+                :class="[widthClass, alignmentClasses, positionClasses]"
                 style="display: none"
                 @click="open = false"
             >
