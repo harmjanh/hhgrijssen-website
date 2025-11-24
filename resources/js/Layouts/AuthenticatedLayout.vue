@@ -9,11 +9,19 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { ChevronDownIcon } from '@heroicons/vue/24/solid';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 
+interface AuthenticatedPage {
+    id: number;
+    title: string;
+    slug: string;
+    children?: AuthenticatedPage[];
+}
+
 const showingNavigationDropdown = ref(false);
 
 const page = usePage();
 const user = page.props.auth.user;
-const authenticatedPages = page.props.authenticatedPages || [];
+const authenticatedPages = (page.props.authenticatedPages || []) as AuthenticatedPage[];
+const currentUrl = page.url;
 
 const navigation = [
     { name: 'Website', href: '/', icon: '' },
@@ -102,13 +110,13 @@ const adminNavigation = user?.role === 'admin' ? [
                                                 <a v-if="!pageItem.children || pageItem.children.length === 0" 
                                                     :href="'/' + pageItem.slug"
                                                     :class="[
-                                                        route().current('page.show', { slug: pageItem.slug }) || $page.url === '/' + pageItem.slug
+                                                        route().current('page.show', { slug: pageItem.slug }) || currentUrl === '/' + pageItem.slug
                                                             ? 'bg-gray-100 text-gray-900'
                                                             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                                                         'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
                                                     ]">
                                                     <svg class="mr-3 h-6 w-6" :class="[
-                                                        route().current('page.show', { slug: pageItem.slug }) || $page.url === '/' + pageItem.slug 
+                                                        route().current('page.show', { slug: pageItem.slug }) || currentUrl === '/' + pageItem.slug 
                                                             ? 'text-gray-500' 
                                                             : 'text-gray-400 group-hover:text-gray-500'
                                                     ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -136,7 +144,7 @@ const adminNavigation = user?.role === 'admin' ? [
                                                         <a v-for="child in pageItem.children" :key="child.id"
                                                             :href="'/' + child.slug"
                                                             :class="[
-                                                                route().current('page.show', { slug: child.slug }) || $page.url === '/' + child.slug
+                                                                route().current('page.show', { slug: child.slug }) || currentUrl === '/' + child.slug
                                                                     ? 'bg-gray-100 text-gray-900'
                                                                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                                                                 'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
@@ -289,13 +297,13 @@ const adminNavigation = user?.role === 'admin' ? [
                                                 <a v-if="!pageItem.children || pageItem.children.length === 0" 
                                                     :href="'/' + pageItem.slug"
                                                     :class="[
-                                                        route().current('page.show', { slug: pageItem.slug }) || $page.url === '/' + pageItem.slug
+                                                        route().current('page.show', { slug: pageItem.slug }) || currentUrl === '/' + pageItem.slug
                                                             ? 'bg-gray-100 text-gray-900'
                                                             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                                                         'group flex items-center px-2 py-2 text-base font-medium rounded-md'
                                                     ]">
                                                     <svg class="mr-4 h-6 w-6" :class="[
-                                                        route().current('page.show', { slug: pageItem.slug }) || $page.url === '/' + pageItem.slug 
+                                                        route().current('page.show', { slug: pageItem.slug }) || currentUrl === '/' + pageItem.slug 
                                                             ? 'text-gray-500' 
                                                             : 'text-gray-400 group-hover:text-gray-500'
                                                     ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -323,7 +331,7 @@ const adminNavigation = user?.role === 'admin' ? [
                                                         <a v-for="child in pageItem.children" :key="child.id"
                                                             :href="'/' + child.slug"
                                                             :class="[
-                                                                route().current('page.show', { slug: child.slug }) || $page.url === '/' + child.slug
+                                                                route().current('page.show', { slug: child.slug }) || currentUrl === '/' + child.slug
                                                                     ? 'bg-gray-100 text-gray-900'
                                                                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                                                                 'group flex items-center px-2 py-2 text-base font-medium rounded-md'

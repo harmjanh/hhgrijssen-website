@@ -190,5 +190,5 @@ const submit = () => {
                 </div>
             </div>
         </div>
-        </GuestLayout>
+    </AppLayout>
 </template>

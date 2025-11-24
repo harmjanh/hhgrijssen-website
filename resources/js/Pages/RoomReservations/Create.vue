@@ -22,7 +22,13 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const form = useForm({
+const form = useForm<{
+    room_id: string | number;
+    subject: string;
+    number_of_people: number;
+    start_time: string;
+    end_time: string;
+}>({
     room_id: '',
     subject: '',
     number_of_people: 1,
@@ -46,7 +52,7 @@ watch([() => form.start_time, () => form.end_time], async ([newStartTime, newEnd
             });
             availableRooms.value = response.data.available_rooms;
             // Reset room selection if the selected room is no longer available
-            if (form.room_id && !availableRooms.value.find(room => room.id == form.room_id)) {
+            if (form.room_id && !availableRooms.value.find(room => room.id === Number(form.room_id))) {
                 form.room_id = '';
             }
         } catch (error) {
@@ -135,7 +141,7 @@ const getMinDateTime = () => {
                             <div>
                                 <InputLabel for="number_of_people" value="Aantal personen" />
                                 <NumberInput id="number_of_people" v-model="form.number_of_people"
-                                    class="mt-1 block w-full" min="1" max="100" required />
+                                    class="mt-1 block w-full" :min="1" :max="100" required />
                                 <InputError class="mt-2" :message="form.errors.number_of_people" />
                             </div>
 

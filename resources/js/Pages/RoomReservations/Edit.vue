@@ -32,7 +32,13 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const form = useForm({
+const form = useForm<{
+    room_id: string | number;
+    subject: string;
+    number_of_people: number;
+    start_time: string;
+    end_time: string;
+}>({
     room_id: props.reservation.room.id.toString(),
     subject: props.reservation.subject,
     number_of_people: props.reservation.number_of_people,
@@ -56,8 +62,8 @@ watch([() => form.start_time, () => form.end_time], async ([newStartTime, newEnd
             });
             availableRooms.value = response.data.available_rooms;
             // If current room is not available, keep it in the list for editing
-            const currentRoom = props.rooms.find(room => room.id == form.room_id);
-            if (currentRoom && !availableRooms.value.find(room => room.id == form.room_id)) {
+            const currentRoom = props.rooms.find(room => room.id === Number(form.room_id));
+            if (currentRoom && !availableRooms.value.find(room => room.id === Number(form.room_id))) {
                 availableRooms.value.unshift(currentRoom);
             }
         } catch (error) {
@@ -146,7 +152,7 @@ const getMinDateTime = () => {
                             <div>
                                 <InputLabel for="number_of_people" value="Aantal personen" />
                                 <NumberInput id="number_of_people" v-model="form.number_of_people"
-                                    class="mt-1 block w-full" min="1" max="100" required />
+                                    class="mt-1 block w-full" :min="1" :max="100" required />
                                 <InputError class="mt-2" :message="form.errors.number_of_people" />
                             </div>
 
