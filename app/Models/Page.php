@@ -38,6 +38,6 @@ class Page extends Model
 
     public function children()
     {
-        return $this->hasMany(Page::class, 'parent_id');
+        return $this->hasMany(Page::class, 'parent_id')->orderBy('sort_order');
     }
 }

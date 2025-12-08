@@ -28,7 +28,7 @@ const navigation = [
     { name: 'Dashboard', href: route('dashboard'), icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
     { name: 'Declaraties', href: route('declarations.index'), icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
     { name: 'Adreswijzigingen', href: route('address-submissions.index'), icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
-    { name: 'Munten Bestellen', href: route('coin-orders.index'), icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+    { name: 'Bestelde munten', href: route('coin-orders.index'), icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
     { name: 'Zaalreserveringen', href: route('room-reservations.index'), icon: 'M6 2v6h.01L6 8.01 10 12l-4 4 .01.01H6V22h12v-5.99h-.01L18 16l-4-4 4-3.99-.01-.01H18V2H6zm5 15.5V9H9v8.5l2-2z' },
 ];
 
@@ -107,21 +107,21 @@ const adminNavigation = user?.role === 'admin' ? [
                                         <div class="mt-2 space-y-1">
                                             <template v-for="pageItem in authenticatedPages" :key="pageItem.id">
                                                 <!-- Page without children -->
-                                                <a v-if="!pageItem.children || pageItem.children.length === 0" 
-                                                    :href="'/' + pageItem.slug"
-                                                    :class="[
+                                                <a v-if="!pageItem.children || pageItem.children.length === 0"
+                                                    :href="'/' + pageItem.slug" :class="[
                                                         route().current('page.show', { slug: pageItem.slug }) || currentUrl === '/' + pageItem.slug
                                                             ? 'bg-gray-100 text-gray-900'
                                                             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                                                         'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
                                                     ]">
                                                     <svg class="mr-3 h-6 w-6" :class="[
-                                                        route().current('page.show', { slug: pageItem.slug }) || currentUrl === '/' + pageItem.slug 
-                                                            ? 'text-gray-500' 
+                                                        route().current('page.show', { slug: pageItem.slug }) || currentUrl === '/' + pageItem.slug
+                                                            ? 'text-gray-500'
                                                             : 'text-gray-400 group-hover:text-gray-500'
-                                                    ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                        stroke="currentColor" aria-hidden="true">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    ]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
                                                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                     </svg>
                                                     {{ pageItem.title }}
@@ -132,9 +132,12 @@ const adminNavigation = user?.role === 'admin' ? [
                                                         'group flex items-center w-full px-2 py-2 text-sm font-medium rounded-md',
                                                         'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                                     ]">
-                                                        <svg class="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                            stroke="currentColor" aria-hidden="true">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        <svg class="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor"
+                                                            aria-hidden="true">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
                                                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                         </svg>
                                                         {{ pageItem.title }}
@@ -142,8 +145,7 @@ const adminNavigation = user?.role === 'admin' ? [
                                                     </DisclosureButton>
                                                     <DisclosurePanel class="space-y-1 pl-9">
                                                         <a v-for="child in pageItem.children" :key="child.id"
-                                                            :href="'/' + child.slug"
-                                                            :class="[
+                                                            :href="'/' + child.slug" :class="[
                                                                 route().current('page.show', { slug: child.slug }) || currentUrl === '/' + child.slug
                                                                     ? 'bg-gray-100 text-gray-900'
                                                                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
@@ -294,21 +296,21 @@ const adminNavigation = user?.role === 'admin' ? [
                                         <div class="mt-2 space-y-1">
                                             <template v-for="pageItem in authenticatedPages" :key="pageItem.id">
                                                 <!-- Page without children -->
-                                                <a v-if="!pageItem.children || pageItem.children.length === 0" 
-                                                    :href="'/' + pageItem.slug"
-                                                    :class="[
+                                                <a v-if="!pageItem.children || pageItem.children.length === 0"
+                                                    :href="'/' + pageItem.slug" :class="[
                                                         route().current('page.show', { slug: pageItem.slug }) || currentUrl === '/' + pageItem.slug
                                                             ? 'bg-gray-100 text-gray-900'
                                                             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                                                         'group flex items-center px-2 py-2 text-base font-medium rounded-md'
                                                     ]">
                                                     <svg class="mr-4 h-6 w-6" :class="[
-                                                        route().current('page.show', { slug: pageItem.slug }) || currentUrl === '/' + pageItem.slug 
-                                                            ? 'text-gray-500' 
+                                                        route().current('page.show', { slug: pageItem.slug }) || currentUrl === '/' + pageItem.slug
+                                                            ? 'text-gray-500'
                                                             : 'text-gray-400 group-hover:text-gray-500'
-                                                    ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                        stroke="currentColor" aria-hidden="true">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    ]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
                                                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                     </svg>
                                                     {{ pageItem.title }}
@@ -319,9 +321,12 @@ const adminNavigation = user?.role === 'admin' ? [
                                                         'group flex items-center w-full px-2 py-2 text-base font-medium rounded-md',
                                                         'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                                     ]">
-                                                        <svg class="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                            stroke="currentColor" aria-hidden="true">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        <svg class="mr-4 h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor"
+                                                            aria-hidden="true">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
                                                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                         </svg>
                                                         {{ pageItem.title }}
@@ -329,8 +334,7 @@ const adminNavigation = user?.role === 'admin' ? [
                                                     </DisclosureButton>
                                                     <DisclosurePanel class="space-y-1 pl-9">
                                                         <a v-for="child in pageItem.children" :key="child.id"
-                                                            :href="'/' + child.slug"
-                                                            :class="[
+                                                            :href="'/' + child.slug" :class="[
                                                                 route().current('page.show', { slug: child.slug }) || currentUrl === '/' + child.slug
                                                                     ? 'bg-gray-100 text-gray-900'
                                                                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',

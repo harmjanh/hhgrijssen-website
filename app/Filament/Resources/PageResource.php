@@ -81,6 +81,12 @@ class PageResource extends Resource
 
                                         return $query->pluck('title', 'id');
                                     }),
+                                Forms\Components\TextInput::make('sort_order')
+                                    ->label('Sorteervolgorde')
+                                    ->helperText('Gebruik dit nummer om de volgorde van child pagina\'s te bepalen. Lagere nummers verschijnen eerst in het navigatiemenu.')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->required(),
                                 Forms\Components\Checkbox::make('exclude_from_navigation')
                                     ->label('Uitsluiten van navigatie')
                                     ->helperText('Als deze optie is aangevinkt, wordt deze pagina niet getoond in de navigatie.')
@@ -115,6 +121,10 @@ class PageResource extends Resource
                 Tables\Columns\TextColumn::make('pageType.name'),
                 Tables\Columns\TextColumn::make('parent.title')
                     ->label('Parent Page'),
+                Tables\Columns\TextColumn::make('sort_order')
+                    ->label('Sorteervolgorde')
+                    ->sortable()
+                    ->alignCenter(),
                 Tables\Columns\IconColumn::make('exclude_from_navigation')
                     ->label('Uit navigatie')
                     ->boolean()
@@ -130,6 +140,13 @@ class PageResource extends Resource
                     ->trueColor('warning')
                     ->falseColor('gray'),
             ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('parent_id')
+                    ->label('Parent Pagina')
+                    ->relationship('parent', 'title')
+                    ->searchable()
+                    ->preload(),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
@@ -138,7 +155,8 @@ class PageResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('sort_order', 'asc');
     }
 
     public static function getRelations(): array

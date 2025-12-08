@@ -54,6 +54,7 @@ class CoinOrderController extends Controller
             'status' => 'pending',
         ]);
 
+
         // Create Mollie payment
         $payment = Mollie::api()->payments->create([
             'amount' => [
@@ -132,8 +133,12 @@ class CoinOrderController extends Controller
      */
     public function download(CoinOrder $coinOrder)
     {
+        // Load the user relationship to access address information
+        $coinOrder->load('user');
+
         $pdf = PDF::loadView('pdf.coin-order', [
             'order' => $coinOrder,
+            'user' => $coinOrder->user,
         ]);
 
         // Save the PDF to a temporary file

@@ -91,6 +91,29 @@
         <h2>Uw gegevens</h2>
         <p><strong>Naam:</strong> {{ $order->name }}</p>
         <p><strong>E-mail:</strong> {{ $order->email }}</p>
+        @if($user)
+            @php
+                $addressParts = [];
+                if ($user->street && $user->number) {
+                    $addressParts[] = $user->street . ' ' . $user->number;
+                } elseif ($user->street) {
+                    $addressParts[] = $user->street;
+                }
+                if ($user->zipcode && $user->city) {
+                    $addressParts[] = $user->zipcode . ' ' . $user->city;
+                } elseif ($user->zipcode) {
+                    $addressParts[] = $user->zipcode;
+                } elseif ($user->city) {
+                    $addressParts[] = $user->city;
+                }
+            @endphp
+            @if(!empty($addressParts))
+                <p><strong>Adres:</strong> {{ implode(', ', $addressParts) }}</p>
+            @endif
+            @if($user->phonenumber)
+                <p><strong>Telefoon:</strong> {{ $user->phonenumber }}</p>
+            @endif
+        @endif
     </div>
 
     <div class="order-details">
