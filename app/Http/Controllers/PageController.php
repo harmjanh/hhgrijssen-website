@@ -25,6 +25,11 @@ class PageController extends Controller
             return $this->live($page);
         }
 
+        // Check if this is an archive page and redirect to the archive method
+        if ($page->pageType->name === 'archive') {
+            return $this->archive($page);
+        }
+
         // If page requires authentication, use AuthenticatedLayout
         if ($page->requires_authentication) {
             return Inertia::render('Page/Authenticated', [
@@ -93,6 +98,66 @@ class PageController extends Controller
         return Inertia::render('Agenda/Index', [
             'page' => $this->getPageData($page),
             'pages' => $this->getPages(),
+        ]);
+    }
+
+    public function archive(?Page $page = null)
+    {
+        // Get the archive page if not provided
+        if (!$page) {
+            $page = Page::query()
+                ->join('page_types', 'pages.page_type_id', '=', 'page_types.id')
+                ->where('page_types.name', 'archive')
+                ->firstOrFail();
+        }
+
+        // Get filter parameters from request
+        $pastorFilter = request()->get('pastor');
+        $dateFilter = request()->get('date');
+
+        // Build query for services
+        $servicesQuery = Service::with('agendaItem')
+            ->join('agenda_items', 'services.agenda_item_id', '=', 'agenda_items.id')
+            ->select('services.*')
+            ->orderBy('agenda_items.start_date', 'desc');
+
+        // Apply pastor filter if provided
+        if ($pastorFilter) {
+            $servicesQuery->where('services.pastor', $pastorFilter);
+        }
+
+        // Apply date filter if provided
+        if ($dateFilter) {
+            $servicesQuery->whereDate('agenda_items.start_date', $dateFilter);
+        }
+
+        // Get all services matching the filters
+        $services = $servicesQuery->get()->map(function ($service) {
+            return [
+                'id' => $service->id,
+                'pastor' => $service->pastor,
+                'date' => $service->agendaItem->start_date->format('d-m-Y'),
+                'time' => $service->agendaItem->start_date->format('H:i'),
+                'start_date' => $service->agendaItem->start_date->format('Y-m-d'),
+            ];
+        });
+
+        // Get distinct pastors for filter dropdown
+        $pastors = Service::distinct()
+            ->whereNotNull('pastor')
+            ->orderBy('pastor')
+            ->pluck('pastor')
+            ->toArray();
+
+        return Inertia::render('Page/Archive', [
+            'page' => $this->getPageData($page),
+            'pages' => $this->getPages(),
+            'services' => $services,
+            'pastors' => $pastors,
+            'filters' => [
+                'pastor' => $pastorFilter,
+                'date' => $dateFilter,
+            ],
         ]);
     }
 
