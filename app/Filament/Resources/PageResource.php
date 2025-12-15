@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PageResource\Pages;
 use App\Models\Page;
 use App\Models\PageType;
+use FilamentTiptapEditor\TiptapEditor;
 use Exception;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -98,8 +99,33 @@ class PageResource extends Resource
                             ]),
                         Forms\Components\Tabs\Tab::make('Content')
                             ->schema([
-                                Forms\Components\RichEditor::make('content')
+                                TiptapEditor::make('content')
                                     ->nullable()
+                                    ->columnSpanFull()
+                                    ->profile('default')
+                                    ->tools([
+                                        'heading',
+                                        'bullet-list',
+                                        'ordered-list',
+                                        'checked-list',
+                                        'blockquote',
+                                        'code-block',
+                                        'table',
+                                        'link',
+                                        'media',
+                                        'oembed',
+                                        'hr',
+                                        'strike',
+                                        'underline',
+                                        'italic',
+                                        'bold',
+                                        'align-left',
+                                        'align-center',
+                                        'align-right',
+                                        'source',
+                                        'undo',
+                                        'redo',
+                                    ])
                                     ->visible(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord),
                             ])->visible(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord),
                     ]),
