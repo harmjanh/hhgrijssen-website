@@ -136,7 +136,7 @@ class CoinOrderController extends Controller
                     'currency' => 'EUR',
                     'value' => number_format($totalAmount, 2, '.', ''),
                 ],
-                'description' => "Coin Order #{$coinOrder->id}",
+                'description' => "Collectemunten HHG Rijssen #{$coinOrder->id}",
                 'redirectUrl' => route('coin-orders.success', $coinOrder),
                 'webhookUrl' => route('coin-orders.webhook'),
                 'metadata' => [
