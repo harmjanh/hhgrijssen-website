@@ -148,19 +148,19 @@ const downloadPdf = async (orderId: number) => {
                                         <div>
                                             <dt class="text-sm font-medium text-gray-500">Zilveren Munten</dt>
                                             <dd class="mt-1 text-sm text-gray-900">
-                                                {{ order.silver_coins }} x €{{ prices.silver_coin.toFixed(2) }}
+                                                {{ order.silver_coins }} x €{{ Number(prices.silver_coin).toFixed(2) }}
                                             </dd>
                                         </div>
                                         <div>
                                             <dt class="text-sm font-medium text-gray-500">Gouden Munten</dt>
                                             <dd class="mt-1 text-sm text-gray-900">
-                                                {{ order.gold_coins }} x €{{ prices.gold_coin.toFixed(2) }}
+                                                {{ order.gold_coins }} x €{{ Number(prices.gold_coin).toFixed(2) }}
                                             </dd>
                                         </div>
                                         <div>
                                             <dt class="text-sm font-medium text-gray-500">Betalingskosten</dt>
                                             <dd class="mt-1 text-sm text-gray-900">
-                                                €{{ prices.payment_fee.toFixed(2) }}
+                                                €{{ Number(prices.payment_fee).toFixed(2) }}
                                             </dd>
                                         </div>
                                         <div>

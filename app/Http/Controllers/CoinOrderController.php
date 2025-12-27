@@ -46,12 +46,18 @@ class CoinOrderController extends Controller
                 ];
             });
 
+        $prices = config('coins.prices');
+
         return Inertia::render('CoinOrders/Create', [
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,
             ],
-            'prices' => config('coins.prices'),
+            'prices' => [
+                'silver_coin' => (float) $prices['silver_coin'],
+                'gold_coin' => (float) $prices['gold_coin'],
+                'payment_fee' => (float) $prices['payment_fee'],
+            ],
             'pickupMoments' => $pickupMoments,
         ]);
     }
@@ -245,9 +251,15 @@ class CoinOrderController extends Controller
             ->latest()
             ->get();
 
+        $prices = config('coins.prices');
+
         return Inertia::render('CoinOrders/Index', [
             'orders' => $orders,
-            'prices' => config('coins.prices'),
+            'prices' => [
+                'silver_coin' => (float) $prices['silver_coin'],
+                'gold_coin' => (float) $prices['gold_coin'],
+                'payment_fee' => (float) $prices['payment_fee'],
+            ],
         ]);
     }
 

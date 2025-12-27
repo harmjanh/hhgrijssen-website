@@ -52,9 +52,9 @@ const pickupMomentOptions = computed(() => {
 });
 
 const totalAmount = computed(() => {
-    return (form.silver_coins * props.prices.silver_coin) +
-        (form.gold_coins * props.prices.gold_coin) +
-        props.prices.payment_fee;
+    return (form.silver_coins * Number(props.prices.silver_coin)) +
+        (form.gold_coins * Number(props.prices.gold_coin)) +
+        Number(props.prices.payment_fee);
 });
 
 const submit = () => {
@@ -140,17 +140,17 @@ const submit = () => {
                                 <dl class="mt-4 space-y-2">
                                     <div class="flex justify-between">
                                         <dt class="text-gray-600">Zilveren Munten</dt>
-                                        <dd class="text-gray-900">€{{ (form.silver_coins * prices.silver_coin).toFixed(2) }}
+                                        <dd class="text-gray-900">€{{ (form.silver_coins * Number(prices.silver_coin)).toFixed(2) }}
                                         </dd>
                                     </div>
                                     <div class="flex justify-between">
                                         <dt class="text-gray-600">Gouden Munten</dt>
-                                        <dd class="text-gray-900">€{{ (form.gold_coins * prices.gold_coin).toFixed(2) }}
+                                        <dd class="text-gray-900">€{{ (form.gold_coins * Number(prices.gold_coin)).toFixed(2) }}
                                         </dd>
                                     </div>
                                     <div class="flex justify-between">
                                         <dt class="text-gray-600">Betalingskosten</dt>
-                                        <dd class="text-gray-900">€{{ prices.payment_fee.toFixed(2) }}</dd>
+                                        <dd class="text-gray-900">€{{ Number(prices.payment_fee).toFixed(2) }}</dd>
                                     </div>
                                     <div class="flex justify-between border-t border-gray-200 pt-2">
                                         <dt class="text-lg font-medium text-gray-900">Totaal</dt>
