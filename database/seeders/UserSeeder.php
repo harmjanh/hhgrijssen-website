@@ -29,6 +29,13 @@ class UserSeeder extends Seeder
                 'role' => null,
                 'email_verified_at' => now(),
             ],
+            [
+                'name' => 'Kerkelijk Bureau',
+                'email' => 'kerkelijkbureau@hhgrijssen.nl',
+                'password' => Hash::make(Str::random(10)),
+                'role' => null,
+                'email_verified_at' => now(),
+            ]
         ];
 
         foreach ($users as $userData) {

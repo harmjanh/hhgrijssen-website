@@ -8,6 +8,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import NumberInput from '@/Components/NumberInput.vue';
+import Select from '@/Components/Select.vue';
 
 interface Props {
     user: {
@@ -19,6 +20,10 @@ interface Props {
         gold_coin: number;
         payment_fee: number;
     };
+    pickupMoments: Array<{
+        id: number;
+        date: string;
+    }>;
 }
 
 const props = defineProps<Props>();
@@ -28,6 +33,22 @@ const form = useForm({
     email: props.user.email,
     silver_coins: 0,
     gold_coins: 0,
+    pickup_moment_id: null as number | null,
+});
+
+const pickupMomentOptions = computed(() => {
+    return props.pickupMoments.map(moment => {
+        const date = new Date(moment.date).toLocaleDateString('nl-NL', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+        return {
+            value: moment.id,
+            label: `${date} om 10:00`
+        };
+    });
 });
 
 const totalAmount = computed(() => {
@@ -91,6 +112,25 @@ const submit = () => {
                                             :min="0" required />
                                         <InputError :message="form.errors.gold_coins" class="mt-2" />
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Pickup Moment Selection -->
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-900">Afhaalmoment</h3>
+                                <div class="mt-4">
+                                    <InputLabel for="pickup_moment_id" value="Selecteer afhaalmoment *" />
+                                    <Select 
+                                        id="pickup_moment_id" 
+                                        class="mt-1 block w-full"
+                                        v-model="form.pickup_moment_id"
+                                        :options="pickupMomentOptions"
+                                        required 
+                                    />
+                                    <InputError :message="form.errors.pickup_moment_id" class="mt-2" />
+                                    <p class="mt-2 text-sm text-gray-500">
+                                        Selecteer wanneer u de munten wilt ophalen.
+                                    </p>
                                 </div>
                             </div>
 

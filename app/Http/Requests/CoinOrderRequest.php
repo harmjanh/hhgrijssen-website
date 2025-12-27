@@ -26,6 +26,7 @@ class CoinOrderRequest extends FormRequest
             'email' => ['required', 'email', 'max:255'],
             'silver_coins' => ['required', 'integer', 'min:0'],
             'gold_coins' => ['required', 'integer', 'min:0'],
+            'pickup_moment_id' => ['required', 'exists:pickup_moments,id'],
         ];
     }
 }

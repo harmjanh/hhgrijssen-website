@@ -21,12 +21,38 @@ class CoinOrderController extends Controller
     {
         $user = Auth::user();
 
+        // Calculate the minimum pickup date based on the Wednesday deadline
+        // If today is Wednesday or earlier, pickup must be at least this Saturday
+        // If today is Thursday or later, pickup must be at least next Saturday
+        $today = now();
+        $dayOfWeek = $today->dayOfWeek; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+        if ($dayOfWeek <= 3) { // Sunday (0) through Wednesday (3)
+            // Pickup must be at least this coming Saturday
+            $minPickupDate = $today->copy()->next(\Carbon\Carbon::SATURDAY);
+        } else { // Thursday (4) through Saturday (6)
+            // Pickup must be at least next Saturday (skip this Saturday if it's not past yet)
+            $minPickupDate = $today->copy()->addWeek()->next(\Carbon\Carbon::SATURDAY);
+        }
+
+        $pickupMoments = \App\Models\PickupMoment::where('active', true)
+            ->where('date', '>=', $minPickupDate->toDateString())
+            ->orderBy('date')
+            ->get()
+            ->map(function ($moment) {
+                return [
+                    'id' => $moment->id,
+                    'date' => $moment->date->toDateString(),
+                ];
+            });
+
         return Inertia::render('CoinOrders/Create', [
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,
             ],
             'prices' => config('coins.prices'),
+            'pickupMoments' => $pickupMoments,
         ]);
     }
 
@@ -37,6 +63,32 @@ class CoinOrderController extends Controller
     {
         $user = Auth::user();
         $data = $request->validated();
+
+        // Check if the selected pickup moment meets the Wednesday deadline
+        // If not, automatically select the next available pickup moment
+        $selectedPickupMoment = \App\Models\PickupMoment::find($data['pickup_moment_id']);
+        $today = now();
+        $dayOfWeek = $today->dayOfWeek; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+        // Calculate minimum pickup date based on Wednesday deadline
+        if ($dayOfWeek <= 3) { // Sunday (0) through Wednesday (3)
+            $minPickupDate = $today->copy()->next(\Carbon\Carbon::SATURDAY);
+        } else { // Thursday (4) through Saturday (6)
+            $minPickupDate = $today->copy()->addWeek()->next(\Carbon\Carbon::SATURDAY);
+        }
+
+        // If selected pickup moment is too soon, find the next available one
+        $pickupMomentId = $data['pickup_moment_id'];
+        if ($selectedPickupMoment && \Carbon\Carbon::parse($selectedPickupMoment->date)->lt($minPickupDate)) {
+            $nextPickupMoment = \App\Models\PickupMoment::where('active', true)
+                ->where('date', '>=', $minPickupDate->toDateString())
+                ->orderBy('date')
+                ->first();
+
+            if ($nextPickupMoment) {
+                $pickupMomentId = $nextPickupMoment->id;
+            }
+        }
 
         // Calculate total amount
         $totalAmount = CoinOrder::calculateTotalAmount(
@@ -53,6 +105,7 @@ class CoinOrderController extends Controller
             'gold_coins' => $data['gold_coins'],
             'total_amount' => $totalAmount,
             'status' => 'pending',
+            'pickup_moment_id' => $pickupMomentId,
         ]);
 
         // Check if Mollie API key is configured
@@ -127,6 +180,8 @@ class CoinOrderController extends Controller
      */
     public function success(CoinOrder $coinOrder): Response
     {
+        $coinOrder->load('pickupMoment');
+
         return Inertia::render('CoinOrders/Success', [
             'order' => $coinOrder,
         ]);
@@ -186,6 +241,7 @@ class CoinOrderController extends Controller
     {
         $user = Auth::user();
         $orders = $user->coinOrders()
+            ->with('pickupMoment')
             ->latest()
             ->get();
 
@@ -201,7 +257,7 @@ class CoinOrderController extends Controller
     public function download(CoinOrder $coinOrder)
     {
         // Load the user relationship to access address information
-        $coinOrder->load('user');
+        $coinOrder->load(['user', 'pickupMoment']);
 
         $pdf = PDF::loadView('pdf.coin-order', [
             'order' => $coinOrder,

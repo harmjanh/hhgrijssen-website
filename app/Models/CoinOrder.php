@@ -24,6 +24,7 @@ class CoinOrder extends Model
         'total_amount',
         'payment_id',
         'status',
+        'pickup_moment_id',
     ];
 
     protected $casts = [
@@ -38,6 +39,14 @@ class CoinOrder extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the pickup moment for this coin order.
+     */
+    public function pickupMoment(): BelongsTo
+    {
+        return $this->belongsTo(PickupMoment::class);
     }
 
     /**

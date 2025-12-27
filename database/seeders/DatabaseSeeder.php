@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PageTypeSeeder::class);
         $this->call(AgendaSeeder::class);
         $this->call(RoomSeeder::class);
+        $this->call(PickupMomentSeeder::class);
     }
 }

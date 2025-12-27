@@ -11,10 +11,27 @@ interface Props {
         gold_coins: number;
         total_amount: number;
         status: string;
+        pickup_moment: {
+            id: number;
+            date: string;
+        } | null;
     };
 }
 
 defineProps<Props>();
+
+const formatPickupMoment = (pickupMoment: Props['order']['pickup_moment']) => {
+    if (!pickupMoment) return '';
+    
+    const date = new Date(pickupMoment.date).toLocaleDateString('nl-NL', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+    
+    return `${date} om 10:00`;
+};
 </script>
 
 <template>
@@ -84,6 +101,13 @@ defineProps<Props>();
                                             </dd>
                                         </div>
                                     </dl>
+                                </div>
+                                
+                                <div v-if="order.pickup_moment" class="border-t border-gray-200 pt-4">
+                                    <h5 class="text-sm font-medium text-gray-500">Afhaalmoment</h5>
+                                    <p class="mt-2 text-sm text-gray-900">
+                                        {{ formatPickupMoment(order.pickup_moment) }}
+                                    </p>
                                 </div>
                             </dl>
                         </div>

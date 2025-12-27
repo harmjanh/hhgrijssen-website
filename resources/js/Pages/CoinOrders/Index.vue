@@ -13,6 +13,10 @@ interface Order {
     total_amount: number;
     status: string;
     created_at: string;
+    pickup_moment: {
+        id: number;
+        date: string;
+    } | null;
 }
 
 interface Props {
@@ -34,6 +38,19 @@ const formatDate = (date: string) => {
         hour: '2-digit',
         minute: '2-digit',
     });
+};
+
+const formatPickupMoment = (pickupMoment: Order['pickup_moment']) => {
+    if (!pickupMoment) return '';
+    
+    const date = new Date(pickupMoment.date).toLocaleDateString('nl-NL', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+    
+    return `${date} om 10:00`;
 };
 
 const getStatusColor = (status: string) => {
@@ -150,6 +167,12 @@ const downloadPdf = async (orderId: number) => {
                                             <dt class="text-sm font-medium text-gray-900">Totaal</dt>
                                             <dd class="mt-1 text-sm font-medium text-gray-900">
                                                 €{{ Number(order.total_amount).toFixed(2) }}
+                                            </dd>
+                                        </div>
+                                        <div v-if="order.pickup_moment" class="sm:col-span-2">
+                                            <dt class="text-sm font-medium text-gray-500">Afhaalmoment</dt>
+                                            <dd class="mt-1 text-sm text-gray-900">
+                                                {{ formatPickupMoment(order.pickup_moment) }}
                                             </dd>
                                         </div>
                                     </dl>
