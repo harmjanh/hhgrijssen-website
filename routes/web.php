@@ -9,6 +9,7 @@ use App\Http\Controllers\DeclarationController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicDeclarationController;
 use App\Http\Controllers\RoomReservationController;
 use App\Http\Controllers\PrivacyConsentController;
@@ -49,6 +50,10 @@ Route::get('live', [PageController::class, 'live'])->name('live');
 Route::get('declaratie', [PublicDeclarationController::class, 'create'])->name('public-declarations.create');
 Route::post('declaratie', [PublicDeclarationController::class, 'store'])->name('public-declarations.store');
 Route::get('declaratie/bedankt', [PublicDeclarationController::class, 'success'])->name('public-declarations.success');
+
+// Contact Routes
+Route::get('contact', [ContactController::class, 'show'])->name('contact.show');
+Route::post('contact', [ContactController::class, 'store'])->name('contact.store');
 
 // YouTube OAuth callback route
 Route::get('youtube/oauth/callback', function () {

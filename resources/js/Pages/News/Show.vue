@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import NavBar from "@/Components/NavBar.vue";
 import PageFooter from "@/Components/PageFooter.vue";
 

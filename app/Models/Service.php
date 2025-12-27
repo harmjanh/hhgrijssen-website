@@ -21,6 +21,11 @@ class Service extends Model
         return $this->belongsTo(AgendaItem::class);
     }
 
+    public function youtubeVideo()
+    {
+        return $this->belongsTo(YouTubeVideo::class);
+    }
+
     public function getStartDateAttribute()
     {
         return $this->agendaItem?->start_date;

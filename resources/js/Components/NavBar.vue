@@ -41,6 +41,9 @@
                         </Popover>
                     </div>
 
+                    <!-- Contact Link -->
+                    <a :href="route('contact.show')" class="text-sm/6 font-semibold text-gray-900">Contact</a>
+
                 </PopoverGroup>
                 <div class="hidden lg:flex lg:flex-1 lg:justify-end">
                     <!-- Not logged in -->
@@ -108,6 +111,10 @@
                                         {{ item.name }}</DisclosureButton>
                                 </DisclosurePanel>
                             </Disclosure>
+
+                            <!-- Contact Link -->
+                            <a :href="route('contact.show')"
+                                class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Contact</a>
                         </div>
                         <div class="py-6">
                             <!-- Not logged in -->

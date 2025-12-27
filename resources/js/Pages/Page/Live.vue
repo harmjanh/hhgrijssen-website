@@ -76,7 +76,7 @@ const isServiceActive = (service) => {
                     <div class="flex items-center justify-between">
                         <div class="flex-1">
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">Audio Stream</h3>
-                            <p class="text-sm text-gray-600 mb-4">Luister naar de audio stream via Kerkomrope</p>
+                            <p class="text-sm text-gray-600 mb-4">Luister naar de audio stream via Kerkomroep</p>
                             <a href="https://www.kerkomroep.nl/kerken/21598" target="_blank"
                                 class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors">
                                 <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -85,6 +85,36 @@ const isServiceActive = (service) => {
                                 </svg>
                                 Luister Live
                             </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-50 to-amber-100 p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Kerkradio / Scanner</h3>
+                            <p class="text-sm text-gray-600 mb-4">Frequentie 148,2625 Mhz, alleen te ontvangen in
+                                omgeving Rijssen
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Kerkomroep App</h3>
+                            <p class="text-sm text-gray-600 mb-4">App is te downloaden in <a
+                                    href="https://apps.apple.com/nl/app/kerkomroep/id541059718"
+                                    target="_blank">App-Store</a> of <a
+                                    href="https://play.google.com/store/apps/details?id=corp.csnet.nl.kerkomroep&hl=nl"
+                                    target="_blank">Google Play</a>
+                                omgeving Rijssen
+
+                            </p>
                         </div>
                     </div>
                 </div>

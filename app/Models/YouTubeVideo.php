@@ -46,6 +46,11 @@ class YouTubeVideo extends Model
         return $query->where('download_status', 'failed');
     }
 
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
+
     /**
      * Check if video has been downloaded
      */
