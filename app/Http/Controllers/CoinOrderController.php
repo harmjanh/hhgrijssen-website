@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Mollie\Laravel\Facades\Mollie;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class CoinOrderController extends Controller
 {
@@ -65,7 +66,7 @@ class CoinOrderController extends Controller
     /**
      * Store a new coin order and redirect to Mollie payment.
      */
-    public function store(CoinOrderRequest $request): RedirectResponse
+    public function store(CoinOrderRequest $request): RedirectResponse|SymfonyResponse
     {
         $user = Auth::user();
         $data = $request->validated();
@@ -148,7 +149,11 @@ class CoinOrderController extends Controller
                 'payment_id' => $payment->id,
             ]);
 
-            // Redirect to Mollie payment page
+            // Redirect to Mollie payment page (external redirect, bypass Inertia)
+            if (request()->header('X-Inertia')) {
+                return Inertia::location($payment->getCheckoutUrl());
+            }
+
             return redirect($payment->getCheckoutUrl());
         } catch (\Mollie\Api\Exceptions\ApiException $e) {
             Log::error('Mollie API error: ' . $e->getMessage(), [
