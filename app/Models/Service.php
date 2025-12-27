@@ -11,6 +11,7 @@ class Service extends Model
 
     protected $fillable = [
         'agenda_item_id',
+        'youtube_video_id',
         'pastor',
         'liturgy',
         'youtube_url',

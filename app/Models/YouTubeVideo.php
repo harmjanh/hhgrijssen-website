@@ -68,19 +68,43 @@ class YouTubeVideo extends Model
     }
 
     /**
-     * Get the full path to the video file
+     * Get the full path to the video file (works with both local and S3)
      */
     public function getVideoFilePath(): ?string
     {
-        return $this->video_file_path ? Storage::disk('youtube')->path($this->video_file_path) : null;
+        if (!$this->video_file_path) {
+            return null;
+        }
+
+        $disk = Storage::disk('youtube');
+        
+        // For S3, return the URL or path
+        if (config('filesystems.disks.youtube.driver') === 's3') {
+            return $disk->url($this->video_file_path);
+        }
+
+        // For local storage, return the full path
+        return $disk->path($this->video_file_path);
     }
 
     /**
-     * Get the full path to the audio file
+     * Get the full path to the audio file (works with both local and S3)
      */
     public function getAudioFilePath(): ?string
     {
-        return $this->audio_file_path ? Storage::disk('youtube')->path($this->audio_file_path) : null;
+        if (!$this->audio_file_path) {
+            return null;
+        }
+
+        $disk = Storage::disk('youtube');
+        
+        // For S3, return the URL or path
+        if (config('filesystems.disks.youtube.driver') === 's3') {
+            return $disk->url($this->audio_file_path);
+        }
+
+        // For local storage, return the full path
+        return $disk->path($this->audio_file_path);
     }
 }
 

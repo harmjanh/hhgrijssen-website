@@ -45,6 +45,7 @@ Route::get('nieuws/{news}', [NewsController::class, 'show'])->name('news.show');
 
 Route::get('agenda', [PageController::class, 'agenda'])->name('agenda');
 Route::get('live', [PageController::class, 'live'])->name('live');
+Route::get('audio/{service}', [PageController::class, 'streamAudio'])->name('audio.stream');
 
 // Public Declaration Routes
 Route::get('declaratie', [PublicDeclarationController::class, 'create'])->name('public-declarations.create');

@@ -13,14 +13,6 @@ class AgendaItemObserver
      */
     public function created(AgendaItem $agendaItem): void
     {
-        if (ServiceTitleService::shouldHaveService($agendaItem->title)) {
-            Service::create([
-                'agenda_item_id' => $agendaItem->id,
-                'pastor' => '', // Will be filled in later
-                'liturgy' => null,
-                'youtube_url' => null,
-            ]);
-        }
     }
 
     /**
@@ -28,18 +20,6 @@ class AgendaItemObserver
      */
     public function updated(AgendaItem $agendaItem): void
     {
-        // Check if the title was changed to a service title
-        if ($agendaItem->wasChanged('title') && ServiceTitleService::shouldHaveService($agendaItem->title)) {
-            // Only create a service if one doesn't already exist
-            if (!$agendaItem->service) {
-                Service::create([
-                    'agenda_item_id' => $agendaItem->id,
-                    'pastor' => '', // Will be filled in later
-                    'liturgy' => null,
-                    'youtube_url' => null,
-                ]);
-            }
-        }
     }
 
     /**

@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Actions\News\LoadNewsItemsAction;
 use App\Models\Page;
 use App\Models\Service;
+use App\Models\YouTubeVideo;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PageController extends Controller
 {
@@ -114,12 +117,35 @@ class PageController extends Controller
         // Get filter parameters from request
         $pastorFilter = request()->get('pastor');
         $dateFilter = request()->get('date');
+        $yearFilter = request()->get('year');
+
+        // Get available years from services
+        // Only include years from services that started at least 3 hours ago
+        $availableYears = Service::join('agenda_items', 'services.agenda_item_id', '=', 'agenda_items.id')
+            ->whereRaw('DATE_ADD(agenda_items.start_date, INTERVAL 3 HOUR) <= ?', [now()])
+            ->selectRaw('YEAR(agenda_items.start_date) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year')
+            ->toArray();
+
+        // If no year is specified, use the most recent year
+        if (!$yearFilter && !empty($availableYears)) {
+            $yearFilter = $availableYears[0];
+        }
 
         // Build query for services
+        // Only show services that started at least 3 hours ago
         $servicesQuery = Service::with('agendaItem')
             ->join('agenda_items', 'services.agenda_item_id', '=', 'agenda_items.id')
             ->select('services.*')
+            ->whereRaw('DATE_ADD(agenda_items.start_date, INTERVAL 3 HOUR) <= ?', [now()])
             ->orderBy('agenda_items.start_date', 'desc');
+
+        // Apply year filter if provided
+        if ($yearFilter) {
+            $servicesQuery->whereYear('agenda_items.start_date', $yearFilter);
+        }
 
         // Apply pastor filter if provided
         if ($pastorFilter) {
@@ -133,20 +159,41 @@ class PageController extends Controller
 
         // Get all services matching the filters
         $services = $servicesQuery->get()->map(function ($service) {
-            return [
+            // Find matching YouTube video by date and time in title
+
+            $serviceData = [
                 'id' => $service->id,
                 'pastor' => $service->pastor,
                 'date' => $service->agendaItem->start_date->format('d-m-Y'),
                 'time' => $service->agendaItem->start_date->format('H:i'),
                 'start_date' => $service->agendaItem->start_date->format('Y-m-d'),
+                'year' => $service->agendaItem->start_date->format('Y'),
             ];
+
+            if ($service->youtube_video_id) {
+                $serviceData['youtube_video'] = [
+                    'url' => $service->youtubeVideo->url,
+                    'has_audio' => !empty($service->youtubeVideo->audio_file_path),
+                ];
+            }
+
+            return $serviceData;
         });
 
         // Get distinct pastors for filter dropdown
-        $pastors = Service::distinct()
-            ->whereNotNull('pastor')
-            ->orderBy('pastor')
-            ->pluck('pastor')
+        // Only include pastors from services that started at least 3 hours ago
+        // Filter by year if year filter is applied
+        $pastorsQuery = Service::join('agenda_items', 'services.agenda_item_id', '=', 'agenda_items.id')
+            ->whereRaw('DATE_ADD(agenda_items.start_date, INTERVAL 3 HOUR) <= ?', [now()])
+            ->whereNotNull('services.pastor');
+
+        if ($yearFilter) {
+            $pastorsQuery->whereYear('agenda_items.start_date', $yearFilter);
+        }
+
+        $pastors = $pastorsQuery->distinct()
+            ->orderBy('services.pastor')
+            ->pluck('services.pastor')
             ->toArray();
 
         return Inertia::render('Page/Archive', [
@@ -154,10 +201,123 @@ class PageController extends Controller
             'pages' => $this->getPages(),
             'services' => $services,
             'pastors' => $pastors,
+            'availableYears' => $availableYears,
+            'isAdmin' => auth()->check() && auth()->user()->hasRole('admin'),
             'filters' => [
                 'pastor' => $pastorFilter,
                 'date' => $dateFilter,
+                'year' => $yearFilter,
             ],
+        ]);
+    }
+
+    /**
+     * Find YouTube video that matches the service date and time
+     */
+    private function findYouTubeVideoByServiceDate(Service $service): ?YouTubeVideo
+    {
+        $startDate = $service->agendaItem->start_date;
+
+        if (!$startDate) {
+            return null;
+        }
+
+        // Extract date and time components
+        $dateOnly = $startDate->format('d-m-Y');  // 19-11-2025
+        $timeOnly = $startDate->format('H:i');    // 19:30
+        $dateWithTime = $startDate->format('d-m-Y H:i');  // 19-11-2025 19:30
+
+        // Also try alternative date formats
+        $dateOnlyAlt = $startDate->format('d/m/Y');  // 19/11/2025
+        $dateWithTimeAlt = $startDate->format('d/m/Y H:i');  // 19/11/2025 19:30
+
+        // Search for videos that contain both the date and time
+        // This handles formats like "Woensdag 19-11-2025 19:30" or "Zondag 23-11-2025 10:00"
+        $videos = YouTubeVideo::where(function ($query) use ($dateOnly, $timeOnly) {
+            $query->where('title', 'LIKE', '%' . $dateOnly . '%')
+                  ->where('title', 'LIKE', '%' . $timeOnly . '%');
+        })->orWhere(function ($query) use ($dateOnlyAlt, $timeOnly) {
+            $query->where('title', 'LIKE', '%' . $dateOnlyAlt . '%')
+                  ->where('title', 'LIKE', '%' . $timeOnly . '%');
+        })->orWhere('title', 'LIKE', '%' . $dateWithTime . '%')
+          ->orWhere('title', 'LIKE', '%' . $dateWithTimeAlt . '%')
+          ->get();
+
+        // Return the first match (should be unique based on date+time)
+        return $videos->first();
+    }
+
+    /**
+     * Stream audio file for a service
+     */
+    public function streamAudio(Service $service)
+    {
+        // First check if service has a direct youtube_video_id
+        if ($service->youtube_video_id) {
+            $youtubeVideo = YouTubeVideo::find($service->youtube_video_id);
+            if ($youtubeVideo && !empty($youtubeVideo->audio_file_path)) {
+                return $this->streamAudioFile($youtubeVideo);
+            }
+        }
+
+        // Fallback: Find matching YouTube video by date and time
+        $youtubeVideo = $this->findYouTubeVideoByServiceDate($service);
+
+        if (!$youtubeVideo || empty($youtubeVideo->audio_file_path)) {
+            abort(404, 'Audio niet gevonden');
+        }
+
+        return $this->streamAudioFile($youtubeVideo);
+    }
+
+    /**
+     * Stream audio file from YouTube video (works with both local and S3)
+     */
+    private function streamAudioFile(YouTubeVideo $youtubeVideo)
+    {
+        if (empty($youtubeVideo->audio_file_path)) {
+            abort(404, 'Audio niet gevonden');
+        }
+
+        $disk = Storage::disk('youtube');
+        $audioPath = $youtubeVideo->audio_file_path;
+
+        // Check if file exists
+        if (!$disk->exists($audioPath)) {
+            abort(404, 'Audio bestand niet gevonden');
+        }
+
+        // If using S3, stream directly from S3
+        if (config('filesystems.disks.youtube.driver') === 's3') {
+            return response()->streamDownload(function () use ($disk, $audioPath) {
+                $stream = $disk->readStream($audioPath);
+                while (!feof($stream)) {
+                    echo fread($stream, 8192);
+                    flush();
+                }
+                fclose($stream);
+            }, basename($audioPath), [
+                'Content-Type' => 'audio/mpeg',
+                'Content-Disposition' => 'inline; filename="' . basename($audioPath) . '"',
+            ]);
+        }
+
+        // Local storage fallback
+        $localPath = $disk->path($audioPath);
+        if (!file_exists($localPath)) {
+            abort(404, 'Audio bestand niet gevonden');
+        }
+
+        return response()->streamDownload(function () use ($localPath) {
+            $stream = fopen($localPath, 'rb');
+            while (!feof($stream)) {
+                echo fread($stream, 8192);
+                flush();
+            }
+            fclose($stream);
+        }, basename($audioPath), [
+            'Content-Type' => 'audio/mpeg',
+            'Content-Disposition' => 'inline; filename="' . basename($audioPath) . '"',
         ]);
     }
 
