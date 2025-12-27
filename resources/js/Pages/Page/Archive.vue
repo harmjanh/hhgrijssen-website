@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3';
 import NavBar from '@/Components/NavBar.vue';
 import PageFooter from '@/Components/PageFooter.vue';
 import { ref, computed } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
     page: {
@@ -42,6 +43,7 @@ const props = defineProps({
 const selectedPastor = ref(props.filters.pastor || '');
 const selectedDate = ref(props.filters.date || '');
 const selectedYear = ref(props.filters.year || '');
+const downloadingServiceId = ref(null);
 
 const applyFilters = () => {
     const params = {};
@@ -72,6 +74,31 @@ const clearFilters = () => {
         preserveState: true,
         preserveScroll: true,
     });
+};
+
+const downloadVideo = async (service) => {
+    if (!service.youtube_video) {
+        return;
+    }
+
+    downloadingServiceId.value = service.id;
+
+    try {
+        await axios.post(`/services/${service.id}/download-video`);
+
+        // Show success message
+        alert('Download gestart. Het audio bestand zal binnenkort beschikbaar zijn.');
+
+        // Reload the page after a short delay to update the status
+        setTimeout(() => {
+            router.reload({ only: ['services'] });
+        }, 2000);
+    } catch (error) {
+        console.error('Download error:', error);
+        alert(error.response?.data?.message || 'Er is een fout opgetreden bij het starten van de download.');
+    } finally {
+        downloadingServiceId.value = null;
+    }
 };
 
 // Group services by year
@@ -229,8 +256,8 @@ const servicesByYear = computed(() => {
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     <div class="flex items-center gap-2">
-                                        <!-- YouTube icon (for all users if video exists) -->
-                                        <a v-if="service.youtube_video" :href="service.youtube_video.url"
+                                        <!-- YouTube icon (only for admin users) -->
+                                        <a v-if="isAdmin && service.youtube_video" :href="service.youtube_video.url"
                                             target="_blank" rel="noopener noreferrer"
                                             class="text-red-600 hover:text-red-800 transition-colors"
                                             title="Bekijk op YouTube">
@@ -239,6 +266,25 @@ const servicesByYear = computed(() => {
                                                     d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                                             </svg>
                                         </a>
+                                        <!-- Download button (only for admin users) -->
+                                        <button
+                                            v-if="isAdmin && service.youtube_video && service.youtube_video.download_status !== 'completed'"
+                                            @click="downloadVideo(service)"
+                                            :disabled="downloadingServiceId === service.id"
+                                            class="text-green-600 hover:text-green-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            :title="downloadingServiceId === service.id ? 'Download wordt verwerkt...' : 'Download audio'">
+                                            <svg v-if="downloadingServiceId !== service.id" class="w-5 h-5"
+                                                fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                                            </svg>
+                                            <svg v-else class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                    stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                </path>
+                                            </svg>
+                                        </button>
                                         <!-- Audio icon (for all users if audio exists) -->
                                         <a v-if="service.youtube_video && service.youtube_video.has_audio"
                                             :href="`/audio/${service.id}`"

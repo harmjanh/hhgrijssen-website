@@ -172,8 +172,10 @@ class PageController extends Controller
 
             if ($service->youtube_video_id) {
                 $serviceData['youtube_video'] = [
+                    'id' => $service->youtubeVideo->id,
                     'url' => $service->youtubeVideo->url,
                     'has_audio' => !empty($service->youtubeVideo->audio_file_path),
+                    'download_status' => $service->youtubeVideo->download_status,
                 ];
             }
 
@@ -245,6 +247,35 @@ class PageController extends Controller
 
         // Return the first match (should be unique based on date+time)
         return $videos->first();
+    }
+
+    /**
+     * Trigger download of YouTube video for a service
+     */
+    public function downloadVideo(Service $service)
+    {
+        // Check if user is admin
+        if (!auth()->check() || !auth()->user()->hasRole('admin')) {
+            abort(403, 'Alleen beheerders kunnen video\'s downloaden.');
+        }
+
+        // Check if service has a YouTube video
+        if (!$service->youtube_video_id) {
+            abort(404, 'Geen YouTube video gevonden voor deze dienst.');
+        }
+
+        $youtubeVideo = YouTubeVideo::find($service->youtube_video_id);
+
+        if (!$youtubeVideo) {
+            abort(404, 'YouTube video niet gevonden.');
+        }
+
+        // Dispatch the download job
+        \App\Jobs\DownloadYouTubeVideo::dispatch($youtubeVideo);
+
+        return response()->json([
+            'message' => 'Download gestart. Het audio bestand zal binnenkort beschikbaar zijn.',
+        ]);
     }
 
     /**

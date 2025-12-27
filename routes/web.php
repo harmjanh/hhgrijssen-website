@@ -47,6 +47,11 @@ Route::get('agenda', [PageController::class, 'agenda'])->name('agenda');
 Route::get('live', [PageController::class, 'live'])->name('live');
 Route::get('audio/{service}', [PageController::class, 'streamAudio'])->name('audio.stream');
 
+// Download YouTube video (admin only)
+Route::middleware(['auth'])->group(function () {
+    Route::post('services/{service}/download-video', [PageController::class, 'downloadVideo'])->name('services.download-video');
+});
+
 // Public Declaration Routes
 Route::get('declaratie', [PublicDeclarationController::class, 'create'])->name('public-declarations.create');
 Route::post('declaratie', [PublicDeclarationController::class, 'store'])->name('public-declarations.store');
