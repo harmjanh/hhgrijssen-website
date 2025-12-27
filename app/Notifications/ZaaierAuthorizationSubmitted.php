@@ -38,18 +38,19 @@ class ZaaierAuthorizationSubmitted extends Notification implements ShouldQueue
         $user = $authorization->user;
 
         return (new MailMessage)
-            ->subject('Nieuwe Machtiging De Zaaier')
-            ->greeting('Beste collega')
+            ->subject('Nieuwe Machtiging De Zaaier - ' . ($user ? $user->name : 'Onbekend') . ' - ' . $authorization->created_at->format('d-m-Y'))
+            ->greeting('Ha Arjan,')
             ->line('Er is een nieuwe machtiging voor De Zaaier ingediend.')
             ->line('Details:')
-            ->line('Gebruiker: ' . ($user ? $user->name . ' (' . $user->email . ')' : 'Onbekend'))
+            ->line('Ingediend door: ' . ($user ? $user->name : 'Onbekend'))
+            ->line('Datum indiening: ' . $authorization->created_at->format('d-m-Y H:i'))
+            ->line('')
             ->line('Naam: ' . $authorization->name)
             ->line('Voorletters: ' . $authorization->initials)
             ->line('Adres: ' . $authorization->street)
             ->line('Postcode: ' . $authorization->zipcode)
             ->line('Woonplaats: ' . $authorization->city)
             ->line('IBAN: ' . $authorization->iban)
-            ->line('Datum: ' . $authorization->submission_date->format('d-m-Y'))
-            ->line('Ingediend op: ' . $authorization->created_at->format('d-m-Y H:i'));
+            ->line('Datum: ' . $authorization->submission_date->format('d-m-Y'));
     }
 }

@@ -122,6 +122,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(ZaaierAuthorization::class);
     }
 
+    public function privacyConsents(): HasMany
+    {
+        return $this->hasMany(PrivacyConsent::class);
+    }
+
     /**
      * Send the password reset notification.
      *

@@ -11,6 +11,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicDeclarationController;
 use App\Http\Controllers\RoomReservationController;
+use App\Http\Controllers\PrivacyConsentController;
 use App\Http\Controllers\SolidarityFundAuthorizationController;
 use App\Http\Controllers\ZaaierAuthorizationController;
 use App\Http\Controllers\YouTubeVideoController;
@@ -131,6 +132,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('zaaier-authorizations/create', [ZaaierAuthorizationController::class, 'create'])->name('zaaier-authorizations.create');
     Route::post('zaaier-authorizations', [ZaaierAuthorizationController::class, 'store'])->name('zaaier-authorizations.store');
     Route::get('zaaier-authorizations/{zaaierAuthorization}', [ZaaierAuthorizationController::class, 'show'])->name('zaaier-authorizations.show');
+
+    // Privacy Consent Routes
+    Route::get('privacy-consents', [PrivacyConsentController::class, 'index'])->name('privacy-consents.index');
+    Route::get('privacy-consents/create', [PrivacyConsentController::class, 'create'])->name('privacy-consents.create');
+    Route::post('privacy-consents', [PrivacyConsentController::class, 'store'])->name('privacy-consents.store');
+    Route::get('privacy-consents/{privacyConsent}', [PrivacyConsentController::class, 'show'])->name('privacy-consents.show');
 });
 
 // Public route for cancellation (with signed URL)

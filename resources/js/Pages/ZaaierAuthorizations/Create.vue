@@ -159,7 +159,7 @@ const submit = () => {
                                         type="text" 
                                         class="mt-1 block w-full uppercase"
                                         v-model="form.iban"
-                                        @input="(e) => form.iban = normalizeIban(e.target.value)"
+                                        @input="(e: Event) => form.iban = normalizeIban((e.target as HTMLInputElement).value)"
                                         placeholder="NL91ABNA0417164300"
                                         required 
                                     />
