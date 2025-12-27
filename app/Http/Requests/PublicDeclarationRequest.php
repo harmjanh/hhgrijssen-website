@@ -28,6 +28,7 @@ class PublicDeclarationRequest extends FormRequest
             'number' => ['required', 'string', 'max:50'],
             'zipcode' => ['required', 'string', 'max:20'],
             'city' => ['required', 'string', 'max:255'],
+            'bankaccountnumber' => ['required', 'string', 'max:50', 'iban'],
             'date_of_service' => ['required', 'date'],
             'time_of_service_1' => ['required', 'date_format:H:i'],
             'time_of_service_2' => ['nullable', 'date_format:H:i'],
@@ -58,6 +59,8 @@ class PublicDeclarationRequest extends FormRequest
             'kilometers.required' => 'Aantal kilometers is verplicht.',
             'kilometers.integer' => 'Aantal kilometers moet een geheel getal zijn.',
             'kilometers.min' => 'Aantal kilometers moet minimaal 0 zijn.',
+            'bankaccountnumber.required' => 'Bankrekeningnummer is verplicht.',
+            'bankaccountnumber.iban' => 'Bankrekeningnummer moet een geldig IBAN nummer zijn.',
         ];
     }
 }

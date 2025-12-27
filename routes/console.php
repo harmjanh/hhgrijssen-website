@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -12,5 +13,19 @@ Artisan::command('inspire', function () {
 Schedule::command('youtube:sync')
     ->daily()
     ->at('06:00')
+    ->withoutOverlapping()
+    ->runInBackground();
+
+// Schedule reservation reminders to run daily at 8 AM
+Schedule::command('reservations:send-reminders')
+    ->daily()
+    ->at('08:00')
+    ->withoutOverlapping()
+    ->runInBackground();
+
+// Schedule weekly reservations overview to run every Saturday at 8 AM
+Schedule::command('reservations:send-weekly-overview')
+    ->saturdays()
+    ->at('08:00')
     ->withoutOverlapping()
     ->runInBackground();

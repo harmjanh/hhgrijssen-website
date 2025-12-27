@@ -29,5 +29,11 @@ class AgendaSeeder extends Seeder
         ], [
             'ical_url' => 'https://calendar.google.com/calendar/ical/0umajs375su1soaadikjau50u8%40group.calendar.google.com/public/basic.ics',
         ]);
+
+        Agenda::firstOrCreate([
+            'title' => 'Kerktijden',
+        ], [
+            'ical_url' => 'https://api.kerktijden.nl//data/kerktijden/gemeente/40/ical'
+        ]);
     }
 }

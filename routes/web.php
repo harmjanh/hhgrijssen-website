@@ -11,6 +11,8 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicDeclarationController;
 use App\Http\Controllers\RoomReservationController;
+use App\Http\Controllers\SolidarityFundAuthorizationController;
+use App\Http\Controllers\ZaaierAuthorizationController;
 use App\Http\Controllers\YouTubeVideoController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -117,7 +119,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('room-reservations/{roomReservation}', [RoomReservationController::class, 'update'])->name('room-reservations.update');
     Route::delete('room-reservations/{roomReservation}', [RoomReservationController::class, 'destroy'])->name('room-reservations.destroy');
     Route::get('api/room-reservations/available-rooms', [RoomReservationController::class, 'getAvailableRooms'])->name('room-reservations.available-rooms');
+
+    // Solidarity Fund Authorization Routes
+    Route::get('solidarity-fund-authorizations', [SolidarityFundAuthorizationController::class, 'index'])->name('solidarity-fund-authorizations.index');
+    Route::get('solidarity-fund-authorizations/create', [SolidarityFundAuthorizationController::class, 'create'])->name('solidarity-fund-authorizations.create');
+    Route::post('solidarity-fund-authorizations', [SolidarityFundAuthorizationController::class, 'store'])->name('solidarity-fund-authorizations.store');
+    Route::get('solidarity-fund-authorizations/{solidarityFundAuthorization}', [SolidarityFundAuthorizationController::class, 'show'])->name('solidarity-fund-authorizations.show');
+
+    // Zaaier Authorization Routes
+    Route::get('zaaier-authorizations', [ZaaierAuthorizationController::class, 'index'])->name('zaaier-authorizations.index');
+    Route::get('zaaier-authorizations/create', [ZaaierAuthorizationController::class, 'create'])->name('zaaier-authorizations.create');
+    Route::post('zaaier-authorizations', [ZaaierAuthorizationController::class, 'store'])->name('zaaier-authorizations.store');
+    Route::get('zaaier-authorizations/{zaaierAuthorization}', [ZaaierAuthorizationController::class, 'show'])->name('zaaier-authorizations.show');
 });
+
+// Public route for cancellation (with signed URL)
+Route::get('room-reservations/{roomReservation}/cancel', [RoomReservationController::class, 'cancel'])
+    ->middleware('signed')
+    ->name('room-reservations.cancel');
 
 // this is the last route to catch all page slugs
 Route::get('{slug}', [PageController::class, 'show'])->name('page.show');

@@ -44,6 +44,10 @@ class Declaration extends Model
         'bankaccountnumber',
     ];
 
+    protected $casts = [
+        'date_of_service' => 'date',
+    ];
+
     /**
      * Get the user that owns the declaration.
      */

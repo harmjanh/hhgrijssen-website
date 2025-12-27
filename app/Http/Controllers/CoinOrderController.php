@@ -6,6 +6,7 @@ use App\Http\Requests\CoinOrderRequest;
 use App\Models\CoinOrder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 use Mollie\Laravel\Facades\Mollie;
@@ -54,28 +55,71 @@ class CoinOrderController extends Controller
             'status' => 'pending',
         ]);
 
+        // Check if Mollie API key is configured
+        $mollieKey = env('MOLLIE_KEY');
+        if (empty($mollieKey)) {
+            Log::error('Mollie API key is not configured. Please set MOLLIE_KEY in your .env file.');
 
-        // Create Mollie payment
-        $payment = Mollie::api()->payments->create([
-            'amount' => [
-                'currency' => 'EUR',
-                'value' => number_format($totalAmount, 2, '.', ''),
-            ],
-            'description' => "Coin Order #{$coinOrder->id}",
-            'redirectUrl' => route('coin-orders.success', $coinOrder),
-            'webhookUrl' => route('coin-orders.webhook'),
-            'metadata' => [
-                'order_id' => $coinOrder->id,
-            ],
-        ]);
+            $coinOrder->update([
+                'status' => 'failed',
+            ]);
 
-        // Update the coin order with the payment ID
-        $coinOrder->update([
-            'payment_id' => $payment->id,
-        ]);
+            return redirect()
+                ->route('coin-orders.create')
+                ->withErrors(['error' => 'De betalingsservice is momenteel niet beschikbaar. Neem contact op met de beheerder.']);
+        }
 
-        // Redirect to Mollie payment page
-        return redirect($payment->getCheckoutUrl());
+        try {
+            // Create Mollie payment
+            $payment = Mollie::api()->payments->create([
+                'amount' => [
+                    'currency' => 'EUR',
+                    'value' => number_format($totalAmount, 2, '.', ''),
+                ],
+                'description' => "Coin Order #{$coinOrder->id}",
+                'redirectUrl' => route('coin-orders.success', $coinOrder),
+                'webhookUrl' => route('coin-orders.webhook'),
+                'metadata' => [
+                    'order_id' => $coinOrder->id,
+                ],
+            ]);
+
+            // Update the coin order with the payment ID
+            $coinOrder->update([
+                'payment_id' => $payment->id,
+            ]);
+
+            // Redirect to Mollie payment page
+            return redirect($payment->getCheckoutUrl());
+        } catch (\Mollie\Api\Exceptions\ApiException $e) {
+            Log::error('Mollie API error: ' . $e->getMessage(), [
+                'userId' => $user->id,
+                'orderId' => $coinOrder->id,
+                'exception' => $e,
+            ]);
+
+            $coinOrder->update([
+                'status' => 'failed',
+            ]);
+
+            return redirect()
+                ->route('coin-orders.create')
+                ->withErrors(['error' => 'Er is een fout opgetreden bij het aanmaken van de betaling. Probeer het later opnieuw of neem contact op met de beheerder.']);
+        } catch (\Exception $e) {
+            Log::error('Unexpected error creating Mollie payment: ' . $e->getMessage(), [
+                'userId' => $user->id,
+                'orderId' => $coinOrder->id,
+                'exception' => $e,
+            ]);
+
+            $coinOrder->update([
+                'status' => 'failed',
+            ]);
+
+            return redirect()
+                ->route('coin-orders.create')
+                ->withErrors(['error' => 'Er is een onverwachte fout opgetreden. Probeer het later opnieuw.']);
+        }
     }
 
     /**
@@ -91,25 +135,48 @@ class CoinOrderController extends Controller
     /**
      * Handle Mollie webhook.
      */
-    public function webhook(): RedirectResponse
+    public function webhook()
     {
-        $paymentId = request()->input('id');
-        $payment = Mollie::api()->payments->get($paymentId);
-        $orderId = $payment->metadata->order_id;
+        try {
+            $paymentId = request()->input('id');
 
-        $coinOrder = CoinOrder::findOrFail($orderId);
+            if (empty($paymentId)) {
+                Log::error('Mollie webhook called without payment ID');
+                return response()->json(['error' => 'Payment ID is required'], 400);
+            }
 
-        if ($payment->isPaid()) {
-            $coinOrder->update([
-                'status' => 'paid',
+            $payment = Mollie::api()->payments->get($paymentId);
+            $orderId = $payment->metadata->order_id ?? null;
+
+            if (!$orderId) {
+                Log::error('Mollie webhook: Payment metadata missing order_id', ['paymentId' => $paymentId]);
+                return response()->json(['error' => 'Order ID not found in payment metadata'], 400);
+            }
+
+            $coinOrder = CoinOrder::findOrFail($orderId);
+
+            if ($payment->isPaid()) {
+                $coinOrder->update([
+                    'status' => 'paid',
+                ]);
+            } elseif ($payment->isFailed()) {
+                $coinOrder->update([
+                    'status' => 'failed',
+                ]);
+            }
+
+            return response()->json(['status' => 'ok']);
+        } catch (\Mollie\Api\Exceptions\ApiException $e) {
+            Log::error('Mollie API error in webhook: ' . $e->getMessage(), [
+                'exception' => $e,
             ]);
-        } elseif ($payment->isFailed()) {
-            $coinOrder->update([
-                'status' => 'failed',
+            return response()->json(['error' => 'Mollie API error'], 500);
+        } catch (\Exception $e) {
+            Log::error('Unexpected error in Mollie webhook: ' . $e->getMessage(), [
+                'exception' => $e,
             ]);
+            return response()->json(['error' => 'Internal server error'], 500);
         }
-
-        return redirect()->back();
     }
 
     /**

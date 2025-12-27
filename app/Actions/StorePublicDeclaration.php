@@ -32,6 +32,7 @@ class StorePublicDeclaration
             'number' => $data['number'],
             'zipcode' => $data['zipcode'],
             'city' => $data['city'],
+            'bankaccountnumber' => $data['bankaccountnumber'],
             'date_of_service' => $data['date_of_service'],
             'time_of_service_1' => $data['time_of_service_1'],
             'time_of_service_2' => $data['time_of_service_2'] ?? null,

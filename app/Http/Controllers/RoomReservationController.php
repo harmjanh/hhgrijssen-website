@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RoomReservationRequest;
 use App\Models\Room;
 use App\Models\RoomReservation;
+use App\Models\User;
+use App\Notifications\ReservationCancelled;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -156,5 +158,37 @@ class RoomReservationController extends Controller
         return response()->json([
             'available_rooms' => $availableRooms,
         ]);
+    }
+
+    /**
+     * Cancel a room reservation via signed URL.
+     */
+    public function cancel(Request $request, RoomReservation $roomReservation): RedirectResponse
+    {
+        // Verify the signed URL
+        if (!$request->hasValidSignature()) {
+            abort(403, 'Ongeldige of verlopen link.');
+        }
+
+        // Load the user relationship
+        $roomReservation->load('user', 'room');
+
+        // Store user name and clone reservation for notification
+        $userName = $roomReservation->user ? $roomReservation->user->name : 'Onbekend';
+        $reservationForNotification = $roomReservation->replicate();
+        // Set the room relationship on the replicated model
+        $reservationForNotification->setRelation('room', $roomReservation->room);
+
+        // Delete the reservation
+        $roomReservation->delete();
+
+        // Send notification to koster
+        $koster = User::where('email', 'koster@hhgrijssen.nl')->first();
+        if ($koster) {
+            $koster->notify(new ReservationCancelled($reservationForNotification, $userName));
+        }
+
+        return redirect()->route('room-reservations.index')
+            ->with('success', 'Uw zaalreservering is succesvol geannuleerd.');
     }
 }

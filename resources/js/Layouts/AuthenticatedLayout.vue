@@ -34,10 +34,10 @@ const navigation = [
 
 // Add action buttons for creating declarations and ordering coins
 const actionButtons = [
-    { name: 'Nieuwe Declaratie', href: route('declarations.create'), icon: 'M12 4v16m8-8H4' },
-    { name: 'Adreswijziging', href: route('address-submissions.create'), icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
     { name: 'Munten Bestellen', href: route('coin-orders.create'), icon: 'M12 6v6m0 0v6m0-6h6m-6 0H6' },
+    { name: 'Nieuwe Declaratie', href: route('declarations.create'), icon: 'M12 4v16m8-8H4' },
     { name: 'Zaal Reserveren', href: route('room-reservations.create'), icon: 'M6 2v6h.01L6 8.01 10 12l-4 4 .01.01H6V22h12v-5.99h-.01L18 16l-4-4 4-3.99-.01-.01H18V2H6zm5 15.5V9H9v8.5l2-2z' },
+    { name: 'Adreswijziging', href: route('address-submissions.create'), icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
 ];
 
 // Add admin navigation if user is admin
@@ -94,6 +94,45 @@ const adminNavigation = user?.role === 'admin' ? [
                                                     :d="item.icon" />
                                             </svg>
                                             {{ item.name }}
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Machtigingen Section -->
+                                <div class="pt-4 mt-4 border-t border-gray-200">
+                                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                        Machtigingen
+                                    </h3>
+                                    <div class="mt-2 space-y-1">
+                                        <a :href="route('solidarity-fund-authorizations.index')" :class="[
+                                            route().current('solidarity-fund-authorizations.index') || route().current('solidarity-fund-authorizations.create') || route().current('solidarity-fund-authorizations.show')
+                                                ? 'bg-gray-100 text-gray-900'
+                                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                                            'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                                        ]">
+                                            <svg class="mr-3 h-6 w-6" :class="[
+                                                route().current('solidarity-fund-authorizations.index') || route().current('solidarity-fund-authorizations.create') || route().current('solidarity-fund-authorizations.show') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
+                                            ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Solidariteitsfonds
+                                        </a>
+                                        <a :href="route('zaaier-authorizations.index')" :class="[
+                                            route().current('zaaier-authorizations.index') || route().current('zaaier-authorizations.create') || route().current('zaaier-authorizations.show')
+                                                ? 'bg-gray-100 text-gray-900'
+                                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                                            'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                                        ]">
+                                            <svg class="mr-3 h-6 w-6" :class="[
+                                                route().current('zaaier-authorizations.index') || route().current('zaaier-authorizations.create') || route().current('zaaier-authorizations.show') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
+                                            ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            De Zaaier
                                         </a>
                                     </div>
                                 </div>
@@ -283,6 +322,45 @@ const adminNavigation = user?.role === 'admin' ? [
                                                     :d="item.icon" />
                                             </svg>
                                             {{ item.name }}
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Machtigingen Section in mobile menu -->
+                                <div class="pt-4 mt-4 border-t border-gray-200">
+                                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                        Machtigingen
+                                    </h3>
+                                    <div class="mt-2 space-y-1">
+                                        <a :href="route('solidarity-fund-authorizations.index')" :class="[
+                                            route().current('solidarity-fund-authorizations.index') || route().current('solidarity-fund-authorizations.create') || route().current('solidarity-fund-authorizations.show')
+                                                ? 'bg-gray-100 text-gray-900'
+                                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                                            'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+                                        ]">
+                                            <svg class="mr-4 h-6 w-6" :class="[
+                                                route().current('solidarity-fund-authorizations.index') || route().current('solidarity-fund-authorizations.create') || route().current('solidarity-fund-authorizations.show') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
+                                            ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Solidariteitsfonds
+                                        </a>
+                                        <a :href="route('zaaier-authorizations.index')" :class="[
+                                            route().current('zaaier-authorizations.index') || route().current('zaaier-authorizations.create') || route().current('zaaier-authorizations.show')
+                                                ? 'bg-gray-100 text-gray-900'
+                                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                                            'group flex items-center px-2 py-2 text-base font-medium rounded-md'
+                                        ]">
+                                            <svg class="mr-4 h-6 w-6" :class="[
+                                                route().current('zaaier-authorizations.index') || route().current('zaaier-authorizations.create') || route().current('zaaier-authorizations.show') ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
+                                            ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            De Zaaier
                                         </a>
                                     </div>
                                 </div>

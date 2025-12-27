@@ -44,11 +44,19 @@ class ImportIcalFeedsCommand extends Command
 
             $events = $ical->events();
             $importedKeys = [];
+            $minDate = $agenda->title === 'Kerktijden'
+                ? new \DateTime('2026-01-01 00:00:00')
+                : null;
 
             foreach ($events as $event) {
                 $uid = $event->uid;
                 $start = $ical->iCalDateToDateTime($event->dtstart_array[3]);
                 $end = $ical->iCalDateToDateTime($event->dtend_array[3] ?? $event->dtstart_array[3]);
+
+                // Skip events before the minimum date for 'Kerktijden' agenda
+                if ($minDate && $start && $start < $minDate) {
+                    continue;
+                }
 
                 $importedKeys[] = $uid . '|'  . ($start ? $start->format('YmdHis') : '');
 
@@ -65,7 +73,12 @@ class ImportIcalFeedsCommand extends Command
             }
 
             // Delete events not present in the current feed for this agenda
-            $existing = AgendaItem::where('agenda_id', $agenda->id)->get();
+            // For 'Kerktijden', only delete items from 2026-01-01 onwards
+            $existingQuery = AgendaItem::where('agenda_id', $agenda->id);
+            if ($minDate) {
+                $existingQuery->where('start_date', '>=', $minDate);
+            }
+            $existing = $existingQuery->get();
             $deleted = 0;
             foreach ($existing as $item) {
                 $key = $item->uid . '|' . ($item->start_date ? $item->start_date->format('YmdHis') : '');

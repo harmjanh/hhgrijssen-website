@@ -106,12 +106,12 @@
                 </tr>
                 <tr>
                     <td>Tijd van dienst 1</td>
-                    <td>{{ $declaration->time_of_service_1->format('H:i') }}</td>
+                    <td>{{ $declaration->time_of_service_1 }}</td>
                 </tr>
                 @if($declaration->time_of_service_2)
                 <tr>
                     <td>Tijd van dienst 2</td>
-                    <td>{{ $declaration->time_of_service_2->format('H:i') }}</td>
+                    <td>{{ $declaration->time_of_service_2 }}</td>
                 </tr>
                 @endif
                 <tr>

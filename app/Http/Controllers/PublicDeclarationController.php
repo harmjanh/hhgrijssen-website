@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\StorePublicDeclaration;
 use App\Http\Requests\PublicDeclarationRequest;
+use App\Models\Page;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,7 +15,28 @@ class PublicDeclarationController extends Controller
      */
     public function create()
     {
-        return Inertia::render('PublicDeclarations/Create');
+        return Inertia::render('PublicDeclarations/Create', [
+            'pages' => $this->getPages(),
+        ]);
+    }
+
+    /**
+     * Get pages for navigation.
+     */
+    private function getPages()
+    {
+        return Page::select(['id', 'title', 'slug'])
+            ->with(['children' => function ($query) {
+                $query->where('exclude_from_navigation', false)
+                    ->active()
+                    ->orderBy('sort_order');
+            }])
+            ->active()
+            ->whereNull('parent_id')
+            ->where('exclude_from_navigation', false)
+            ->where('requires_authentication', false)
+            ->orderBy('sort_order')
+            ->get();
     }
 
     /**
@@ -33,6 +55,8 @@ class PublicDeclarationController extends Controller
      */
     public function success()
     {
-        return Inertia::render('PublicDeclarations/Success');
+        return Inertia::render('PublicDeclarations/Success', [
+            'pages' => $this->getPages(),
+        ]);
     }
 }

@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Head } from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import NavBar from '@/Components/NavBar.vue';
+import PageFooter from '@/Components/PageFooter.vue';
+
+defineProps<{
+    pages: Array<{ id: number; title: string; slug: string }>;
+}>();
 
 const form = useForm({
     name: '',
@@ -14,6 +20,7 @@ const form = useForm({
     number: '',
     zipcode: '',
     city: '',
+    bankaccountnumber: '',
     date_of_service: '',
     time_of_service_1: '',
     time_of_service_2: '',
@@ -52,143 +59,138 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Declaratie Indienen
-            </h2>
-        </template>
 
-        <div class="py-12">
-            <div class="max-w-none mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <div class="mb-6">
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Declaratie predikant</h3>
-                            <p class="text-sm text-gray-600">
-                                Vul het onderstaande formulier in om een declaratie in te dienen voor uw preekbeurt.
-                                U ontvangt een bevestigingsmail na het indienen.
-                            </p>
-                        </div>
+    <Head title="Declaratie Indienen" />
 
-                        <form @submit.prevent="submit" class="space-y-6">
-                            <!-- Personal Information -->
-                            <div>
-                                <h4 class="text-md font-medium text-gray-900 mb-4">Persoonlijke Gegevens</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    <div>
-                                        <InputLabel for="name" value="Naam *" />
-                                        <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name"
-                                            required />
-                                        <InputError :message="form.errors.name" class="mt-2" />
-                                    </div>
+    <NavBar :pages="pages" />
 
-                                    <div>
-                                        <InputLabel for="email" value="E-mailadres *" />
-                                        <TextInput id="email" type="email" class="mt-1 block w-full"
-                                            v-model="form.email" required />
-                                        <InputError :message="form.errors.email" class="mt-2" />
-                                    </div>
+    <div class="mx-auto w-3/5 py-12">
+        <h1 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 text-left">Declaratie Indienen</h1>
 
-                                    <div>
-                                        <InputLabel for="street" value="Straat *" />
-                                        <TextInput id="street" type="text" class="mt-1 block w-full"
-                                            v-model="form.street" required />
-                                        <InputError :message="form.errors.street" class="mt-2" />
-                                    </div>
+        <div class="mb-6">
+            <p class="text-gray-700 text-lg/8">
+                Vul het onderstaande formulier in om een declaratie in te dienen voor uw preekbeurt.
+                U ontvangt een bevestigingsmail na het indienen.
+            </p>
+        </div>
 
-                                    <div>
-                                        <InputLabel for="number" value="Huisnummer *" />
-                                        <TextInput id="number" type="text" class="mt-1 block w-full"
-                                            v-model="form.number" required />
-                                        <InputError :message="form.errors.number" class="mt-2" />
-                                    </div>
+        <form @submit.prevent="submit" class="space-y-6">
+            <!-- Personal Information -->
+            <div>
+                <h4 class="text-md font-medium text-gray-900 mb-4">Persoonlijke Gegevens</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div>
+                        <InputLabel for="name" value="Naam *" />
+                        <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required />
+                        <InputError :message="form.errors.name" class="mt-2" />
+                    </div>
 
-                                    <div>
-                                        <InputLabel for="zipcode" value="Postcode *" />
-                                        <TextInput id="zipcode" type="text" class="mt-1 block w-full"
-                                            v-model="form.zipcode" required />
-                                        <InputError :message="form.errors.zipcode" class="mt-2" />
-                                    </div>
+                    <div>
+                        <InputLabel for="email" value="E-mailadres *" />
+                        <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required />
+                        <InputError :message="form.errors.email" class="mt-2" />
+                    </div>
 
-                                    <div>
-                                        <InputLabel for="city" value="Plaats *" />
-                                        <TextInput id="city" type="text" class="mt-1 block w-full" v-model="form.city"
-                                            required />
-                                        <InputError :message="form.errors.city" class="mt-2" />
-                                    </div>
-                                </div>
-                            </div>
+                    <div>
+                        <InputLabel for="street" value="Straat *" />
+                        <TextInput id="street" type="text" class="mt-1 block w-full" v-model="form.street" required />
+                        <InputError :message="form.errors.street" class="mt-2" />
+                    </div>
 
-                            <!-- Service Information -->
-                            <div>
-                                <h4 class="text-md font-medium text-gray-900 mb-4">Dienst Informatie</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                    <div>
-                                        <InputLabel for="date_of_service" value="Datum van dienst *" />
-                                        <TextInput id="date_of_service" type="date" class="mt-1 block w-full"
-                                            v-model="form.date_of_service" required />
-                                        <InputError :message="form.errors.date_of_service" class="mt-2" />
-                                    </div>
+                    <div>
+                        <InputLabel for="number" value="Huisnummer *" />
+                        <TextInput id="number" type="text" class="mt-1 block w-full" v-model="form.number" required />
+                        <InputError :message="form.errors.number" class="mt-2" />
+                    </div>
 
-                                    <div>
-                                        <InputLabel for="time_of_service_1" value="Tijd van dienst 1 *" />
-                                        <TextInput id="time_of_service_1" type="time" class="mt-1 block w-full"
-                                            v-model="form.time_of_service_1" required />
-                                        <InputError :message="form.errors.time_of_service_1" class="mt-2" />
-                                    </div>
+                    <div>
+                        <InputLabel for="zipcode" value="Postcode *" />
+                        <TextInput id="zipcode" type="text" class="mt-1 block w-full" v-model="form.zipcode" required />
+                        <InputError :message="form.errors.zipcode" class="mt-2" />
+                    </div>
 
-                                    <div>
-                                        <InputLabel for="time_of_service_2" value="Tijd van dienst 2 (optioneel)" />
-                                        <TextInput id="time_of_service_2" type="time" class="mt-1 block w-full"
-                                            v-model="form.time_of_service_2" />
-                                        <InputError :message="form.errors.time_of_service_2" class="mt-2" />
-                                    </div>
+                    <div>
+                        <InputLabel for="city" value="Plaats *" />
+                        <TextInput id="city" type="text" class="mt-1 block w-full" v-model="form.city" required />
+                        <InputError :message="form.errors.city" class="mt-2" />
+                    </div>
 
-                                    <div>
-                                        <InputLabel for="kilometers" value="Aantal kilometers *" />
-                                        <TextInput id="kilometers" type="number" min="0" class="mt-1 block w-full"
-                                            v-model.number="form.kilometers" required />
-                                        <InputError :message="form.errors.kilometers" class="mt-2" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Calculation Summary -->
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <h4 class="text-md font-medium text-gray-900 mb-4">Declaratie Overzicht</h4>
-                                <div class="space-y-2">
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Aantal diensten:</span>
-                                        <span class="font-medium">{{ numberOfTimeslots }} x €{{
-                                            TIMESLOT_PRICE.toFixed(2)
-                                            }}</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Totaal diensten:</span>
-                                        <span class="font-medium">€{{ timeslotTotal.toFixed(2) }}</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Kilometers ({{ form.kilometers }} km):</span>
-                                        <span class="font-medium">€{{ kilometerTotal.toFixed(2) }}</span>
-                                    </div>
-                                    <div class="flex justify-between border-t border-gray-200 pt-2">
-                                        <span class="text-lg font-medium text-gray-900">Totaal declaratie:</span>
-                                        <span class="text-lg font-medium text-gray-900">€{{ grandTotal.toFixed(2)
-                                            }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-end">
-                                <PrimaryButton class="ml-4" :disabled="form.processing">
-                                    Declaratie Indienen
-                                </PrimaryButton>
-                            </div>
-                        </form>
+                    <div>
+                        <InputLabel for="bankaccountnumber" value="Bankrekeningnummer (IBAN) *" />
+                        <TextInput id="bankaccountnumber" type="text" class="mt-1 block w-full"
+                            v-model="form.bankaccountnumber" required placeholder="NL91 ABNA 0417 1643 00" />
+                        <InputError :message="form.errors.bankaccountnumber" class="mt-2" />
                     </div>
                 </div>
             </div>
-        </div>
-    </AppLayout>
+
+            <!-- Service Information -->
+            <div>
+                <h4 class="text-md font-medium text-gray-900 mb-4">Dienst Informatie</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div>
+                        <InputLabel for="date_of_service" value="Datum van dienst *" />
+                        <TextInput id="date_of_service" type="date" class="mt-1 block w-full"
+                            v-model="form.date_of_service" required />
+                        <InputError :message="form.errors.date_of_service" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel for="time_of_service_1" value="Tijd van dienst 1 *" />
+                        <TextInput id="time_of_service_1" type="time" class="mt-1 block w-full"
+                            v-model="form.time_of_service_1" required />
+                        <InputError :message="form.errors.time_of_service_1" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel for="time_of_service_2" value="Tijd van dienst 2 (optioneel)" />
+                        <TextInput id="time_of_service_2" type="time" class="mt-1 block w-full"
+                            v-model="form.time_of_service_2" />
+                        <InputError :message="form.errors.time_of_service_2" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <InputLabel for="kilometers" value="Aantal kilometers *" />
+                        <TextInput id="kilometers" type="number" min="0" class="mt-1 block w-full"
+                            v-model.number="form.kilometers" required />
+                        <InputError :message="form.errors.kilometers" class="mt-2" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculation Summary -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h4 class="text-md font-medium text-gray-900 mb-4">Declaratie Overzicht</h4>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Aantal diensten:</span>
+                        <span class="font-medium">{{ numberOfTimeslots }} x €{{
+                            TIMESLOT_PRICE.toFixed(2)
+                        }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Totaal diensten:</span>
+                        <span class="font-medium">€{{ timeslotTotal.toFixed(2) }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Kilometers ({{ form.kilometers }} km):</span>
+                        <span class="font-medium">€{{ kilometerTotal.toFixed(2) }}</span>
+                    </div>
+                    <div class="flex justify-between border-t border-gray-200 pt-2">
+                        <span class="text-lg font-medium text-gray-900">Totaal declaratie:</span>
+                        <span class="text-lg font-medium text-gray-900">€{{ grandTotal.toFixed(2)
+                        }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end">
+                <PrimaryButton class="ml-4" :disabled="form.processing">
+                    Declaratie Indienen
+                </PrimaryButton>
+            </div>
+        </form>
+    </div>
+
+    <PageFooter :pages="pages" />
 </template>
