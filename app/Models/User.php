@@ -82,8 +82,12 @@ class User extends Authenticatable implements FilamentUser
      */
     public function getBankaccountnumberAttribute($value)
     {
-        if ($value) {
-            return decrypt($value);
+        if ($value && !empty($value)) {
+            try{
+                return decrypt($value);
+            } catch (\Exception $e) {
+                return null;
+            }
         }
 
         return null;

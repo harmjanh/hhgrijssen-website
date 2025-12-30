@@ -72,7 +72,7 @@
                 </div>
                 <p class="mt-8 text-sm/6 text-gray-600 md:order-1 md:mt-0">&copy; {{ new Date().getFullYear() }} HHG
                     Rijssen | <a href="/privacy-verklaring">Privacyverklaring</a> | <a href="/declaratie">Declaratie
-                        preekbeurt indienen</a>
+                        preekbeurt indienen</a> | <a href="mailto:webmaster@hhgrijssen.nl">Contact webmaster</a>
                 </p>
             </div>
         </div>
