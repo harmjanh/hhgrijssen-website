@@ -172,8 +172,8 @@ class PageController extends Controller
                 'start_date' => $service->agendaItem->start_date->format('Y-m-d'),
                 'year' => $service->agendaItem->start_date->format('Y'),
             ];
-
             if ($service->youtube_video_id) {
+
                 $serviceData['youtube_video'] = [
                     'id' => $service->youtubeVideo->id,
                     'url' => $service->youtubeVideo->url,

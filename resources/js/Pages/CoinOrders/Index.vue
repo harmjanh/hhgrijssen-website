@@ -42,14 +42,14 @@ const formatDate = (date: string) => {
 
 const formatPickupMoment = (pickupMoment: Order['pickup_moment']) => {
     if (!pickupMoment) return '';
-    
+
     const date = new Date(pickupMoment.date).toLocaleDateString('nl-NL', {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
         year: 'numeric'
     });
-    
+
     return `${date} om 10:00`;
 };
 
@@ -101,7 +101,7 @@ const downloadPdf = async (orderId: number) => {
                         <div class="flex justify-end mb-4">
                             <Link :href="route('coin-orders.create')"
                                 class="inline-flex items-center px-4 py-2 bg-primary-500 border border-transparent rounded-md font-semibold text-xs text-gray-900 uppercase tracking-widest hover:bg-primary-600 focus:bg-primary-600 active:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                            Nieuwe Bestelling
+                                Nieuwe Bestelling
                             </Link>
                         </div>
 
@@ -109,11 +109,11 @@ const downloadPdf = async (orderId: number) => {
                             <p class="text-gray-500">Je hebt nog geen munten besteld.</p>
                             <Link :href="route('coin-orders.create')"
                                 class="mt-4 inline-flex items-center text-primary-500 hover:text-primary-600">
-                            Bestel nu munten
-                            <svg class="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 5l7 7-7 7" />
-                            </svg>
+                                Bestel nu munten
+                                <svg class="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
                             </Link>
                         </div>
 
@@ -136,10 +136,10 @@ const downloadPdf = async (orderId: number) => {
                                             </svg>
                                             Download PDF
                                         </button>
-                                        <span :class="getStatusColor(order.status)"
+                                        <!-- <span :class="getStatusColor(order.status)"
                                             class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium">
                                             {{ getStatusText(order.status) }}
-                                        </span>
+                                        </span> -->
                                     </div>
                                 </div>
 

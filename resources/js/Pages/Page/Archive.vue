@@ -152,12 +152,17 @@ const servicesByYear = computed(() => {
                 </div>
                 <div class="ml-3">
                     <p class="text-sm text-blue-700">
-                        <strong class="font-medium">Let op:</strong> Dit prekenarchief wordt continu bijgewerkt en kan
+                        <strong class="font-medium">Let op:</strong>
+                        <!--Dit prekenarchief wordt continu bijgewerkt en kan
                         onvolledig zijn. Voor nu is 2021 t/m 2025 zo veel mogelijk als audio beschikbaar. We werken er
                         aan dat er meer beschikbaar komt.
                         Als u ontdekt dat er zaken niet kloppen of ontbreken,
                         <a href="mailto:webmaster@hhgrijssen.nl" class="font-medium underline hover:text-blue-800">neem
                             dan contact op via webmaster@hhgrijssen.nl</a>.
+
+                        -->
+                        Het prekenarchief is nog onder hande. De historische agenda is al wel inzichtelijk. De audio
+                        bestanden volgen binnenkort.
                     </p>
                 </div>
             </div>
