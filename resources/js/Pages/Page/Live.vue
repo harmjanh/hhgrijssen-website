@@ -53,7 +53,7 @@ const isServiceActive = (service) => {
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 center">
                 <!-- Action Block 1 -->
                 <div
-                    class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
+                    class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-primary-100 p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
                     <div class="flex items-center justify-between">
                         <div class="flex-1">
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">YouTube Live</h3>
@@ -103,7 +103,7 @@ const isServiceActive = (service) => {
                 </div>
 
                 <div
-                    class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
+                    class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-primary-100 p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
                     <div class="flex items-center justify-between">
                         <div class="flex-1">
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">Kerkomroep App</h3>

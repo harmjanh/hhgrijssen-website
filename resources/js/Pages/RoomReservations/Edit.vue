@@ -123,7 +123,7 @@ const getMinDateTime = () => {
                             <div>
                                 <InputLabel for="room_id" value="Zaal" />
                                 <select id="room_id" v-model="form.room_id"
-                                    class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                    class="mt-1 block w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm"
                                     :disabled="loading" required>
                                     <option value="">Selecteer een zaal</option>
                                     <option v-for="room in availableRooms" :key="room.id" :value="room.id">

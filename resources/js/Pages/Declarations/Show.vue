@@ -90,8 +90,8 @@ const formatFileSize = (bytes: number) => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div class="flex justify-end mb-4">
-                            <Link :href="route('declarations.index')" class="text-indigo-600 hover:text-indigo-900">
-                            Terug naar overzicht
+                            <Link :href="route('declarations.index')" class="text-primary-600 hover:text-primary-900">
+                                Terug naar overzicht
                             </Link>
                         </div>
 
@@ -160,9 +160,9 @@ const formatFileSize = (bytes: number) => {
                                         </div>
                                         <div class="flex items-center">
                                             <span class="text-sm text-gray-500">{{ formatFileSize(attachment.size)
-                                            }}</span>
+                                                }}</span>
                                             <a :href="'/storage/' + attachment.path" target="_blank"
-                                                class="ml-4 text-indigo-600 hover:text-indigo-900">
+                                                class="ml-4 text-primary-600 hover:text-primary-900">
                                                 Download
                                             </a>
                                         </div>

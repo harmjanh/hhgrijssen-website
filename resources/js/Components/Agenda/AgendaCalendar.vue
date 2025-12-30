@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white rounded-lg shadow-lg p-6">
         <!-- Calendar Header -->
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
             <div class="flex items-center space-x-4">
                 <button @click="previousMonth" class="p-2 hover:bg-gray-100 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -17,23 +17,23 @@
                     </svg>
                 </button>
             </div>
-            <div class="flex items-center space-x-2">
-                <select v-model="selectedMonth" class="border rounded-md px-5 py-2 min-w-[160px]">
+            <div class="flex flex-col md:flex-row md:items-center gap-2 md:space-x-2 md:gap-0">
+                <select v-model="selectedMonth" class="border rounded-md px-5 py-2 w-full md:min-w-[160px]">
                     <option v-for="month in months" :key="month.value" :value="month.value">
                         {{ month.label }}
                     </option>
                 </select>
-                <select v-model="selectedYear" class="border rounded-md px-5 py-2 min-w-[120px]">
+                <select v-model="selectedYear" class="border rounded-md px-5 py-2 w-full md:min-w-[120px]">
                     <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
                 </select>
-                <button @click="goToSelectedDate" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                <button @click="goToSelectedDate" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full md:w-auto">
                     Ga
                 </button>
                 <button @click="goToCurrentMonth"
-                    class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">
+                    class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 w-full md:w-auto">
                     Huidige maand
                 </button>
-                <button @click="toggleView" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">
+                <button @click="toggleView" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 w-full md:w-auto">
                     {{ viewMode === 'month' ? 'Tijdlijn' : 'Maand' }}
                 </button>
             </div>

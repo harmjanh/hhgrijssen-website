@@ -67,9 +67,9 @@ const getStatusText = (status: Declaration['status']) => {
                     <div class="p-6 text-gray-900">
                         <div class="flex justify-end mb-4">
                             <Link :href="route('declarations.create')">
-                            <PrimaryButton>
-                                Nieuwe declaratie
-                            </PrimaryButton>
+                                <PrimaryButton>
+                                    Nieuwe declaratie
+                                </PrimaryButton>
                             </Link>
                         </div>
 
@@ -111,8 +111,8 @@ const getStatusText = (status: Declaration['status']) => {
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <Link :href="route('declarations.show', declaration.id)"
-                                                class="text-indigo-600 hover:text-indigo-900">
-                                            Bekijken
+                                                class="text-primary-600 hover:text-primary-900">
+                                                Bekijken
                                             </Link>
                                         </td>
                                     </tr>

@@ -100,7 +100,7 @@ const downloadPdf = async (orderId: number) => {
                     <div class="p-6 text-gray-900">
                         <div class="flex justify-end mb-4">
                             <Link :href="route('coin-orders.create')"
-                                class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                class="inline-flex items-center px-4 py-2 bg-primary-500 border border-transparent rounded-md font-semibold text-xs text-gray-900 uppercase tracking-widest hover:bg-primary-600 focus:bg-primary-600 active:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             Nieuwe Bestelling
                             </Link>
                         </div>
@@ -108,7 +108,7 @@ const downloadPdf = async (orderId: number) => {
                         <div v-if="orders.length === 0" class="text-center py-8">
                             <p class="text-gray-500">Je hebt nog geen munten besteld.</p>
                             <Link :href="route('coin-orders.create')"
-                                class="mt-4 inline-flex items-center text-indigo-600 hover:text-indigo-900">
+                                class="mt-4 inline-flex items-center text-primary-500 hover:text-primary-600">
                             Bestel nu munten
                             <svg class="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

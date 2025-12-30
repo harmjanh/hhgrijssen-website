@@ -173,7 +173,7 @@ const servicesByYear = computed(() => {
                         Jaar
                     </label>
                     <select id="year-filter" v-model="selectedYear" @change="applyFilters"
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                         <option value="">Alle jaren</option>
                         <option v-for="year in availableYears" :key="year" :value="year">
                             {{ year }}
@@ -187,7 +187,7 @@ const servicesByYear = computed(() => {
                         Predikant
                     </label>
                     <select id="pastor-filter" v-model="selectedPastor" @change="applyFilters"
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
                         <option value="">Alle predikanten</option>
                         <option v-for="pastor in pastors" :key="pastor" :value="pastor">
                             {{ pastor }}
@@ -201,7 +201,7 @@ const servicesByYear = computed(() => {
                         Datum
                     </label>
                     <input id="date-filter" v-model="selectedDate" type="date" @change="applyFilters"
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" />
                 </div>
 
                 <!-- Clear Filters Button -->

@@ -34,7 +34,7 @@
                                 <div class="relative flex items-center gap-x-4">
 
                                     <a :href="'/nieuws/' + news.id"
-                                        class="text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                                        class="text-sm font-semibold leading-6 hover:text-primary-500">
                                         Lees meer <span aria-hidden="true">→</span>
                                     </a>
                                 </div>

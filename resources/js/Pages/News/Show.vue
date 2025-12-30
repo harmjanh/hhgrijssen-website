@@ -37,6 +37,17 @@ defineProps<{
     <div class="mx-auto w-full px-3 py-12 md:w-3/5 md:px-0">
         <h1 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 text-left">{{ newsItem.title }}</h1>
         <div class="prose max-w-none text-left text-gray-700 text-xl/8" v-html="newsItem.content"></div>
+        
+        <!-- Back to news overview button -->
+        <div class="mt-8 pt-8 border-t border-gray-200">
+            <Link :href="route('news.index')"
+                class="inline-flex items-center px-4 py-2 bg-primary-500 text-gray-900 text-sm font-medium rounded-lg hover:bg-primary-600 transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Terug naar nieuws overzicht
+            </Link>
+        </div>
     </div>
 
     <PageFooter :pages="pages" />

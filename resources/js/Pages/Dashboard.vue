@@ -32,7 +32,7 @@ defineProps<Props>();
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                                     Aantal declaraties
                                 </h3>
-                                <p class="mt-2 text-3xl font-bold text-indigo-600 dark:text-indigo-400">
+                                <p class="mt-2 text-3xl font-bold text-primary-600 dark:text-primary-400">
                                     {{ stats.total_declarations }}
                                 </p>
                             </div>

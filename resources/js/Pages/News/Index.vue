@@ -38,6 +38,7 @@ const formatDate = (date: string) => {
 </script>
 
 <template>
+
     <Head title="Nieuws" />
 
     <NavBar :pages="pages" />
@@ -72,7 +73,7 @@ const formatDate = (date: string) => {
                             <div class="mt-6 flex border-t border-gray-900/5 pt-6">
                                 <div class="relative flex items-center gap-x-4">
                                     <a :href="'/nieuws/' + item.id"
-                                        class="text-sm font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                                        class="text-sm font-semibold leading-6 hover:text-primary-500">
                                         Lees meer <span aria-hidden="true">→</span>
                                     </a>
                                 </div>
@@ -84,18 +85,13 @@ const formatDate = (date: string) => {
                 <!-- Pagination -->
                 <div class="mt-16 flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6">
                     <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                        <Link v-for="link in news.links"
-                            :key="link.label"
-                            :href="link.url || '#'"
-                            :class="[
-                                'relative inline-flex items-center px-4 py-2 text-sm font-semibold',
-                                link.active
-                                    ? 'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                                    : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0',
-                                !link.url && 'cursor-not-allowed opacity-50'
-                            ]"
-                            v-html="link.label"
-                        />
+                        <Link v-for="link in news.links" :key="link.label" :href="link.url || '#'" :class="[
+                            'relative inline-flex items-center px-4 py-2 text-sm font-semibold',
+                            link.active
+                                ? 'z-10 bg-primary-500 text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500'
+                                : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0',
+                            !link.url && 'cursor-not-allowed opacity-50'
+                        ]" v-html="link.label" />
                     </nav>
                 </div>
             </div>

@@ -82,12 +82,12 @@ const adminNavigation = user?.role === 'admin' ? [
                                     <div class="mt-2 space-y-1">
                                         <a v-for="item in actionButtons" :key="item.name" :href="item.href" :class="[
                                             route().current(item.href)
-                                                ? 'bg-indigo-50 text-indigo-700'
+                                                ? 'bg-primary-50 text-primary-700'
                                                 : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                                             'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
                                         ]">
                                             <svg class="mr-3 h-6 w-6" :class="[
-                                                route().current(item.href) ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500'
+                                                route().current(item.href) ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500'
                                             ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke="currentColor" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -325,12 +325,12 @@ const adminNavigation = user?.role === 'admin' ? [
                                     <div class="mt-2 space-y-1">
                                         <a v-for="item in actionButtons" :key="item.name" :href="item.href" :class="[
                                             route().current(item.href)
-                                                ? 'bg-indigo-50 text-indigo-700'
+                                                ? 'bg-primary-50 text-primary-700'
                                                 : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                                             'group flex items-center px-2 py-2 text-base font-medium rounded-md'
                                         ]">
                                             <svg class="mr-4 h-6 w-6" :class="[
-                                                route().current(item.href) ? 'text-indigo-500' : 'text-gray-400 group-hover:text-gray-500'
+                                                route().current(item.href) ? 'text-primary-500' : 'text-gray-400 group-hover:text-gray-500'
                                             ]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke="currentColor" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -523,7 +523,7 @@ const adminNavigation = user?.role === 'admin' ? [
                 <!-- Mobile menu button -->
                 <div class="md:hidden">
                     <button type="button"
-                        class="px-4 py-2 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                        class="px-4 py-2 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
                         @click="showingNavigationDropdown = !showingNavigationDropdown">
                         <span class="sr-only">Open sidebar</span>
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

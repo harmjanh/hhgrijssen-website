@@ -105,7 +105,7 @@ defineProps<{
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <Link :href="route('privacy-consents.show', consent.id)"
-                                                class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
+                                                class="text-primary-500 dark:text-primary-400 hover:text-primary-600 dark:hover:text-primary-300">
                                                 Details
                                             </Link>
                                         </td>

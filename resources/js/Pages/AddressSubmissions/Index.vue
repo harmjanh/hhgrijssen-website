@@ -99,8 +99,8 @@ defineProps<{
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <Link :href="route('address-submissions.show', submission.id)"
-                                                class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
-                                            Details
+                                                class="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-300">
+                                                Details
                                             </Link>
                                         </td>
                                     </tr>
@@ -115,7 +115,7 @@ defineProps<{
                                     'bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800': page === submissions.current_page,
                                     'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700': page !== submissions.current_page
                                 }" class="px-4 py-2 mx-1 rounded-md">
-                            {{ page }}
+                                {{ page }}
                             </Link>
                         </div>
                     </div>

@@ -32,7 +32,7 @@ defineExpose({ focus: () => select.value?.focus() });
 <template>
     <select
         ref="select"
-        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600"
+        class="border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-primary-600 dark:focus:ring-primary-600"
         :value="modelValue"
         @change="handleChange"
     >
