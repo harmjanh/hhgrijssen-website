@@ -34,7 +34,7 @@ defineProps<{
         </div>
     </div>
 
-    <div class="mx-auto w-3/5 py-12">
+    <div class="mx-auto w-full px-3 py-12 md:w-3/5 md:px-0">
         <h1 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 text-left">{{ newsItem.title }}</h1>
         <div class="prose max-w-none text-left text-gray-700 text-xl/8" v-html="newsItem.content"></div>
     </div>

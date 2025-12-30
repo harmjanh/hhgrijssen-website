@@ -56,15 +56,18 @@ class PageController extends Controller
                 ->firstOrFail();
         }
 
+        // Get services from yesterday to 7 days from now
+        $yesterday = now()->subDay()->startOfDay();
+        $sevenDaysFromNow = now()->addDays(7)->endOfDay();
+
         // Get upcoming services with their agenda items, ordered by start date
         $upcomingServices = Service::with('agendaItem')
-            ->whereHas('agendaItem', function ($query) {
-                // $query->where('start_date', '>=', now());
+            ->whereHas('agendaItem', function ($query) use ($yesterday, $sevenDaysFromNow) {
+                $query->whereBetween('agenda_items.start_date', [$yesterday, $sevenDaysFromNow]);
             })
             ->join('agenda_items', 'services.agenda_item_id', '=', 'agenda_items.id')
             ->select('services.*')
             ->orderBy('agenda_items.start_date', 'asc')
-            ->limit(3)
             ->get()
             ->map(function ($service) {
                 // Calculate end_date: use agenda item's end_date or default to 1 hour after start

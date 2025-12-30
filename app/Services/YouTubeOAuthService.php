@@ -127,11 +127,13 @@ class YouTubeOAuthService
 
         if ($storageType === 'file') {
             $path = $this->config['token_storage']['path'];
+            Log::info('Storing token in file: ' . $path);
             Storage::put($path, json_encode($token));
         } else {
             // For database storage, you would implement this
             // For now, we'll use file storage
             $path = $this->config['token_storage']['path'];
+            Log::info('Storing token in file: ' . $path);
             Storage::put($path, json_encode($token));
         }
     }
@@ -145,7 +147,7 @@ class YouTubeOAuthService
 
         if ($storageType === 'file') {
             $path = $this->config['token_storage']['path'];
-
+            Log::info('Getting stored token from file: ' . $path);
             if (!Storage::exists($path)) {
                 return null;
             }

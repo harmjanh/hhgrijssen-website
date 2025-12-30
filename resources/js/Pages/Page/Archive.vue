@@ -137,7 +137,7 @@ const servicesByYear = computed(() => {
         </div>
     </div>
 
-    <div class="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+    <div class="mx-auto max-w-7xl px-3 py-12 md:px-6 lg:px-8">
         <h1 class="mb-8 text-4xl font-bold tracking-tight text-gray-900 text-center">{{ page.title }}</h1>
 
         <!-- Disclaimer -->
