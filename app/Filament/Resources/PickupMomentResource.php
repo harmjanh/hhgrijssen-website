@@ -83,7 +83,7 @@ class PickupMomentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CoinOrdersRelationManager::class,
         ];
     }
 
