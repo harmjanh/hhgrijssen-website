@@ -173,6 +173,40 @@ class ServiceResource extends Resource
                     ->options(fn () => Service::distinct()->pluck('pastor', 'pastor')->toArray())
                     ->searchable()
                     ->preload(),
+
+                Tables\Filters\Filter::make('service_date')
+                    ->label('Service Datum')
+                    ->form([
+                        Forms\Components\DatePicker::make('date_from')
+                            ->label('Van datum'),
+                        Forms\Components\DatePicker::make('date_until')
+                            ->label('Tot datum'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        $dateFrom = $data['date_from'] ?? null;
+                        $dateUntil = $data['date_until'] ?? null;
+
+                        return $query->whereHas('agendaItem', function ($q) use ($dateFrom, $dateUntil) {
+                            if ($dateFrom && $dateUntil) {
+                                // Find services that overlap with the date range
+                                // Service overlaps if: start_date <= date_until AND end_date >= date_from
+                                $q->whereDate('start_date', '<=', $dateUntil)
+                                  ->whereDate('end_date', '>=', $dateFrom);
+                            } elseif ($dateFrom) {
+                                // Only date_from: find services that start or end on/after this date
+                                $q->where(function ($subQuery) use ($dateFrom) {
+                                    $subQuery->whereDate('start_date', '>=', $dateFrom)
+                                             ->orWhereDate('end_date', '>=', $dateFrom);
+                                });
+                            } elseif ($dateUntil) {
+                                // Only date_until: find services that start or end on/before this date
+                                $q->where(function ($subQuery) use ($dateUntil) {
+                                    $subQuery->whereDate('start_date', '<=', $dateUntil)
+                                             ->orWhereDate('end_date', '<=', $dateUntil);
+                                });
+                            }
+                        });
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -210,5 +244,13 @@ class ServiceResource extends Resource
             ->join('agenda_items', 'services.agenda_item_id', '=', 'agenda_items.id')
             ->select('services.*')
             ->orderBy('agenda_items.start_date', 'desc');
+    }
+
+    public static function resolveRecordRouteBinding($key): ?Service
+    {
+        // Don't use the join when resolving a single record to avoid ambiguous id column
+        return parent::getEloquentQuery()
+            ->where('services.id', $key)
+            ->first();
     }
 }
