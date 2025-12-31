@@ -48,7 +48,7 @@ class StorePublicDeclaration
 
         // Send notification to treasurer
         // You might want to get the treasurer email from settings or a specific user
-        $treasurerEmail = config('mail.treasurer_email', 'treasurer@hhgrijssen.nl');
+        $treasurerEmail = config('hhgrijssen.treasurer_email', 'penningmeester@hhgrijssen.nl');
         Notification::route('mail', $treasurerEmail)
             ->notify(new DeclarationSubmittedToTreasurer($declaration));
 
