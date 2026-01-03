@@ -24,6 +24,12 @@ Schedule::command('app:create-services-command')
     ->withoutOverlapping()
     ->runInBackground();
 
+Schedule::command('mollie:check-payment-status')
+    ->hourlyAt(20)
+    ->between('06:00', '23:00')
+    ->withoutOverlapping()
+    ->runInBackground();
+
 // Schedule reservation reminders to run daily at 8 AM
 Schedule::command('reservations:send-reminders')
     ->daily()
