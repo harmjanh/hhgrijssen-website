@@ -28,6 +28,13 @@ defineProps<{
         visible_from: string;
         visible_until: string;
     }[];
+    upcomingServices?: {
+        id: number;
+        pastor: string;
+        title: string;
+        start_date: string;
+        start_time: string;
+    }[];
 }>();
 
 function handleImageError() {
@@ -80,10 +87,38 @@ function handleImageError() {
         </div>
     </div>
 
+    <!-- Upcoming Services Cards -->
+    <div v-if="upcomingServices && upcomingServices.length > 0" class="mx-auto max-w-7xl px-3 py-8 md:px-6 lg:px-8">
+        <div class="mb-6 text-center">
+            <h2 class="text-2xl font-semibold text-gray-900">Komende diensten</h2>
+        </div>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div v-for="service in upcomingServices" :key="service.id"
+                class="bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-shadow">
+                <div class="mb-2">
+                    <h3 class="text-lg font-semibold text-gray-900">{{ service.title }}</h3>
+                    <p class="text-sm text-gray-600 mt-1">{{ service.start_date }} om {{ service.start_time }}</p>
+                    <p v-if="service.pastor && service.pastor !== service.title" class="text-sm text-gray-500 mt-1">
+                        {{ service.pastor }}
+                    </p>
+                </div>
+                <Link href="/kerkdiensten-live-luisteren#liturgie"
+                    class="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-700">
+                    Meer informatie
+                    <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </Link>
+            </div>
+        </div>
+    </div>
+
     <div class="mx-auto w-full px-3 py-12 md:w-3/5 md:px-0">
         <!-- <h1 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 text-left">{{ page.title }}</h1> -->
         <div class="prose max-w-none text-left text-gray-700 text-xl/8" v-html="page.content"></div>
     </div>
+
+
 
     <NewsItems :newsItems="newsItems" />
 

@@ -58,7 +58,7 @@ class PageController extends Controller
 
         // Get services from yesterday to 7 days from now
         $yesterday = now()->subDay()->startOfDay();
-        $sevenDaysFromNow = now()->addDays(7)->endOfDay();
+        $sevenDaysFromNow = now()->addDays(8)->endOfDay();
 
         // Get upcoming services with their agenda items, ordered by start date
         $upcomingServices = Service::with('agendaItem')
@@ -359,6 +359,28 @@ class PageController extends Controller
     {
         $page = Page::where('slug', 'home')->firstOrFail();
 
+        // Get services for the next 8 days
+        $now = now()->startOfDay();
+        $eightDaysFromNow = now()->addDays(8)->endOfDay();
+
+        $upcomingServices = Service::with('agendaItem')
+            ->whereHas('agendaItem', function ($query) use ($now, $eightDaysFromNow) {
+                $query->whereBetween('agenda_items.start_date', [$now, $eightDaysFromNow]);
+            })
+            ->join('agenda_items', 'services.agenda_item_id', '=', 'agenda_items.id')
+            ->select('services.*')
+            ->orderBy('agenda_items.start_date', 'asc')
+            ->get()
+            ->map(function ($service) {
+                return [
+                    'id' => $service->id,
+                    'pastor' => $service->pastor,
+                    'title' => $service->agendaItem->title,
+                    'start_date' => $service->agendaItem->start_date->format('d-m-Y'),
+                    'start_time' => $service->agendaItem->start_date->format('H:i'),
+                ];
+            });
+
         return Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
@@ -367,6 +389,7 @@ class PageController extends Controller
             'pages' => $this->getPages(),
             'page' => $this->getPageData($page),
             'newsItems' => $loadNewsItemsAction->execute(),
+            'upcomingServices' => $upcomingServices,
         ]);
     }
 

@@ -45,7 +45,7 @@ const isServiceActive = (service) => {
 
     <!-- Live Page Layout -->
     <div class="mx-auto max-w-7xl px-3 py-12 md:px-6 lg:px-8">
-        <h1 class="mb-8 text-4xl font-bold tracking-tight text-gray-900 text-center">{{ page.title }}</h1>
+        <h1 id="liturgie" class="mb-8 text-4xl font-bold tracking-tight text-gray-900 text-center">{{ page.title }}</h1>
 
         <!-- Live Listening Action Blocks -->
         <div class="mb-16">
@@ -124,6 +124,7 @@ const isServiceActive = (service) => {
         <!-- Order of Service Sections -->
         <div class="mb-16" v-if="upcomingServices.length > 0">
             <h2 class="mb-8 text-2xl font-semibold text-gray-900 text-center">Komende diensten</h2>
+
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
                 <div v-for="(service, index) in upcomingServices" :key="service.id"
                     class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 text-xl/8 flex flex-col h-full">
