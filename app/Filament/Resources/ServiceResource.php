@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Exports\ServicesExport;
 use App\Filament\Resources\ServiceResource\Pages;
 use App\Models\Service;
 use App\Models\AgendaItem;
@@ -12,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ServiceResource extends Resource
 {
@@ -217,6 +219,36 @@ class ServiceResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                Tables\Actions\Action::make('export')
+                    ->label('Export naar Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->form([
+                        Forms\Components\DatePicker::make('date_from')
+                            ->label('Van datum')
+                            ->required()
+                            ->displayFormat('d-m-Y')
+                            ->native(false),
+                        Forms\Components\DatePicker::make('date_until')
+                            ->label('Tot datum')
+                            ->required()
+                            ->displayFormat('d-m-Y')
+                            ->native(false)
+                            ->after('date_from'),
+                    ])
+                    ->action(function (array $data) {
+                        $dateFrom = $data['date_from'];
+                        $dateUntil = $data['date_until'];
+
+                        $export = new ServicesExport($dateFrom, $dateUntil);
+                        $filename = 'diensten_' . \Carbon\Carbon::parse($dateFrom)->format('Y-m-d') . '_' . \Carbon\Carbon::parse($dateUntil)->format('Y-m-d') . '.xlsx';
+
+                        return Excel::download($export, $filename);
+                    })
+                    ->modalHeading('Export Diensten naar Excel')
+                    ->modalDescription('Selecteer een datum-range om de diensten te exporteren.')
+                    ->modalSubmitActionLabel('Exporteren'),
             ]);
     }
 

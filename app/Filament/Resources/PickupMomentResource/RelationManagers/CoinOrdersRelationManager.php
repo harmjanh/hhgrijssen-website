@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PickupMomentResource\RelationManagers;
 
+use App\Exports\CoinOrdersExport;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -9,6 +10,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CoinOrdersRelationManager extends RelationManager
 {
@@ -83,7 +85,17 @@ class CoinOrdersRelationManager extends RelationManager
                     ]),
             ])
             ->headerActions([
-                // Tables\Actions\CreateAction::make(),
+                Tables\Actions\Action::make('export')
+                    ->label('Export naar Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action(function () {
+                        $pickupMoment = $this->getOwnerRecord();
+                        $export = new CoinOrdersExport($pickupMoment->id);
+                        $filename = 'bestellingen_' . $pickupMoment->date->format('Y-m-d') . '.xlsx';
+
+                        return Excel::download($export, $filename);
+                    })
+                    ->requiresConfirmation(false),
             ])
             ->actions([
                 // Geen acties nodig - alleen weergave
