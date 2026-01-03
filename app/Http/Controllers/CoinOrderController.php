@@ -22,24 +22,23 @@ class CoinOrderController extends Controller
     {
         $user = Auth::user();
 
-        // Calculate the minimum pickup date based on the Wednesday deadline
-        // If today is Wednesday or earlier, pickup must be at least this Saturday
-        // If today is Thursday or later, pickup must be at least next Saturday
-        $today = now();
-        $dayOfWeek = $today->dayOfWeek; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-
-        if ($dayOfWeek <= 3) { // Sunday (0) through Wednesday (3)
-            // Pickup must be at least this coming Saturday
-            $minPickupDate = $today->copy()->next(\Carbon\Carbon::SATURDAY);
-        } else { // Thursday (4) through Saturday (6)
-            // Pickup must be at least next Saturday (skip this Saturday if it's not past yet)
-            $minPickupDate = $today->copy()->addWeek()->next(\Carbon\Carbon::SATURDAY);
-        }
+        // Calculate available pickup moments based on Wednesday deadline
+        // A pickup moment is available until (and including) the Wednesday before it
+        // After Wednesday, it's closed and the next pickup moment should be selected
+        $today = now()->startOfDay();
 
         $pickupMoments = \App\Models\PickupMoment::where('active', true)
-            ->where('date', '>=', $minPickupDate->toDateString())
             ->orderBy('date')
             ->get()
+            ->filter(function ($moment) use ($today) {
+                // Calculate the Wednesday before the pickup moment
+                $pickupDate = \Carbon\Carbon::parse($moment->date)->startOfDay();
+                $wednesdayBefore = $pickupDate->copy()->previous(\Carbon\Carbon::WEDNESDAY);
+                
+                // The pickup moment is available if today is on or before the Wednesday before it
+                return $today->lte($wednesdayBefore);
+            })
+            ->values()
             ->map(function ($moment) {
                 return [
                     'id' => $moment->id,
@@ -72,28 +71,31 @@ class CoinOrderController extends Controller
         $data = $request->validated();
 
         // Check if the selected pickup moment meets the Wednesday deadline
-        // If not, automatically select the next available pickup moment
+        // A pickup moment is available until (and including) the Wednesday before it
+        // After Wednesday, it's closed and the next pickup moment should be selected
         $selectedPickupMoment = \App\Models\PickupMoment::find($data['pickup_moment_id']);
-        $today = now();
-        $dayOfWeek = $today->dayOfWeek; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-
-        // Calculate minimum pickup date based on Wednesday deadline
-        if ($dayOfWeek <= 3) { // Sunday (0) through Wednesday (3)
-            $minPickupDate = $today->copy()->next(\Carbon\Carbon::SATURDAY);
-        } else { // Thursday (4) through Saturday (6)
-            $minPickupDate = $today->copy()->addWeek()->next(\Carbon\Carbon::SATURDAY);
-        }
-
-        // If selected pickup moment is too soon, find the next available one
+        $today = now()->startOfDay();
         $pickupMomentId = $data['pickup_moment_id'];
-        if ($selectedPickupMoment && \Carbon\Carbon::parse($selectedPickupMoment->date)->lt($minPickupDate)) {
-            $nextPickupMoment = \App\Models\PickupMoment::where('active', true)
-                ->where('date', '>=', $minPickupDate->toDateString())
-                ->orderBy('date')
-                ->first();
 
-            if ($nextPickupMoment) {
-                $pickupMomentId = $nextPickupMoment->id;
+        if ($selectedPickupMoment) {
+            $pickupDate = \Carbon\Carbon::parse($selectedPickupMoment->date)->startOfDay();
+            $wednesdayBefore = $pickupDate->copy()->previous(\Carbon\Carbon::WEDNESDAY);
+
+            // If today is after the Wednesday before the pickup moment, find the next available one
+            if ($today->gt($wednesdayBefore)) {
+                $nextPickupMoment = \App\Models\PickupMoment::where('active', true)
+                    ->orderBy('date')
+                    ->get()
+                    ->filter(function ($moment) use ($today) {
+                        $momentDate = \Carbon\Carbon::parse($moment->date)->startOfDay();
+                        $momentWednesdayBefore = $momentDate->copy()->previous(\Carbon\Carbon::WEDNESDAY);
+                        return $today->lte($momentWednesdayBefore);
+                    })
+                    ->first();
+
+                if ($nextPickupMoment) {
+                    $pickupMomentId = $nextPickupMoment->id;
+                }
             }
         }
 
