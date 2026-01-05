@@ -35,5 +35,9 @@ class AgendaSeeder extends Seeder
         ], [
             'ical_url' => 'https://api.kerktijden.nl//data/kerktijden/gemeente/40/ical'
         ]);
+
+        Agenda::firstOrCreate([
+            'title' => 'Collectemunten',
+        ]);
     }
 }

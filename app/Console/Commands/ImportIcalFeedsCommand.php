@@ -19,7 +19,9 @@ class ImportIcalFeedsCommand extends Command
 
     public function handle()
     {
-        $agendas = Agenda::all();
+        $agendas = Agenda::where('ical_url', '!=', null)
+        ->where('ical_url', '!=', '')
+        ->get();
 
         if ($agendas->isEmpty()) {
             $this->error("No agendas found in the database.");
