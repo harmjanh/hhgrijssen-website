@@ -27,6 +27,7 @@
         "mailersend/laravel-driver": "^2.12",
         "mollie/laravel-mollie": "^3.1",
         "predis/predis": "^2.3",
+        "sentry/sentry-laravel": "^4.20",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
