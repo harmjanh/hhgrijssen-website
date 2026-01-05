@@ -61,11 +61,17 @@ class PageController extends Controller
         $sevenDaysFromNow = now()->addDays(8)->endOfDay();
 
         // Get upcoming services with their agenda items, ordered by start date
+        // Only show services from 'Erediensten' and 'Kerktijden' agendas
         $upcomingServices = Service::with('agendaItem')
             ->whereHas('agendaItem', function ($query) use ($yesterday, $sevenDaysFromNow) {
-                $query->whereBetween('agenda_items.start_date', [$yesterday, $sevenDaysFromNow]);
+                $query->whereBetween('agenda_items.start_date', [$yesterday, $sevenDaysFromNow])
+                    ->whereHas('agenda', function ($q) {
+                        $q->whereIn('agendas.title', ['Erediensten', 'Kerktijden']);
+                    });
             })
             ->join('agenda_items', 'services.agenda_item_id', '=', 'agenda_items.id')
+            ->join('agendas', 'agenda_items.agenda_id', '=', 'agendas.id')
+            ->whereIn('agendas.title', ['Erediensten', 'Kerktijden'])
             ->select('services.*')
             ->orderBy('agenda_items.start_date', 'asc')
             ->get()
@@ -365,9 +371,14 @@ class PageController extends Controller
 
         $upcomingServices = Service::with('agendaItem')
             ->whereHas('agendaItem', function ($query) use ($now, $eightDaysFromNow) {
-                $query->whereBetween('agenda_items.start_date', [$now, $eightDaysFromNow]);
+                $query->whereBetween('agenda_items.start_date', [$now, $eightDaysFromNow])
+                    ->whereHas('agenda', function ($q) {
+                        $q->whereIn('agendas.title', ['Erediensten', 'Kerktijden']);
+                    });
             })
             ->join('agenda_items', 'services.agenda_item_id', '=', 'agenda_items.id')
+            ->join('agendas', 'agenda_items.agenda_id', '=', 'agendas.id')
+            ->whereIn('agendas.title', ['Erediensten', 'Kerktijden'])
             ->select('services.*')
             ->orderBy('agenda_items.start_date', 'asc')
             ->get()
