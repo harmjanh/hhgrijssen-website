@@ -29,6 +29,11 @@ class RoomSeeder extends Seeder
                 'description' => '',
                 'is_active' => true,
             ],
+            [
+                'name' => 'Kerkzaal',
+                'description' => '',
+                'is_active' => true,
+            ]
         ];
 
         foreach ($rooms as $roomData) {

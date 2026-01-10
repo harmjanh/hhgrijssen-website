@@ -39,5 +39,9 @@ class AgendaSeeder extends Seeder
         Agenda::firstOrCreate([
             'title' => 'Collectemunten',
         ]);
+
+        Agenda::firstOrCreate([
+            'title' => 'Jaarrooster',
+        ]);
     }
 }

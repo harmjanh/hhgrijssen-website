@@ -38,11 +38,12 @@ class WeeklyReservationsOverview extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $periode = $this->startOfWeek->format('d-m-Y') . ' t/m ' . $this->endOfWeek->format('d-m-Y');
         $mailMessage = (new MailMessage)
-            ->subject('Wekelijks overzicht zaalreserveringen')
-            ->greeting('Beste koster')
+            ->subject('Wekelijks overzicht zaalreserveringen - Periode: ' . $periode)
+            ->greeting('Beste koster,')
             ->line('Hierbij het overzicht van alle zaalreserveringen voor de komende week.')
-            ->line('**Periode:** ' . $this->startOfWeek->format('d-m-Y') . ' t/m ' . $this->endOfWeek->format('d-m-Y'))
+            ->line('**Periode:** ' . $periode)
             ->line('');
 
         if ($this->reservations->isEmpty()) {
@@ -85,9 +86,6 @@ class WeeklyReservationsOverview extends Notification implements ShouldQueue
                 }
             }
         }
-
-        $mailMessage->line('Met vriendelijke groet,')
-            ->line('Het systeem');
 
         return $mailMessage;
     }

@@ -26,14 +26,16 @@
                 <select v-model="selectedYear" class="border rounded-md px-5 py-2 w-full md:min-w-[120px]">
                     <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
                 </select>
-                <button @click="goToSelectedDate" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full md:w-auto">
+                <button @click="goToSelectedDate"
+                    class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full md:w-auto">
                     Ga
                 </button>
                 <button @click="goToCurrentMonth"
                     class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 w-full md:w-auto">
                     Huidige maand
                 </button>
-                <button @click="toggleView" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 w-full md:w-auto">
+                <button @click="toggleView"
+                    class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 w-full md:w-auto">
                     {{ viewMode === 'month' ? 'Tijdlijn' : 'Maand' }}
                 </button>
             </div>
@@ -67,7 +69,7 @@
                             'bg-blue-100 text-blue-800': !item.is_all_day,
                             'bg-purple-100 text-purple-800': item.is_all_day
                         }">
-                        <div class="font-medium">{{ item.title }}</div>
+                        <div class="font-medium">{{ capitalizeFirst(item.title) }}</div>
                         <div v-if="item.description" class="text-xs opacity-75 line-clamp-2">
                             {{ item.description }}
                         </div>
@@ -109,7 +111,7 @@
                         'bg-blue-100 text-blue-800': !item.is_all_day,
                         'bg-purple-100 text-purple-800': item.is_all_day
                     }">
-                        <div class="font-medium">{{ item.title }}</div>
+                        <div class="font-medium">{{ capitalizeFirst(item.title) }}</div>
                         <div v-if="item.description" class="text-sm opacity-75 mt-1">
                             {{ item.description }}
                         </div>
@@ -296,6 +298,11 @@ function formatTimeRange(startDate, endDate) {
 function formatTimelineDate(date) {
     const options = { weekday: 'long', day: 'numeric', month: 'long' };
     return date.toLocaleDateString('nl-NL', options);
+}
+
+function capitalizeFirst(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function toggleView() {
