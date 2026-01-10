@@ -6,6 +6,7 @@ use App\Models\Agenda;
 use App\Models\AgendaItem;
 use App\Models\Service;
 use App\Services\ServiceTitleService;
+use Carbon\Carbon;
 use Exception;
 use ICal\ICal;
 use Illuminate\Console\Command;
@@ -54,6 +55,20 @@ class ImportIcalFeedsCommand extends Command
                 $uid = $event->uid;
                 $start = $ical->iCalDateToDateTime($event->dtstart_array[3]);
                 $end = $ical->iCalDateToDateTime($event->dtend_array[3] ?? $event->dtstart_array[3]);
+
+                // Convert to application timezone (Europe/Amsterdam)
+                // Google Calendar iCal feeds may provide times in UTC or local time
+                // We need to ensure they're stored in Europe/Amsterdam timezone
+                $appTimezone = config('app.timezone', 'Europe/Amsterdam');
+
+                if ($start) {
+                    // Convert to Carbon and set timezone to Europe/Amsterdam
+                    // This preserves the actual moment in time while displaying in the correct timezone
+                    $start = Carbon::instance($start)->setTimezone($appTimezone);
+                }
+                if ($end) {
+                    $end = Carbon::instance($end)->setTimezone($appTimezone);
+                }
 
                 // Skip events before the minimum date for 'Kerktijden' agenda
                 if ($minDate && $start && $start < $minDate) {
