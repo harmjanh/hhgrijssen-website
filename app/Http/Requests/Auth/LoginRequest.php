@@ -49,6 +49,17 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Check if user is blocked
+        $user = Auth::user();
+        if ($user && $user->isBlocked()) {
+            Auth::logout();
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => 'Uw account is geblokkeerd. Neem contact op met de beheerder.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

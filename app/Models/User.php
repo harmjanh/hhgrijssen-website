@@ -34,6 +34,7 @@ class User extends Authenticatable implements FilamentUser
         'phonenumber',
         'bankaccountnumber',
         'date_of_birth',
+        'blocked_at',
     ];
 
     /**
@@ -49,7 +50,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' && !$this->isBlocked();
     }
 
     /**
@@ -104,7 +105,16 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'blocked_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Check if the user is blocked
+     */
+    public function isBlocked(): bool
+    {
+        return $this->blocked_at !== null;
     }
 
     public function coinOrders(): HasMany

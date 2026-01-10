@@ -23,6 +23,13 @@ class PageController extends Controller
             abort(403, 'Deze pagina is alleen toegankelijk voor ingelogde gebruikers.');
         }
 
+        // Check if authenticated user is blocked
+        if ($page->requires_authentication && auth()->check() && auth()->user()->isBlocked()) {
+            auth()->logout();
+            return redirect()->route('login')
+                ->with('error', 'Uw account is geblokkeerd. Neem contact op met de beheerder.');
+        }
+
         // Check if this is a live page and redirect to the live method
         if ($page->pageType->name === 'live') {
             return $this->live($page);

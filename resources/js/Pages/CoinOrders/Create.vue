@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import InputError from '@/Components/InputError.vue';
@@ -78,6 +78,27 @@ const submit = () => {
                             <!-- Personal Information -->
                             <div>
                                 <h3 class="text-lg font-medium text-gray-900">Persoonlijke Informatie</h3>
+                                
+                                <!-- Tip about profile address -->
+                                <div class="mt-4 rounded-md bg-blue-50 p-4">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div class="ml-3 flex-1">
+                                            <p class="text-sm text-blue-700">
+                                                <strong>Tip:</strong> Vul via je 
+                                                <Link :href="route('profile.edit')" class="font-medium underline hover:text-blue-800">
+                                                    profiel
+                                                </Link>
+                                                je adresgegevens in. Je ontvangt dan een betere bevestiging met al je adresgegevens erop.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
                                     <div>
                                         <InputLabel for="name" value="Naam" />

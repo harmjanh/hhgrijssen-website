@@ -17,7 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        //
+        $middleware->alias([
+            'user.not.blocked' => \App\Http\Middleware\EnsureUserNotBlocked::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         Integration::handles($exceptions);

@@ -55,6 +55,25 @@ class UserResource extends Resource
                                 'user' => 'Gebruiker',
                             ])
                             ->default('user'),
+                        Forms\Components\Toggle::make('is_blocked')
+                            ->label('Account blokkeren')
+                            ->helperText('Als dit is ingeschakeld, kan de gebruiker niet meer inloggen.')
+                            ->dehydrated(false)
+                            ->afterStateUpdated(function ($state, Forms\Set $set, $get) {
+                                if ($state) {
+                                    $set('blocked_at', now());
+                                } else {
+                                    $set('blocked_at', null);
+                                }
+                            })
+                            ->default(fn ($record) => $record?->isBlocked() ?? false),
+                        Forms\Components\DateTimePicker::make('blocked_at')
+                            ->label('Geblokkeerd op')
+                            ->displayFormat('d-m-Y H:i')
+                            ->native(false)
+                            ->visible(fn ($get) => $get('blocked_at') !== null)
+                            ->disabled()
+                            ->dehydrated(),
                         Forms\Components\TextInput::make('password')
                             ->label('Wachtwoord')
                             ->password()
@@ -133,6 +152,15 @@ class UserResource extends Resource
                     ->label('Telefoonnummer')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\IconColumn::make('blocked_at')
+                    ->label('Geblokkeerd')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-shield-exclamation')
+                    ->falseIcon('heroicon-o-shield-check')
+                    ->trueColor('danger')
+                    ->falseColor('success')
+                    ->getStateUsing(fn (User $record): bool => $record->isBlocked())
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->label('E-mail geverifieerd')
                     ->dateTime('d-m-Y H:i')
@@ -151,8 +179,43 @@ class UserResource extends Resource
                         'admin' => 'Admin',
                         'user' => 'Gebruiker',
                     ]),
+                Tables\Filters\TernaryFilter::make('blocked_at')
+                    ->label('Geblokkeerd')
+                    ->placeholder('Alle gebruikers')
+                    ->trueLabel('Alleen geblokkeerde gebruikers')
+                    ->falseLabel('Alleen niet-geblokkeerde gebruikers')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('blocked_at'),
+                        false: fn (Builder $query) => $query->whereNull('blocked_at'),
+                        blank: fn (Builder $query) => $query,
+                    )
+                    ->native(false),
             ])
             ->actions([
+                Tables\Actions\Action::make('toggle_block')
+                    ->label(fn (User $record) => $record->isBlocked() ? 'Deblokkeren' : 'Blokkeren')
+                    ->icon(fn (User $record) => $record->isBlocked() ? 'heroicon-o-shield-check' : 'heroicon-o-shield-exclamation')
+                    ->color(fn (User $record) => $record->isBlocked() ? 'success' : 'danger')
+                    ->requiresConfirmation()
+                    ->modalHeading(fn (User $record) => $record->isBlocked() ? 'Account deblokkeren' : 'Account blokkeren')
+                    ->modalDescription(fn (User $record) => $record->isBlocked() 
+                        ? "Weet u zeker dat u het account van {$record->name} wilt deblokkeren? De gebruiker kan dan weer inloggen."
+                        : "Weet u zeker dat u het account van {$record->name} wilt blokkeren? De gebruiker kan dan niet meer inloggen.")
+                    ->action(function (User $record) {
+                        if ($record->isBlocked()) {
+                            $record->update(['blocked_at' => null]);
+                            \Filament\Notifications\Notification::make()
+                                ->title('Account gedeblokkeerd')
+                                ->success()
+                                ->send();
+                        } else {
+                            $record->update(['blocked_at' => now()]);
+                            \Filament\Notifications\Notification::make()
+                                ->title('Account geblokkeerd')
+                                ->warning()
+                                ->send();
+                        }
+                    }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

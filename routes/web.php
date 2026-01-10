@@ -31,7 +31,7 @@ foreach ($redirects as $old => $new) {
 
 Route::get('/', [PageController::class, 'home'])->name('home');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'user.not.blocked'])->group(function () {
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -48,7 +48,7 @@ Route::get('live', [PageController::class, 'live'])->name('live');
 Route::get('audio/{service}', [PageController::class, 'streamAudio'])->name('audio.stream');
 
 // Download YouTube video (admin only)
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'user.not.blocked'])->group(function () {
     Route::post('services/{service}/download-video', [PageController::class, 'downloadVideo'])->name('services.download-video');
 });
 
@@ -92,7 +92,7 @@ Route::get('api/agenda/items', [AgendaController::class, 'getItems'])->name('age
 require __DIR__ . '/auth.php';
 
 // auth routes
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'user.not.blocked'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
