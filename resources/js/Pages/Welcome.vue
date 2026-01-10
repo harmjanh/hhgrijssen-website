@@ -111,6 +111,16 @@ function handleImageError() {
                 </Link>
             </div>
         </div>
+        <!-- CTA to view full agenda -->
+        <div class="mt-8 text-center">
+            <Link href="/agenda"
+                class="inline-flex items-center rounded-md bg-primary-500 px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-primary-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400 transition-colors">
+                Bekijk volledige agenda
+                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </Link>
+        </div>
     </div>
 
     <div class="mx-auto w-full px-3 py-12 md:w-3/5 md:px-0">
