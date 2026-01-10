@@ -35,6 +35,32 @@ class UserSeeder extends Seeder
                 'password' => Hash::make(Str::random(10)),
                 'role' => null,
                 'email_verified_at' => now(),
+            ], [
+                'name' => 'Jeugdvereniging Jedid-Jah',
+                'email' => 'jedid-jah@hhgrijssen.nl',
+                'password' => Hash::make(Str::random(10)),
+                'role' => null,
+                'email_verified_at' => now(),
+            ],
+            [
+                'name' => 'Jeugdvereniging het Kompas',
+                'email' => 'hetkompas@hhgrijssen.nl',
+                'password' => Hash::make(Str::random(10)),
+                'role' => null,
+                'email_verified_at' => now(),
+            ], [
+                'name' => 'Jeugdvereniging de Wegwijzer',
+                'email' => 'dewegwijzer@hhgrijssen.nl',
+                'password' => Hash::make(Str::random(10)),
+                'role' => null,
+                'email_verified_at' => now(),
+            ], [
+
+                'name' => 'Jeugdvereniging TomTom',
+                'email' => 'bbakker@hhgrijssen.nl',
+                'password' => Hash::make(Str::random(10)),
+                'role' => null,
+                'email_verified_at' => now(),
             ]
         ];
 
