@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AddressSubmissionController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\ChurchAdministrationContactController;
 use App\Http\Controllers\CoinOrderController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeclarationAttachmentController;
@@ -60,6 +61,10 @@ Route::get('declaratie/bedankt', [PublicDeclarationController::class, 'success']
 // Contact Routes
 Route::get('contact', [ContactController::class, 'show'])->name('contact.show');
 Route::post('contact', [ContactController::class, 'store'])->name('contact.store');
+
+// Church Administration Contact Routes
+Route::get('kerkelijke-administratie', [ChurchAdministrationContactController::class, 'show'])->name('church-administration-contact.show');
+Route::post('kerkelijke-administratie', [ChurchAdministrationContactController::class, 'store'])->name('church-administration-contact.store');
 
 // YouTube OAuth callback route
 Route::get('youtube/oauth/callback', function () {

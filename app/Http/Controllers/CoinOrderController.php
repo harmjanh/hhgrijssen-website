@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CoinOrderRequest;
 use App\Models\CoinOrder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class CoinOrderController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Show the coin order form.
      */
@@ -34,7 +37,7 @@ class CoinOrderController extends Controller
                 // Calculate the Wednesday before the pickup moment
                 $pickupDate = \Carbon\Carbon::parse($moment->date)->startOfDay();
                 $wednesdayBefore = $pickupDate->copy()->previous(\Carbon\Carbon::WEDNESDAY);
-                
+
                 // The pickup moment is available if today is on or before the Wednesday before it
                 return $today->lte($wednesdayBefore);
             })
@@ -193,6 +196,13 @@ class CoinOrderController extends Controller
      */
     public function success(CoinOrder $coinOrder): Response
     {
+        $user = Auth::user();
+        if ($user->id !== $coinOrder->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $this->authorize('view', $coinOrder);
+
         $coinOrder->load('pickupMoment');
 
         return Inertia::render('CoinOrders/Success', [
@@ -252,6 +262,8 @@ class CoinOrderController extends Controller
      */
     public function index(): Response
     {
+        $this->authorize('viewAny', CoinOrder::class);
+
         $user = Auth::user();
         $orders = $user->coinOrders()
             ->with('pickupMoment')
@@ -275,6 +287,13 @@ class CoinOrderController extends Controller
      */
     public function download(CoinOrder $coinOrder)
     {
+        $user = Auth::user();
+        if ($user->id !== $coinOrder->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $this->authorize('view', $coinOrder);
+
         // Load the user relationship to access address information
         $coinOrder->load(['user', 'pickupMoment']);
 

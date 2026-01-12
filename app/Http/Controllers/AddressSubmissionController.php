@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\SubmitAddressChange;
 use App\Http\Requests\AddressSubmissionRequest;
 use App\Models\AddressSubmission;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -13,9 +14,13 @@ use Inertia\Response;
 
 class AddressSubmissionController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(): Response
     {
-        $submissions = AddressSubmission::with('user')
+        $user = Auth::user();
+        $submissions = AddressSubmission::where('user_id', $user->id)
+            ->with('user')
             ->latest()
             ->paginate(10);
 
@@ -53,6 +58,8 @@ class AddressSubmissionController extends Controller
 
     public function show(AddressSubmission $submission): Response
     {
+        $this->authorize('view', $submission);
+
         return Inertia::render('AddressSubmissions/Show', [
             'submission' => $submission->load('user')
         ]);
