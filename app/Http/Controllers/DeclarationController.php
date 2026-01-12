@@ -76,6 +76,11 @@ class DeclarationController extends Controller
     {
         $this->authorize('view', $declaration);
 
+        $user = Auth::user();
+        if ($user->id !== $declaration->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return Inertia::render('Declarations/Show', [
             'declaration' => $declaration->load('attachments'),
         ]);
