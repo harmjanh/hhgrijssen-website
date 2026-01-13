@@ -36,6 +36,7 @@ class ContactFormSubmitted extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Nieuw contactformulier bericht: ' . $this->data['subject'])
             ->greeting('Beste webmaster')
+            ->replyTo($this->data['email'])
             ->line('Er is een nieuw bericht via het contactformulier ontvangen.')
             ->line('')
             ->line('Naam: ' . $this->data['name'])

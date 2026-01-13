@@ -7,6 +7,7 @@ use App\Filament\Resources\RoomReservationResource\Actions\ExportExampleCsvActio
 use App\Filament\Resources\RoomReservationResource\Actions\ImportRoomReservationsAction;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
 
 class ListRoomReservations extends ListRecords
 {
@@ -16,8 +17,18 @@ class ListRoomReservations extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            Actions\Action::make('history')
+                ->label('Historische Reserveringen')
+                ->url(static::getResource()::getUrl('history')),
             ExportExampleCsvAction::make(),
             ImportRoomReservationsAction::make(),
         ];
+    }
+
+    protected function getTableQuery(): Builder
+    {
+        return parent::getTableQuery()
+            ->where('start_time', '>=', now())
+            ->orderBy('start_time', 'asc');
     }
 }

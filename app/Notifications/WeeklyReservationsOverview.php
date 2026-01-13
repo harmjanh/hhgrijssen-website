@@ -82,7 +82,7 @@ class WeeklyReservationsOverview extends Notification implements ShouldQueue
                         ->line('  Gebruiker: ' . $userName)
                         ->line('  Onderwerp: ' . ($reservation->subject ?? 'Geen onderwerp'))
                         ->line('  Aantal personen: ' . ($reservation->number_of_people ?? 'Onbekend'))
-                        ->line('');
+                        ->line('--------------------------------');
                 }
             }
         }

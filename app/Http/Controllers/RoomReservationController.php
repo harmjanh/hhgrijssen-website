@@ -16,17 +16,35 @@ use Inertia\Response;
 class RoomReservationController extends Controller
 {
     /**
-     * Display a listing of the user's room reservations.
+     * Display a listing of the user's upcoming room reservations.
      */
     public function index(): Response
     {
         $user = Auth::user();
         $reservations = $user->roomReservations()
             ->with('room')
-            ->latest('start_time')
+            ->where('start_time', '>=', now())
+            ->orderBy('start_time', 'asc')
             ->get();
 
         return Inertia::render('RoomReservations/Index', [
+            'reservations' => $reservations,
+        ]);
+    }
+
+    /**
+     * Display a listing of the user's historical room reservations.
+     */
+    public function history(): Response
+    {
+        $user = Auth::user();
+        $reservations = $user->roomReservations()
+            ->with('room')
+            ->where('start_time', '<', now())
+            ->orderBy('start_time', 'desc')
+            ->get();
+
+        return Inertia::render('RoomReservations/History', [
             'reservations' => $reservations,
         ]);
     }
@@ -128,6 +146,13 @@ class RoomReservationController extends Controller
             abort(403);
         }
 
+        // Load relationships before deleting
+        $roomReservation->load('user', 'room');
+
+        // Send notification to koster if reservation is within a week (before deleting)
+        $this->notifyKosterIfWithinWeek($roomReservation);
+
+        // Delete the reservation
         $roomReservation->delete();
 
         return redirect()->route('room-reservations.index')
@@ -170,25 +195,62 @@ class RoomReservationController extends Controller
             abort(403, 'Ongeldige of verlopen link.');
         }
 
+        // Ensure user can only cancel their own reservations
+        if ($roomReservation->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         // Load the user relationship
         $roomReservation->load('user', 'room');
 
-        // Store user name and clone reservation for notification
-        $userName = $roomReservation->user ? $roomReservation->user->name : 'Onbekend';
-        $reservationForNotification = $roomReservation->replicate();
-        // Set the room relationship on the replicated model
-        $reservationForNotification->setRelation('room', $roomReservation->room);
+        // Send notification to koster if reservation is within a week (before deleting)
+        $this->notifyKosterIfWithinWeek($roomReservation);
 
         // Delete the reservation
         $roomReservation->delete();
 
+        // Redirect to homepage if user is not authenticated, otherwise to reservations index
+        if (Auth::check()) {
+            return redirect()->route('room-reservations.index')
+                ->with('success', 'Uw zaalreservering is succesvol geannuleerd.');
+        }
+
+        return redirect()->route('home')
+            ->with('success', 'Uw zaalreservering is succesvol geannuleerd.');
+    }
+
+    /**
+     * Send notification to koster if the reservation is within a week from now.
+     */
+    private function notifyKosterIfWithinWeek(RoomReservation $roomReservation): void
+    {
+        // Check if reservation is within a week from now
+        $isWithinWeek = $roomReservation->start_time->isAfter(now())
+            && $roomReservation->start_time->isBefore(now()->addWeek());
+
+        if (!$isWithinWeek) {
+            return;
+        }
+
+        // Extract data for notification
+        $userName = $roomReservation->user ? $roomReservation->user->name : 'Onbekend';
+        $roomName = $roomReservation->room ? $roomReservation->room->name : 'Onbekend';
+        $subject = $roomReservation->subject;
+        $numberOfPeople = $roomReservation->number_of_people;
+        $startTime = $roomReservation->start_time->toDateTimeString();
+        $endTime = $roomReservation->end_time->toDateTimeString();
+
         // Send notification to koster
         $koster = User::where('email', 'koster@hhgrijssen.nl')->first();
         if ($koster) {
-            $koster->notify(new ReservationCancelled($reservationForNotification, $userName));
+            $koster->notify(new ReservationCancelled(
+                $userName,
+                $roomName,
+                $subject,
+                $numberOfPeople,
+                $startTime,
+                $endTime
+            ));
         }
-
-        return redirect()->route('room-reservations.index')
-            ->with('success', 'Uw zaalreservering is succesvol geannuleerd.');
     }
 }

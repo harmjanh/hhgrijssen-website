@@ -49,8 +49,10 @@ const formatTimeRange = (startTime: string, endTime: string) => {
 };
 
 const deleteReservation = () => {
-    if (confirm('Weet je zeker dat je deze reservering wilt verwijderen?')) {
-        router.delete(route('room-reservations.destroy', props.reservation.id));
+    if (confirm('Weet je zeker dat je deze reservering wilt annuleren?')) {
+        router.delete(route('room-reservations.destroy', props.reservation.id), {
+            preserveScroll: false,
+        });
     }
 };
 </script>
@@ -66,6 +68,21 @@ const deleteReservation = () => {
 
         <div class="py-12">
             <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
+                <div v-if="$page.props.flash?.success" class="mb-6 rounded-lg bg-green-50 border border-green-200 p-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-green-700">
+                                {{ $page.props.flash?.success }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
                         <div class="space-y-6">
@@ -124,7 +141,7 @@ const deleteReservation = () => {
                                     </PrimaryButton>
                                     </Link>
                                     <DangerButton @click="deleteReservation">
-                                        Verwijderen
+                                        Annuleren
                                     </DangerButton>
                                 </div>
                             </div>

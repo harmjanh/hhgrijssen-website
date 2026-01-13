@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\AddressSubmission;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -47,7 +48,7 @@ class NewAddressSubmission extends Notification implements ShouldQueue
             ->line('')
             ->line('Naam: ' . $submission->name)
             ->line('E-mail: ' . $submission->email)
-            ->line('Geboortedatum: ' . ($submission->date_of_birth ? $submission->date_of_birth->format('d-m-Y') : 'Niet opgegeven'))
+            ->line('Geboortedatum: ' . ($submission->date_of_birth ? (is_string($submission->date_of_birth) ? Carbon::parse($submission->date_of_birth)->format('d-m-Y') : $submission->date_of_birth->format('d-m-Y')) : 'Niet opgegeven'))
             ->line('Telefoonnummer: ' . ($submission->phone_number ?? 'Niet opgegeven'))
             ->line('')
             ->line('Oud Adres:')

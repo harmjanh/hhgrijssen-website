@@ -52,13 +52,13 @@ class RoomReservationResource extends Resource
                     ->label('Starttijd')
                     ->required()
                     ->native(false)
-                    ->displayFormat('d-m-Y H:i')
+                    ->displayFormat('D d-m-Y H:i')
                     ->seconds(false),
                 Forms\Components\DateTimePicker::make('end_time')
                     ->label('Eindtijd')
                     ->required()
                     ->native(false)
-                    ->displayFormat('d-m-Y H:i')
+                    ->displayFormat('D d-m-Y H:i')
                     ->seconds(false),
             ]);
     }
@@ -69,32 +69,26 @@ class RoomReservationResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Gebruiker')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('room.name')
                     ->label('Zaal')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('subject')
                     ->label('Onderwerp')
                     ->searchable()
                     ->limit(30),
                 Tables\Columns\TextColumn::make('number_of_people')
                     ->label('Personen')
-                    ->sortable()
                     ->alignCenter(),
                 Tables\Columns\TextColumn::make('start_time')
                     ->label('Starttijd')
-                    ->dateTime('d-m-Y H:i')
-                    ->sortable(),
+                    ->formatStateUsing(fn ($state) => $state ? $state->locale('nl')->translatedFormat('D d-m-Y H:i') : '-'),
                 Tables\Columns\TextColumn::make('end_time')
                     ->label('Eindtijd')
-                    ->dateTime('d-m-Y H:i')
-                    ->sortable(),
+                    ->formatStateUsing(fn ($state) => $state ? $state->locale('nl')->translatedFormat('D d-m-Y H:i') : '-'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Aangemaakt')
-                    ->dateTime('d-m-Y H:i')
-                    ->sortable()
+                    ->formatStateUsing(fn ($state) => $state ? $state->locale('nl')->translatedFormat('D d-m-Y H:i') : '-')
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
@@ -135,8 +129,7 @@ class RoomReservationResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->defaultSort('start_time', 'desc');
+            ]);
     }
 
     public static function getRelations(): array
@@ -150,6 +143,7 @@ class RoomReservationResource extends Resource
     {
         return [
             'index' => Pages\ListRoomReservations::route('/'),
+            'history' => Pages\HistoryRoomReservations::route('/history'),
             'create' => Pages\CreateRoomReservation::route('/create'),
             'edit' => Pages\EditRoomReservation::route('/{record}/edit'),
         ];

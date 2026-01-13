@@ -129,6 +129,7 @@ Route::middleware(['auth', 'verified', 'user.not.blocked'])->group(function () {
 
     // Room Reservation Routes
     Route::get('room-reservations', [RoomReservationController::class, 'index'])->name('room-reservations.index');
+    Route::get('room-reservations/history', [RoomReservationController::class, 'history'])->name('room-reservations.history');
     Route::get('room-reservations/create', [RoomReservationController::class, 'create'])->name('room-reservations.create');
     Route::post('room-reservations', [RoomReservationController::class, 'store'])->name('room-reservations.store');
     Route::get('room-reservations/{roomReservation}', [RoomReservationController::class, 'show'])->name('room-reservations.show');
