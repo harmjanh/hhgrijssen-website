@@ -41,7 +41,7 @@ const verificationLinkSent = computed(
         </div>
 
         <form @submit.prevent="submit">
-            <InputError class="mb-4" :message="form.errors.email" />
+            <InputError class="mb-4" :message="(form.errors as Record<string, string>).email" />
             
             <div class="mt-4 flex items-center justify-between">
                 <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
