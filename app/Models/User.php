@@ -36,6 +36,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'bankaccountnumber',
         'date_of_birth',
         'blocked_at',
+        'contact_information_submitted_at',
     ];
 
     /**
@@ -107,6 +108,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'blocked_at' => 'datetime',
+            'contact_information_submitted_at' => 'datetime',
         ];
     }
 

@@ -15,6 +15,8 @@ use App\Http\Controllers\PublicDeclarationController;
 use App\Http\Controllers\RoomReservationController;
 use App\Http\Controllers\PrivacyConsentController;
 use App\Http\Controllers\SolidarityFundAuthorizationController;
+use App\Http\Controllers\VoluntaryContributionController;
+use App\Http\Controllers\ContactInformationController;
 use App\Http\Controllers\ZaaierAuthorizationController;
 use App\Http\Controllers\YouTubeVideoController;
 use Inertia\Inertia;
@@ -155,6 +157,14 @@ Route::middleware(['auth', 'verified', 'user.not.blocked'])->group(function () {
     Route::get('privacy-consents/create', [PrivacyConsentController::class, 'create'])->name('privacy-consents.create');
     Route::post('privacy-consents', [PrivacyConsentController::class, 'store'])->name('privacy-consents.store');
     Route::get('privacy-consents/{privacyConsent}', [PrivacyConsentController::class, 'show'])->name('privacy-consents.show');
+
+    // Voluntary Contribution Routes
+    Route::get('vrijwillige-bijdragen', [VoluntaryContributionController::class, 'index'])->name('voluntary-contributions.index');
+    Route::post('vrijwillige-bijdragen/verzoek-registratienummer', [VoluntaryContributionController::class, 'requestRegistrationNumber'])->name('voluntary-contributions.request-registration-number');
+
+    // Contact Information Routes
+    Route::get('contactgegevens', [ContactInformationController::class, 'create'])->name('contact-information.create');
+    Route::post('contactgegevens', [ContactInformationController::class, 'store'])->name('contact-information.store');
 });
 
 // Public route for cancellation (with signed URL)
