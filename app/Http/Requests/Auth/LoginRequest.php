@@ -60,6 +60,15 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // If email is not verified, don't clear rate limiter yet
+        // The controller will handle the redirect to verification page
+        if ($user && !$user->hasVerifiedEmail()) {
+            // Don't logout, let them access the verification page
+            // The controller will redirect them
+            return;
+        }
+
+        // Email is verified, clear rate limiter
         RateLimiter::clear($this->throttleKey());
     }
 

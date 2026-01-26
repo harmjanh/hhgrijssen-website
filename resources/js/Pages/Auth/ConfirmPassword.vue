@@ -21,16 +21,16 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Confirm Password" />
+        <Head title="Wachtwoord Bevestigen" />
 
         <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-            This is a secure area of the application. Please confirm your
-            password before continuing.
+            Dit is een beveiligd gedeelte van de applicatie. Bevestig uw
+            wachtwoord voordat u doorgaat.
         </div>
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="password" value="Password" />
+                <InputLabel for="password" value="Wachtwoord" />
                 <TextInput
                     id="password"
                     type="password"
@@ -49,7 +49,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Confirm
+                    Bevestigen
                 </PrimaryButton>
             </div>
         </form>

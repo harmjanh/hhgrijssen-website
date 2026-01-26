@@ -18,12 +18,16 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
+        // Check if email was just verified
+        $emailVerified = request()->query('verified') === '1';
+
         // Add any data you want to pass to the dashboard view
         $data = [
             'stats' => [
                 'total_declarations' => Declaration::where('user_id', $user->id)->count(),
                 // Add more stats as needed
             ],
+            'emailVerified' => $emailVerified,
         ];
 
         return Inertia::render('Dashboard', $data);
