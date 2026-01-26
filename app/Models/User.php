@@ -163,4 +163,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     {
         $this->notify(new VerifyEmailNotification());
     }
+
+    public function scipioRegistrations(): HasMany
+    {
+        return $this->hasMany(ScipioRegistration::class, 'email', 'email');
+    }
 }
