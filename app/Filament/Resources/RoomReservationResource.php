@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class RoomReservationResource extends Resource
 {
@@ -21,6 +22,16 @@ class RoomReservationResource extends Resource
     protected static ?string $navigationLabel = 'Zaalreserveringen';
     protected static ?string $modelLabel = 'Zaalreservering';
     protected static ?string $pluralModelLabel = 'Zaalreserveringen';
+
+    /**
+     * Check if the user can view any records.
+     * Only admin and koster roles can access this resource.
+     */
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+        return $user && in_array($user->role, ['admin', 'koster']);
+    }
 
     public static function form(Form $form): Form
     {

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ScipioRegistrationResource\Pages;
 
 use App\Filament\Resources\ScipioRegistrationResource;
 use App\Filament\Resources\ScipioRegistrationResource\Actions\ImportScipioRegistrationsAction;
+use App\Filament\Resources\ScipioRegistrationResource\Actions\ImportFundSubscriptionsAction;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -16,6 +17,7 @@ class ListScipioRegistrations extends ListRecords
         return [
             Actions\CreateAction::make(),
             ImportScipioRegistrationsAction::make(),
+            ImportFundSubscriptionsAction::make(),
         ];
     }
 }

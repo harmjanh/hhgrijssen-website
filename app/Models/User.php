@@ -52,7 +52,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->role === 'admin' && !$this->isBlocked();
+        return in_array($this->role, ['admin', 'koster', 'muntenuitgifte']) && !$this->isBlocked();
     }
 
     /**

@@ -25,6 +25,16 @@ class PickupMomentResource extends Resource
     
     protected static ?string $pluralModelLabel = 'Afhaalmomenten';
 
+    /**
+     * Check if the user can view any records.
+     * Only admin and muntenuitgifte roles can access this resource.
+     */
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+        return $user && in_array($user->role, ['admin', 'muntenuitgifte']);
+    }
+
     public static function form(Form $form): Form
     {
         return $form

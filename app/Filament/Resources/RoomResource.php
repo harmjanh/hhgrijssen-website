@@ -22,6 +22,16 @@ class RoomResource extends Resource
     protected static ?string $modelLabel = 'Zaal';
     protected static ?string $pluralModelLabel = 'Zalen';
 
+    /**
+     * Check if the user can view any records.
+     * Only admin and koster roles can access this resource.
+     */
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+        return $user && in_array($user->role, ['admin', 'koster']);
+    }
+
     public static function form(Form $form): Form
     {
         return $form

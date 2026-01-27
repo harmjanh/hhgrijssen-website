@@ -23,6 +23,16 @@ class UserResource extends Resource
     protected static ?string $modelLabel = 'Gebruiker';
     protected static ?string $pluralModelLabel = 'Gebruikers';
 
+    /**
+     * Check if the user can view any records.
+     * Only admin role can access this resource.
+     */
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+        return $user && $user->role === 'admin';
+    }
+
     public static function form(Form $form): Form
     {
         return $form

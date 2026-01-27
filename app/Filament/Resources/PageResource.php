@@ -23,6 +23,16 @@ class PageResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    /**
+     * Check if the user can view any records.
+     * Only admin role can access this resource.
+     */
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+        return $user && $user->role === 'admin';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
