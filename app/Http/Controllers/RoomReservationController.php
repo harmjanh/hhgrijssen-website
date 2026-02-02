@@ -6,12 +6,17 @@ use App\Http\Requests\RoomReservationRequest;
 use App\Models\Room;
 use App\Models\RoomReservation;
 use App\Models\User;
+use App\Notifications\KerkzaalReservationCreated;
 use App\Notifications\ReservationCancelled;
+use App\Notifications\ReservationWithinWeek;
+use App\Notifications\ReservationReminder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+
 
 class RoomReservationController extends Controller
 {
@@ -78,6 +83,19 @@ class RoomReservationController extends Controller
             'end_time' => $data['end_time'],
         ]);
 
+        // Notify when reservation is for the kerkzaal (church hall)
+        $room = $reservation->room;
+        if ($room && strcasecmp($room->name, 'Kerkzaal') === 0) {
+            Notification::route('mail', 'hhhazelhorst@hhgrijssen.nl')
+                ->notify(new KerkzaalReservationCreated($reservation));
+        }
+
+        // Notify koster when start time is within the next 7 days
+        if ($reservation->start_time->isAfter(now()) && $reservation->start_time->isBefore(now()->addDays(7))) {
+            Notification::route('mail', 'koster@hhgrijssen.nl')
+                ->notify(new ReservationWithinWeek($reservation, true));
+        }
+
         return redirect()->route('room-reservations.show', $reservation)
             ->with('success', 'Zaalreservering is succesvol aangemaakt.');
     }
@@ -131,6 +149,20 @@ class RoomReservationController extends Controller
         $data = $request->validated();
 
         $roomReservation->update($data);
+
+        // Notify koster when start time is within the next 7 days
+        $roomReservation->load('room');
+
+        // Notify when reservation is for the kerkzaal (church hall)
+        $room = $roomReservation->room;
+        if ($room && strcasecmp($room->name, 'Kerkzaal') === 0) {
+            Notification::route('mail', 'hhhazelhorst@hhgrijssen.nl')
+                ->notify(new KerkzaalReservationCreated($roomReservation));
+        }
+        if ($roomReservation->start_time->isAfter(now()) && $roomReservation->start_time->isBefore(now()->addDays(7))) {
+            Notification::route('mail', 'koster@hhgrijssen.nl')
+                ->notify(new ReservationWithinWeek($roomReservation, false));
+        }
 
         return redirect()->route('room-reservations.show', $roomReservation)
             ->with('success', 'Zaalreservering is succesvol bijgewerkt.');
@@ -190,14 +222,9 @@ class RoomReservationController extends Controller
      */
     public function cancel(Request $request, RoomReservation $roomReservation): RedirectResponse
     {
-        // Verify the signed URL
+        // Verify the signed URL (no login required - the signed link is sufficient)
         if (!$request->hasValidSignature()) {
             abort(403, 'Ongeldige of verlopen link.');
-        }
-
-        // Ensure user can only cancel their own reservations
-        if ($roomReservation->user_id !== Auth::id()) {
-            abort(403);
         }
 
         // Load the user relationship
