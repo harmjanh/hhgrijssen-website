@@ -47,6 +47,8 @@
                                 Tel:<a href="tel:+31643116776">+31 6 43 11 67 76</a>
                                 <br>
                                 <a href="mailto:kerkvoogdij@hhgrijssen.nl">kerkvoogdij@hhgrijssen.nl</a>
+                                <br />
+                                <a href="/dienst-bijwonen#parkeren" target="_blank">Parkeren rondom de kerk</a>
                             </p>
                             <!-- <ul role="list" class="mt-6 space-y-4">
                                 <li v-for="item in navigation.legal" :key="item.name">
