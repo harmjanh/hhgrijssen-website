@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Declaration;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -108,11 +109,30 @@ class DeclarationSubmitted extends Notification implements ShouldQueue
             ->line('Status: In behandeling')
             ->line('U ontvangt een bericht zodra uw declaratie is verwerkt.');
 
+        if ($isPublicDeclaration) {
+            $mailMessage->line('Bij deze e-mail ontvangt u een PDF van uw declaratie als bijlage.');
+        }
+
         if ($user) {
             $mailMessage->action('Bekijk declaratie', route('declarations.show', $declaration));
         }
 
         $mailMessage->line('Bedankt voor uw declaratie.');
+
+        // For public declarations: attach PDF so the declarant receives a copy by email
+        if ($isPublicDeclaration) {
+            try {
+                $pdf = Pdf::loadView('pdf.public-declaration', ['declaration' => $this->declaration]);
+                $pdfContent = $pdf->output();
+                $mailMessage->attachData(
+                    $pdfContent,
+                    'declaratie-' . $this->declaration->id . '.pdf',
+                    ['mime' => 'application/pdf']
+                );
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         return $mailMessage;
     }

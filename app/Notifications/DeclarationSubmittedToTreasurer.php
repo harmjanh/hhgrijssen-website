@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Declaration;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -116,6 +117,26 @@ class DeclarationSubmittedToTreasurer extends Notification implements ShouldQueu
             ->line('Omschrijving: ' . $declaration->explanation)
             ->action('Bekijk declaratie', route('filament.admin.resources.declarations.view', $declaration))
             ->line('Gelieve deze declaratie te verwerken.');
+
+        // Attach PDF for public declarations so penningmeester receives a copy
+        if ($isPublicDeclaration) {
+            $mailMessage->line('Bij deze e-mail ontvangt u een PDF van de declaratie als bijlage.');
+        }
+
+        // Attach PDF for public declarations (same view as confirmation mail to declarant)
+        if ($isPublicDeclaration) {
+            try {
+                $pdf = Pdf::loadView('pdf.public-declaration', ['declaration' => $this->declaration]);
+                $pdfContent = $pdf->output();
+                $mailMessage->attachData(
+                    $pdfContent,
+                    'declaratie-' . $this->declaration->id . '.pdf',
+                    ['mime' => 'application/pdf']
+                );
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         return $mailMessage;
     }

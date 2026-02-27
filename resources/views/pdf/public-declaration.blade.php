@@ -6,38 +6,42 @@
     <style>
         body {
             font-family: DejaVu Sans, Arial, sans-serif;
-            line-height: 1.4;
+            font-size: 8pt;
+            line-height: 1.25;
             color: #333;
             margin: 0;
-            padding: 10px;
+            padding: 8px;
         }
         .header {
             text-align: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
             border-bottom: 1px solid #eee;
         }
         .logo {
-            max-width: 150px;
-            margin-bottom: 10px;
+            max-width: 100px;
+            margin-bottom: 4px;
         }
         .declaration-info {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         .personal-info {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         .service-info {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
+        }
+        .calculation-info {
+            margin-bottom: 8px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
-            font-size: 0.9em;
+            margin-bottom: 8px;
+            font-size: 0.95em;
         }
         th, td {
-            padding: 6px;
+            padding: 3px 4px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
@@ -45,33 +49,33 @@
             background-color: #f8f9fa;
         }
         .footer {
-            margin-top: 20px;
-            padding-top: 10px;
+            margin-top: 10px;
+            padding-top: 6px;
             border-top: 1px solid #eee;
-            font-size: 0.8em;
+            font-size: 0.85em;
             color: #666;
             display: flex;
             justify-content: space-between;
         }
         .footer-logo {
-            max-width: 100px;
+            max-width: 70px;
         }
         .footer-info {
-            font-size: 0.8em;
+            font-size: 0.9em;
         }
         .footer-address {
-            font-size: 0.8em;
+            font-size: 0.9em;
         }
         h1 {
-            font-size: 1.5em;
-            margin: 5px 0;
+            font-size: 1.25em;
+            margin: 2px 0;
         }
         h2 {
-            font-size: 1.2em;
-            margin: 5px 0;
+            font-size: 1.05em;
+            margin: 2px 0;
         }
         p {
-            margin: 3px 0;
+            margin: 2px 0;
         }
     </style>
 </head>

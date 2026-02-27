@@ -25,6 +25,9 @@ class ContactInformationController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'phonenumber' => $user->phonenumber,
+                'street' => $user->street,
+                'number' => $user->number,
+                'city' => $user->city,
             ],
         ]);
     }
@@ -42,6 +45,9 @@ class ContactInformationController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'phonenumber' => $data['phonenumber'],
+            'street' => $data['street'] ?? null,
+            'number' => $data['number'] ?? null,
+            'city' => $data['city'] ?? null,
             'contact_information_submitted_at' => now(),
         ]);
 

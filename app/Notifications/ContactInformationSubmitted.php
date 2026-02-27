@@ -44,6 +44,8 @@ class ContactInformationSubmitted extends Notification implements ShouldQueue
             ->line('Naam: ' . $this->data['name'])
             ->line('E-mail: ' . $this->data['email'])
             ->line('Telefoonnummer: ' . $this->data['phonenumber'])
+            ->when(!empty($this->data['street']) || !empty($this->data['number']), fn ($mail) => $mail->line('Straat en huisnummer: ' . trim(($this->data['street'] ?? '') . ' ' . ($this->data['number'] ?? ''))))
+            ->when(!empty($this->data['city']), fn ($mail) => $mail->line('Plaats: ' . $this->data['city']))
             ->line('')
             ->line('De gebruiker heeft aangegeven dat deze gegevens ontbreken in de Scipio registraties.')
             ->line('Gelieve deze gegevens te verwerken in het systeem.')

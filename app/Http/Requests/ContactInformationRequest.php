@@ -27,6 +27,9 @@ class ContactInformationRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'phonenumber' => ['required', 'string', 'max:255'],
+            'street' => ['nullable', 'string', 'max:255'],
+            'number' => ['nullable', 'string', 'max:20'],
+            'city' => ['nullable', 'string', 'max:255'],
         ];
     }
 
@@ -43,6 +46,9 @@ class ContactInformationRequest extends FormRequest
             'email.email' => 'E-mailadres moet een geldig e-mailadres zijn.',
             'email.unique' => 'Dit e-mailadres is al in gebruik door een andere gebruiker.',
             'phonenumber.required' => 'Telefoonnummer is verplicht.',
+            'street.max' => 'Straat mag maximaal 255 tekens bevatten.',
+            'number.max' => 'Huisnummer mag maximaal 20 tekens bevatten.',
+            'city.max' => 'Plaats mag maximaal 255 tekens bevatten.',
         ];
     }
 }

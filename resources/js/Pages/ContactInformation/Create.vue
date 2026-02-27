@@ -12,6 +12,9 @@ interface Props {
         name: string;
         email: string;
         phonenumber: string | null;
+        street?: string | null;
+        number?: string | null;
+        city?: string | null;
     };
 }
 
@@ -21,6 +24,9 @@ const form = useForm({
     name: props.user.name,
     email: props.user.email,
     phonenumber: props.user.phonenumber || '',
+    street: props.user.street || '',
+    number: props.user.number || '',
+    city: props.user.city || '',
 });
 
 const submit = () => {
@@ -78,6 +84,28 @@ const submit = () => {
                                 <TextInput id="phonenumber" type="tel" class="mt-1 block w-full"
                                     v-model="form.phonenumber" placeholder="Bijvoorbeeld: 0612345678" required />
                                 <InputError :message="form.errors.phonenumber" class="mt-2" />
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                                <div class="sm:col-span-2">
+                                    <InputLabel for="street" value="Straat" />
+                                    <TextInput id="street" type="text" class="mt-1 block w-full"
+                                        v-model="form.street" placeholder="Straatnaam" />
+                                    <InputError :message="form.errors.street" class="mt-2" />
+                                </div>
+                                <div>
+                                    <InputLabel for="number" value="Huisnummer" />
+                                    <TextInput id="number" type="text" class="mt-1 block w-full"
+                                        v-model="form.number" placeholder="Nr." />
+                                    <InputError :message="form.errors.number" class="mt-2" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="city" value="Plaats" />
+                                <TextInput id="city" type="text" class="mt-1 block w-full"
+                                    v-model="form.city" placeholder="Plaatsnaam" />
+                                <InputError :message="form.errors.city" class="mt-2" />
                             </div>
 
                             <div class="flex items-center justify-end space-x-4">
