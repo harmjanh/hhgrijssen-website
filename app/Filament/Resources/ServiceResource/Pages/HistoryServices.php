@@ -7,27 +7,25 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 
-class ListServices extends ListRecords
+class HistoryServices extends ListRecords
 {
     protected static string $resource = ServiceResource::class;
 
-    protected static ?string $title = 'Komende diensten';
+    protected static ?string $title = 'Historische diensten';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->label('Add New Service'),
-            Actions\Action::make('history')
-                ->label('Historie')
-                ->url(ServiceResource::getUrl('history')),
+            Actions\Action::make('upcoming')
+                ->label('Komende diensten')
+                ->url(ServiceResource::getUrl('index')),
         ];
     }
 
     protected function getTableQuery(): Builder
     {
         return parent::getTableQuery()
-            ->where('agenda_items.start_date', '>=', now())
-            ->reorder('agenda_items.start_date', 'asc');
+            ->where('agenda_items.start_date', '<', now())
+            ->orderBy('agenda_items.start_date', 'desc');
     }
 }

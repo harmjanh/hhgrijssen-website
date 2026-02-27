@@ -7,26 +7,25 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 
-class ListPickupMoments extends ListRecords
+class HistoryPickupMoments extends ListRecords
 {
     protected static string $resource = PickupMomentResource::class;
 
-    protected static ?string $title = 'Toekomstige afhaalmomenten';
+    protected static ?string $title = 'Historische afhaalmomenten';
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
-            Actions\Action::make('history')
-                ->label('Historie')
-                ->url(PickupMomentResource::getUrl('history')),
+            Actions\Action::make('upcoming')
+                ->label('Toekomstige afhaalmomenten')
+                ->url(PickupMomentResource::getUrl('index')),
         ];
     }
 
     protected function getTableQuery(): Builder
     {
         return parent::getTableQuery()
-            ->where('date', '>=', now()->startOfDay())
-            ->orderBy('date', 'asc');
+            ->where('date', '<', now()->startOfDay())
+            ->orderBy('date', 'desc');
     }
 }

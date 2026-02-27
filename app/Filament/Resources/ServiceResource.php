@@ -273,6 +273,7 @@ class ServiceResource extends Resource
     {
         return [
             'index' => Pages\ListServices::route('/'),
+            'history' => Pages\HistoryServices::route('/history'),
             'create' => Pages\CreateService::route('/create'),
             'view' => Pages\ViewService::route('/{record}'),
             'edit' => Pages\EditService::route('/{record}/edit'),

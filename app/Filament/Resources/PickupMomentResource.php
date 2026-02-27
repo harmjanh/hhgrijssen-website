@@ -101,6 +101,7 @@ class PickupMomentResource extends Resource
     {
         return [
             'index' => Pages\ListPickupMoments::route('/'),
+            'history' => Pages\HistoryPickupMoments::route('/history'),
             'create' => Pages\CreatePickupMoment::route('/create'),
             'edit' => Pages\EditPickupMoment::route('/{record}/edit'),
         ];
