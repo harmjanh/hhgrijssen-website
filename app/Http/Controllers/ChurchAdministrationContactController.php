@@ -31,6 +31,7 @@ class ChurchAdministrationContactController extends Controller
     public function store(ChurchAdministrationContactRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        unset($data['website']); // Honeypot niet meenemen
 
         // Create the contact record
         $contact = ChurchAdministrationContact::create([

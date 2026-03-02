@@ -60,13 +60,13 @@ Route::get('declaratie', [PublicDeclarationController::class, 'create'])->name('
 Route::post('declaratie', [PublicDeclarationController::class, 'store'])->name('public-declarations.store');
 Route::get('declaratie/bedankt', [PublicDeclarationController::class, 'success'])->name('public-declarations.success');
 
-// Contact Routes
+// Contact Routes (rate limit: max 3 verzendingen per minuut per IP)
 Route::get('contact', [ContactController::class, 'show'])->name('contact.show');
-Route::post('contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('contact', [ContactController::class, 'store'])->middleware('throttle:3,1')->name('contact.store');
 
-// Church Administration Contact Routes
+// Church Administration Contact Routes (rate limit: max 3 verzendingen per minuut per IP)
 Route::get('kerkelijke-administratie', [ChurchAdministrationContactController::class, 'show'])->name('church-administration-contact.show');
-Route::post('kerkelijke-administratie', [ChurchAdministrationContactController::class, 'store'])->name('church-administration-contact.store');
+Route::post('kerkelijke-administratie', [ChurchAdministrationContactController::class, 'store'])->middleware('throttle:3,1')->name('church-administration-contact.store');
 
 // YouTube OAuth callback route
 Route::get('youtube/oauth/callback', function () {

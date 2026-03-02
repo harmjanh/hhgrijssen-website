@@ -2562,16 +2562,16 @@
         },
         {
             "name": "google/apiclient-services",
-            "version": "v0.434.0",
+            "version": "v0.435.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client-services.git",
-                "reference": "65550d5fd5c468badd75db9ec73c2c187470a00d"
+                "reference": "1edf0f5f2876945c372366107b4d7a387b17a6b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/65550d5fd5c468badd75db9ec73c2c187470a00d",
-                "reference": "65550d5fd5c468badd75db9ec73c2c187470a00d",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/1edf0f5f2876945c372366107b4d7a387b17a6b9",
+                "reference": "1edf0f5f2876945c372366107b4d7a387b17a6b9",
                 "shasum": ""
             },
             "require": {
@@ -2600,9 +2600,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
-                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.434.0"
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.435.0"
             },
-            "time": "2026-02-18T01:00:35+00:00"
+            "time": "2026-03-01T01:14:26+00:00"
         },
         {
             "name": "google/auth",
@@ -3211,29 +3211,29 @@
         },
         {
             "name": "intervention/validation",
-            "version": "4.6.1",
+            "version": "4.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Intervention/validation.git",
-                "reference": "01398e9e7c76e80957d7a000274cee0f2a540f8a"
+                "reference": "6990d71db7f0196099f82b72ce0d53a1d8cc610e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Intervention/validation/zipball/01398e9e7c76e80957d7a000274cee0f2a540f8a",
-                "reference": "01398e9e7c76e80957d7a000274cee0f2a540f8a",
+                "url": "https://api.github.com/repos/Intervention/validation/zipball/6990d71db7f0196099f82b72ce0d53a1d8cc610e",
+                "reference": "6990d71db7f0196099f82b72ce0d53a1d8cc610e",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
-                "illuminate/validation": "^10 || ^11 || ^12",
+                "illuminate/validation": "^10 || ^11 || ^12 || ^13",
                 "php": "^8.1"
             },
             "require-dev": {
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^10.0 || ^11.0 || ^12.0",
                 "slevomat/coding-standard": "~8.0",
-                "squizlabs/php_codesniffer": "^3.8",
-                "symfony/uid": "^5.1|^6.2"
+                "squizlabs/php_codesniffer": "^4",
+                "symfony/uid": "^5.1 || ^6.2 || ^8"
             },
             "type": "library",
             "extra": {
@@ -3279,7 +3279,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Intervention/validation/issues",
-                "source": "https://github.com/Intervention/validation/tree/4.6.1"
+                "source": "https://github.com/Intervention/validation/tree/4.6.2"
             },
             "funding": [
                 {
@@ -3295,7 +3295,7 @@
                     "type": "ko_fi"
                 }
             ],
-            "time": "2025-11-11T14:55:54+00:00"
+            "time": "2026-02-28T06:57:15+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",

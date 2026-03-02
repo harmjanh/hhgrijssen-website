@@ -25,6 +25,8 @@ class ChurchAdministrationContactRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'phone_number' => ['required', 'string', 'max:20'],
+            // Honeypot: moet leeg blijven (spamfilter)
+            'website' => ['nullable', 'string', 'max:0'],
         ];
     }
 
@@ -40,6 +42,7 @@ class ChurchAdministrationContactRequest extends FormRequest
             'email.required' => 'E-mailadres is verplicht.',
             'email.email' => 'E-mailadres moet een geldig e-mailadres zijn.',
             'phone_number.required' => 'Telefoonnummer is verplicht.',
+            'website.max' => 'Er is een fout opgetreden. Probeer het later opnieuw.',
         ];
     }
 }

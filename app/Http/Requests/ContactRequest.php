@@ -26,6 +26,8 @@ class ContactRequest extends FormRequest
             'email' => ['required', 'email', 'max:255'],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
+            // Honeypot: moet leeg blijven (spamfilter)
+            'website' => ['nullable', 'string', 'max:0'],
         ];
     }
 
@@ -42,6 +44,7 @@ class ContactRequest extends FormRequest
             'email.email' => 'E-mailadres moet een geldig e-mailadres zijn.',
             'subject.required' => 'Onderwerp is verplicht.',
             'message.required' => 'Bericht is verplicht.',
+            'website.max' => 'Er is een fout opgetreden. Probeer het later opnieuw.',
         ];
     }
 }

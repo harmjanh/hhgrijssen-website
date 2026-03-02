@@ -15,6 +15,7 @@ const form = useForm({
     name: '',
     email: '',
     phone_number: '',
+    website: '', // Honeypot: blijft leeg; bots vullen dit vaak in
 });
 
 const submit = () => {
@@ -40,6 +41,10 @@ const submit = () => {
                 Laat hier uw gegevens achter voor de kerkelijke administratie. We nemen zo spoedig mogelijk contact met u op.
             </p>
 
+            <div v-if="$page.props.flash?.error" class="mb-8 rounded-lg bg-red-50 border border-red-200 p-6">
+                <p class="text-sm text-red-700">{{ $page.props.flash.error }}</p>
+            </div>
+
             <div v-if="$page.props.flash?.success" class="mb-8 rounded-lg bg-green-50 border border-green-200 p-6">
                 <div class="flex">
                     <div class="flex-shrink-0">
@@ -61,6 +66,12 @@ const submit = () => {
             <div v-show="!$page.props.flash?.success" class="bg-white shadow-sm sm:rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
                     <form @submit.prevent="submit" class="space-y-6">
+                        <!-- Honeypot: verborgen voor bezoekers, zichtbaar voor bots -->
+                        <div class="absolute -left-[9999px] top-0 opacity-0 pointer-events-none" aria-hidden="true">
+                            <label for="website">Website</label>
+                            <input id="website" type="text" name="website" v-model="form.website" tabindex="-1" autocomplete="off" />
+                        </div>
+
                         <div>
                             <InputLabel for="name" value="Naam *" />
                             <TextInput 

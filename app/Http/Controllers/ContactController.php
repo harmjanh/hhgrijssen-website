@@ -28,6 +28,7 @@ class ContactController extends Controller
     public function store(ContactRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        unset($data['website']); // Honeypot niet meenemen
 
         // Send notification to webmaster
         Notification::route('mail', 'webmaster@hhgrijssen.nl')
