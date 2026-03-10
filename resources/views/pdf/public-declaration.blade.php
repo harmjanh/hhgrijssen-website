@@ -92,6 +92,7 @@
         <p><strong>E-mail:</strong> {{ $declaration->email }}</p>
         <p><strong>Adres:</strong> {{ $declaration->street }} {{ $declaration->number }}</p>
         <p><strong>Postcode:</strong> {{ $declaration->zipcode }} {{ $declaration->city }}</p>
+        <p><strong>IBAN:</strong> {{ $declaration->bankaccountnumber }}</p>
     </div>
 
     <div class="service-info">
