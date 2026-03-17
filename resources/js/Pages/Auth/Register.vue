@@ -7,6 +7,7 @@ import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
+    company_name: '',
     name: '',
     email: '',
     password: '',
@@ -16,7 +17,7 @@ const form = useForm({
 const submit = () => {
     form.post(route('register'), {
         onFinish: () => {
-            form.reset('password', 'password_confirmation');
+            form.reset('company_name', 'password', 'password_confirmation');
         },
     });
 };
@@ -28,6 +29,18 @@ const submit = () => {
         <Head title="Registreren" />
 
         <form @submit.prevent="submit">
+            <div class="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+                <label for="company_name">Bedrijfsnaam</label>
+                <input
+                    id="company_name"
+                    v-model="form.company_name"
+                    type="text"
+                    name="company_name"
+                    tabindex="-1"
+                    autocomplete="off"
+                >
+            </div>
+
             <div>
                 <InputLabel for="name" value="Naam" />
 

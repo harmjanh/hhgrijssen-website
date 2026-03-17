@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RoomReservationRequest;
 use App\Models\Room;
 use App\Models\RoomReservation;
-use App\Models\User;
 use App\Notifications\KerkzaalReservationCreated;
 use App\Notifications\ReservationCancelled;
 use App\Notifications\ReservationWithinWeek;
@@ -81,6 +80,12 @@ class RoomReservationController extends Controller
             'number_of_people' => $data['number_of_people'],
             'start_time' => $data['start_time'],
             'end_time' => $data['end_time'],
+            'coffee_needed' => $data['coffee_needed'],
+            'has_break' => $data['has_break'],
+            'beamer_needed' => $data['beamer_needed'],
+            'guest_speaker' => $data['guest_speaker'],
+            'broadcast_needed' => $data['broadcast_needed'],
+            'other_remarks' => $data['other_remarks'],
         ]);
 
         // Notify when reservation is for the kerkzaal (church hall)
@@ -92,7 +97,10 @@ class RoomReservationController extends Controller
 
         // Notify koster when start time is within the next 7 days
         if ($reservation->start_time->isAfter(now()) && $reservation->start_time->isBefore(now()->addDays(7))) {
-            Notification::route('mail', 'koster@hhgrijssen.nl')
+            Notification::route('mail', [
+                'koster@hhgrijssen.nl',
+                'hhhazelhorst@hhgrijssen.nl',
+            ])
                 ->notify(new ReservationWithinWeek($reservation, true));
         }
 
@@ -160,7 +168,10 @@ class RoomReservationController extends Controller
                 ->notify(new KerkzaalReservationCreated($roomReservation));
         }
         if ($roomReservation->start_time->isAfter(now()) && $roomReservation->start_time->isBefore(now()->addDays(7))) {
-            Notification::route('mail', 'koster@hhgrijssen.nl')
+            Notification::route('mail', [
+                'koster@hhgrijssen.nl',
+                'hhhazelhorst@hhgrijssen.nl',
+            ])
                 ->notify(new ReservationWithinWeek($roomReservation, false));
         }
 
@@ -259,25 +270,10 @@ class RoomReservationController extends Controller
             return;
         }
 
-        // Extract data for notification
-        $userName = $roomReservation->user ? $roomReservation->user->name : 'Onbekend';
-        $roomName = $roomReservation->room ? $roomReservation->room->name : 'Onbekend';
-        $subject = $roomReservation->subject;
-        $numberOfPeople = $roomReservation->number_of_people;
-        $startTime = $roomReservation->start_time->toDateTimeString();
-        $endTime = $roomReservation->end_time->toDateTimeString();
-
         // Send notification to koster
-        $koster = User::where('email', 'koster@hhgrijssen.nl')->first();
-        if ($koster) {
-            $koster->notify(new ReservationCancelled(
-                $userName,
-                $roomName,
-                $subject,
-                $numberOfPeople,
-                $startTime,
-                $endTime
-            ));
-        }
+        Notification::route('mail', [
+            'koster@hhgrijssen.nl',
+            'hhhazelhorst@hhgrijssen.nl',
+        ])->notify(new ReservationCancelled($roomReservation));
     }
 }

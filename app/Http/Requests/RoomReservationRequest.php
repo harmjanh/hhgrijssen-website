@@ -43,6 +43,12 @@ class RoomReservationRequest extends FormRequest
             'number_of_people' => 'required|integer|min:1|max:100',
             'start_time' => 'required|date|after:now',
             'end_time' => 'required|date|after:start_time',
+            'coffee_needed' => 'required|boolean',
+            'has_break' => 'required|boolean',
+            'beamer_needed' => 'required|boolean',
+            'guest_speaker' => 'required|boolean',
+            'broadcast_needed' => 'required|boolean',
+            'other_remarks' => 'required|string|max:2000',
         ];
     }
 
@@ -56,6 +62,12 @@ class RoomReservationRequest extends FormRequest
             'end_time.after' => 'De eindtijd moet na de starttijd liggen.',
             'number_of_people.min' => 'Het aantal personen moet minimaal 1 zijn.',
             'number_of_people.max' => 'Het aantal personen mag maximaal 100 zijn.',
+            'coffee_needed.required' => 'Geef aan of er koffie geregeld moet worden.',
+            'has_break.required' => 'Geef aan of er een pauze is.',
+            'beamer_needed.required' => 'Geef aan of de beamer nodig is.',
+            'guest_speaker.required' => 'Geef aan of er een gastspreker is.',
+            'broadcast_needed.required' => 'Geef aan of er een uitzending moet zijn.',
+            'other_remarks.required' => 'Overige opmerkingen zijn verplicht.',
         ];
     }
 }

@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\RoomReservation;
-use App\Models\User;
 use App\Notifications\WeeklyReservationsOverview;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class SendWeeklyReservationsOverviewCommand extends Command
 {
@@ -30,27 +30,25 @@ class SendWeeklyReservationsOverviewCommand extends Command
             ->orderBy('start_time')
             ->get();
 
-        // Find the koster
-        $koster = User::where('email', 'koster@hhgrijssen.nl')->first();
-
-        if (!$koster) {
-            $this->error('Koster user not found (koster@hhgrijssen.nl)');
-            return 1;
-        }
-
         if ($reservations->isEmpty()) {
             $this->info('No reservations found for the upcoming week.');
             // Still send notification to inform koster there are no reservations
-            $koster->notify(new WeeklyReservationsOverview($reservations, $startOfWeek, $endOfWeek));
+            Notification::route('mail', [
+                'koster@hhgrijssen.nl',
+                'hhhazelhorst@hhgrijssen.nl',
+            ])->notify(new WeeklyReservationsOverview($reservations, $startOfWeek, $endOfWeek));
             return 0;
         }
 
         $this->info("Found {$reservations->count()} reservation(s) for the upcoming week.");
 
-        // Send notification to koster
-        $koster->notify(new WeeklyReservationsOverview($reservations, $startOfWeek, $endOfWeek));
+        // Send notification to reservation contacts
+        Notification::route('mail', [
+            'koster@hhgrijssen.nl',
+            'hhhazelhorst@hhgrijssen.nl',
+        ])->notify(new WeeklyReservationsOverview($reservations, $startOfWeek, $endOfWeek));
 
-        $this->info("Sent weekly overview to {$koster->email}");
+        $this->info('Sent weekly overview to reservation contacts.');
 
         return 0;
     }

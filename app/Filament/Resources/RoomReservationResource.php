@@ -71,6 +71,30 @@ class RoomReservationResource extends Resource
                     ->native(false)
                     ->displayFormat('D d-m-Y H:i')
                     ->seconds(false),
+                Forms\Components\Section::make('Extra opties')
+                    ->schema([
+                        Forms\Components\Toggle::make('coffee_needed')
+                            ->label('Koffie geregeld')
+                            ->required(),
+                        Forms\Components\Toggle::make('has_break')
+                            ->label('Pauze')
+                            ->required(),
+                        Forms\Components\Toggle::make('beamer_needed')
+                            ->label('Beamer nodig')
+                            ->required(),
+                        Forms\Components\Toggle::make('guest_speaker')
+                            ->label('Gastspreker')
+                            ->required(),
+                        Forms\Components\Toggle::make('broadcast_needed')
+                            ->label('Uitzending')
+                            ->required(),
+                        Forms\Components\Textarea::make('other_remarks')
+                            ->label('Overige opmerkingen')
+                            ->required()
+                            ->maxLength(2000)
+                            ->rows(4),
+                    ])
+                    ->columns(1),
             ]);
     }
 
@@ -97,6 +121,18 @@ class RoomReservationResource extends Resource
                 Tables\Columns\TextColumn::make('end_time')
                     ->label('Eindtijd')
                     ->formatStateUsing(fn ($state) => $state ? $state->locale('nl')->translatedFormat('D d-m-Y H:i') : '-'),
+                Tables\Columns\IconColumn::make('coffee_needed')
+                    ->label('Koffie')
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\IconColumn::make('beamer_needed')
+                    ->label('Beamer')
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('other_remarks')
+                    ->label('Opmerkingen')
+                    ->limit(25)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Aangemaakt')
                     ->formatStateUsing(fn ($state) => $state ? $state->locale('nl')->translatedFormat('D d-m-Y H:i') : '-')

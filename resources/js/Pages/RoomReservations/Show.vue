@@ -17,6 +17,12 @@ interface Reservation {
     number_of_people: number;
     start_time: string;
     end_time: string;
+    coffee_needed?: boolean | null;
+    has_break?: boolean | null;
+    beamer_needed?: boolean | null;
+    guest_speaker?: boolean | null;
+    broadcast_needed?: boolean | null;
+    other_remarks?: string | null;
     room: Room;
 }
 
@@ -46,6 +52,18 @@ const formatTimeRange = (startTime: string, endTime: string) => {
         minute: '2-digit',
     });
     return `${start} - ${end}`;
+};
+
+const formatBoolean = (value: boolean | null | undefined) => {
+    if (value === true) {
+        return 'Ja';
+    }
+
+    if (value === false) {
+        return 'Nee';
+    }
+
+    return 'Onbekend';
 };
 
 const deleteReservation = () => {
@@ -117,6 +135,32 @@ const deleteReservation = () => {
                                                 : 'personen' }}
                                         </dd>
                                     </div>
+                                    <template v-if="reservation.coffee_needed !== undefined">
+                                        <div>
+                                            <dt class="text-sm font-medium text-gray-500">Koffie gewenst</dt>
+                                            <dd class="mt-1 text-sm text-gray-900">{{ formatBoolean(reservation.coffee_needed) }}</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="text-sm font-medium text-gray-500">Pauze</dt>
+                                            <dd class="mt-1 text-sm text-gray-900">{{ formatBoolean(reservation.has_break) }}</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="text-sm font-medium text-gray-500">Beamer nodig</dt>
+                                            <dd class="mt-1 text-sm text-gray-900">{{ formatBoolean(reservation.beamer_needed) }}</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="text-sm font-medium text-gray-500">Gastspreker</dt>
+                                            <dd class="mt-1 text-sm text-gray-900">{{ formatBoolean(reservation.guest_speaker) }}</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="text-sm font-medium text-gray-500">Uitzending</dt>
+                                            <dd class="mt-1 text-sm text-gray-900">{{ formatBoolean(reservation.broadcast_needed) }}</dd>
+                                        </div>
+                                        <div class="sm:col-span-2">
+                                            <dt class="text-sm font-medium text-gray-500">Overige opmerkingen</dt>
+                                            <dd class="mt-1 text-sm text-gray-900 whitespace-pre-wrap">{{ reservation.other_remarks || 'Onbekend' }}</dd>
+                                        </div>
+                                    </template>
                                 </dl>
                             </div>
 

@@ -14,6 +14,15 @@ class WeeklyReservationsOverview extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    private function formatBoolean(?bool $value): string
+    {
+        return match ($value) {
+            true => 'Ja',
+            false => 'Nee',
+            default => 'Onbekend',
+        };
+    }
+
     /**
      * Create a new notification instance.
      */
@@ -82,6 +91,12 @@ class WeeklyReservationsOverview extends Notification implements ShouldQueue
                         ->line('  Gebruiker: ' . $userName)
                         ->line('  Onderwerp: ' . ($reservation->subject ?? 'Geen onderwerp'))
                         ->line('  Aantal personen: ' . ($reservation->number_of_people ?? 'Onbekend'))
+                        ->line('  Koffie gewenst: ' . $this->formatBoolean($reservation->coffee_needed))
+                        ->line('  Pauze: ' . $this->formatBoolean($reservation->has_break))
+                        ->line('  Beamer nodig: ' . $this->formatBoolean($reservation->beamer_needed))
+                        ->line('  Gastspreker: ' . $this->formatBoolean($reservation->guest_speaker))
+                        ->line('  Uitzending: ' . $this->formatBoolean($reservation->broadcast_needed))
+                        ->line('  Overige opmerkingen: ' . ($reservation->other_remarks ?: 'Onbekend'))
                         ->line('--------------------------------');
                 }
             }

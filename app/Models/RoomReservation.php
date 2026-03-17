@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,11 +17,22 @@ class RoomReservation extends Model
         'number_of_people',
         'start_time',
         'end_time',
+        'coffee_needed',
+        'has_break',
+        'beamer_needed',
+        'guest_speaker',
+        'broadcast_needed',
+        'other_remarks',
     ];
 
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
+        'coffee_needed' => 'boolean',
+        'has_break' => 'boolean',
+        'beamer_needed' => 'boolean',
+        'guest_speaker' => 'boolean',
+        'broadcast_needed' => 'boolean',
     ];
 
     public function user(): BelongsTo
@@ -40,6 +52,8 @@ class RoomReservation extends Model
     public static function hasTimeConflict($roomId, $startTime, $endTime, $excludeId = null)
     {
         $bufferMinutes = 30;
+        $startTime = $startTime instanceof Carbon ? $startTime : Carbon::parse($startTime);
+        $endTime = $endTime instanceof Carbon ? $endTime : Carbon::parse($endTime);
 
         // Add buffer time to the start and end times
         $startWithBuffer = $startTime->copy()->subMinutes($bufferMinutes);

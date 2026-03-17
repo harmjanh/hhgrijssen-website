@@ -2,7 +2,8 @@
 
 namespace App\Notifications;
 
-use Carbon\Carbon;
+use App\Models\RoomReservation;
+use App\Notifications\Concerns\FormatsRoomReservationMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,18 +12,16 @@ use Illuminate\Notifications\Notification;
 class ReservationCancelled extends Notification implements ShouldQueue
 {
     use Queueable;
+    use FormatsRoomReservationMail;
 
     /**
      * Create a new notification instance.
      */
     public function __construct(
-        protected string $userName,
-        protected string $roomName,
-        protected string $subject,
-        protected int $numberOfPeople,
-        protected string $startTime,
-        protected string $endTime
-    ) {}
+        protected RoomReservation $reservation
+    ) {
+        $this->reservation->loadMissing(['user', 'room']);
+    }
 
     /**
      * Get the notification's delivery channels.
@@ -39,20 +38,16 @@ class ReservationCancelled extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $startTime = Carbon::parse($this->startTime);
-        $endTime = Carbon::parse($this->endTime);
+        $userName = $this->reservation->user?->name ?? 'Onbekend';
 
-        return (new MailMessage)
+        return $this->addReservationDetails(
+            (new MailMessage)
             ->subject('Zaalreservering geannuleerd')
             ->greeting('Beste koster,')
-            ->line('Een zaalreservering is geannuleerd door ' . $this->userName . '.')
-            ->line('**Details van de geannuleerde reservering:**')
-            ->line('**Gebruiker:** ' . $this->userName)
-            ->line('**Zaal:** ' . $this->roomName)
-            ->line('**Onderwerp:** ' . $this->subject)
-            ->line('**Aantal personen:** ' . $this->numberOfPeople)
-            ->line('**Starttijd:** ' . $startTime->format('d-m-Y H:i'))
-            ->line('**Eindtijd:** ' . $endTime->format('d-m-Y H:i'))
+            ->line('Een zaalreservering is geannuleerd door ' . $userName . '.')
+            ->line(''),
+            $this->reservation
+        )
             ->line('')
             ->line('De zaal is nu weer beschikbaar voor deze tijdsperiode.');
     }
@@ -65,12 +60,13 @@ class ReservationCancelled extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'user_name' => $this->userName,
-            'room_name' => $this->roomName,
-            'subject' => $this->subject,
-            'number_of_people' => $this->numberOfPeople,
-            'start_time' => $this->startTime,
-            'end_time' => $this->endTime,
+            'reservation_id' => $this->reservation->id,
+            'user_name' => $this->reservation->user?->name,
+            'room_name' => $this->reservation->room?->name,
+            'subject' => $this->reservation->subject,
+            'number_of_people' => $this->reservation->number_of_people,
+            'start_time' => $this->reservation->start_time?->toIso8601String(),
+            'end_time' => $this->reservation->end_time?->toIso8601String(),
         ];
     }
 }
