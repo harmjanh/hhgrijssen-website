@@ -106,6 +106,23 @@ class ServiceResource extends Resource
                             ])
                             ->placeholder('Enter the liturgy or order of service...'),
 
+                        Forms\Components\RichEditor::make('vragen')
+                            ->label('Vragen')
+                            ->nullable()
+                            ->columnSpanFull()
+                            ->toolbarButtons([
+                                'bold',
+                                'italic',
+                                'underline',
+                                'strike',
+                                'bulletList',
+                                'orderedList',
+                                'link',
+                                'undo',
+                                'redo',
+                            ])
+                            ->placeholder('Voer de vragen in...'),
+
                         Forms\Components\TextInput::make('youtube_url')
                             ->label('YouTube URL')
                             ->url()

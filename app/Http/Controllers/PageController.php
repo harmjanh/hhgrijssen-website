@@ -92,6 +92,7 @@ class PageController extends Controller
                     'id' => $service->id,
                     'pastor' => $service->pastor,
                     'liturgy' => $service->liturgy,
+                    'vragen' => $service->vragen,
                     'start_date' => $service->agendaItem->start_date->format('d-m-Y'),
                     'start_time' => $service->agendaItem->start_date->format('H:i'),
                     'end_date' => $endDate,

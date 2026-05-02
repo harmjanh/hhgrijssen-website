@@ -14,6 +14,7 @@ class Service extends Model
         'youtube_video_id',
         'pastor',
         'liturgy',
+        'vragen',
         'youtube_url',
     ];
 
