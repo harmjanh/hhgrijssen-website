@@ -24,6 +24,7 @@ class ContactRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
+            'recipient' => ['required', 'string', 'in:Dominee,Koster,Kerkenraad,Kerkvoogdij,Webmaster,Overige'],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
             // Honeypot: moet leeg blijven (spamfilter)
@@ -42,6 +43,8 @@ class ContactRequest extends FormRequest
             'name.required' => 'Naam is verplicht.',
             'email.required' => 'E-mailadres is verplicht.',
             'email.email' => 'E-mailadres moet een geldig e-mailadres zijn.',
+            'recipient.required' => 'Selecteer een ontvanger.',
+            'recipient.in' => 'Selecteer een geldige ontvanger.',
             'subject.required' => 'Onderwerp is verplicht.',
             'message.required' => 'Bericht is verplicht.',
             'website.max' => 'Er is een fout opgetreden. Probeer het later opnieuw.',

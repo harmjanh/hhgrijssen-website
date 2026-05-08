@@ -43,3 +43,7 @@ Schedule::command('reservations:send-weekly-overview')
     ->at('08:00')
     ->withoutOverlapping()
     ->runInBackground();
+
+Schedule::command('telescope:prune --hours=168')
+    ->daily()
+    ->at('03:00');

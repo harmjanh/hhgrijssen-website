@@ -30,8 +30,10 @@ class ContactController extends Controller
         $data = $request->validated();
         unset($data['website']); // Honeypot niet meenemen
 
-        // Send notification to webmaster
-        Notification::route('mail', 'webmaster@hhgrijssen.nl')
+        $recipients = config('mail.contact_recipients');
+        $recipientEmail = $recipients[$data['recipient']] ?? $recipients['Overige'];
+
+        Notification::route('mail', $recipientEmail)
             ->notify(new ContactFormSubmitted($data));
 
         return redirect()

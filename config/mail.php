@@ -119,4 +119,13 @@ return [
 
     'admin_email' => env('MAIL_ADMIN_EMAIL'),
 
+    'contact_recipients' => [
+        'Dominee'      => env('MAIL_CONTACT_DOMINEE', 'dominee@hhgrijssen.nl'),
+        'Koster'       => env('MAIL_CONTACT_KOSTER', 'koster@hhgrijssen.nl'),
+        'Kerkenraad'   => env('MAIL_CONTACT_KERKENRAAD', 'kerkenraad@hhgrijssen.nl'),
+        'Kerkvoogdij'  => env('MAIL_CONTACT_KERKVOOGDIJ', 'kerkvoogdij@hhgrijssen.nl'),
+        'Webmaster'    => env('MAIL_CONTACT_WEBMASTER', 'webmaster@hhgrijssen.nl'),
+        'Overige'      => env('MAIL_CONTACT_OVERIGE', 'webmaster@hhgrijssen.nl'),
+    ],
+
 ];

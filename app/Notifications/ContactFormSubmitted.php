@@ -33,14 +33,17 @@ class ContactFormSubmitted extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $recipient = $this->data['recipient'] ?? 'Webmaster';
+
         return (new MailMessage)
             ->subject('Nieuw contactformulier bericht: ' . $this->data['subject'])
-            ->greeting('Beste webmaster')
+            ->greeting('Beste ' . $recipient)
             ->replyTo($this->data['email'])
             ->line('Er is een nieuw bericht via het contactformulier ontvangen.')
             ->line('')
             ->line('Naam: ' . $this->data['name'])
             ->line('E-mailadres: ' . $this->data['email'])
+            ->line('Voor: ' . $recipient)
             ->line('Onderwerp: ' . $this->data['subject'])
             ->line('')
             ->line('Bericht:')

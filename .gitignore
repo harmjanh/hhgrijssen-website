@@ -29,3 +29,5 @@ yarn-error.log
 .DS_Store
 .AppleDouble
 .LSOverride
+
+.claude

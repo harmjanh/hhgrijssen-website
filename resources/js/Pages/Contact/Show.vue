@@ -12,9 +12,12 @@ defineProps<{
     pages: Array<{ id: number; title: string; slug: string }>;
 }>();
 
+const recipients = ['Dominee', 'Koster', 'Kerkenraad', 'Kerkvoogdij', 'Webmaster', 'Overige'];
+
 const form = useForm({
     name: '',
     email: '',
+    recipient: '',
     subject: '',
     message: '',
     website: '', // Honeypot: blijft leeg; bots vullen dit vaak in
@@ -96,6 +99,20 @@ const submit = () => {
                         <div class="absolute -left-[9999px] top-0 opacity-0 pointer-events-none" aria-hidden="true">
                             <label for="website">Website</label>
                             <input id="website" type="text" name="website" v-model="form.website" tabindex="-1" autocomplete="off" />
+                        </div>
+
+                        <div>
+                            <InputLabel for="recipient" value="Ik heb een vraag voor *" />
+                            <select
+                                id="recipient"
+                                v-model="form.recipient"
+                                required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            >
+                                <option value="" disabled>Kies een ontvanger</option>
+                                <option v-for="r in recipients" :key="r" :value="r">{{ r }}</option>
+                            </select>
+                            <InputError :message="form.errors.recipient" class="mt-2" />
                         </div>
 
                         <div>
