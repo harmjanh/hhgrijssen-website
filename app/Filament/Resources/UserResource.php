@@ -62,6 +62,9 @@ class UserResource extends Resource
                             ->label('Rol')
                             ->options([
                                 'admin' => 'Admin',
+                                'predikant' => 'Predikant',
+                                'koster' => 'Koster',
+                                'muntenuitgifte' => 'Muntenuitgifte',
                                 'user' => 'Gebruiker',
                             ])
                             ->default('user'),
@@ -144,11 +147,16 @@ class UserResource extends Resource
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'admin' => 'danger',
-                        'user' => 'gray',
+                        'predikant' => 'warning',
+                        'koster' => 'info',
+                        'muntenuitgifte' => 'success',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'admin' => 'Admin',
+                        'predikant' => 'Predikant',
+                        'koster' => 'Koster',
+                        'muntenuitgifte' => 'Muntenuitgifte',
                         'user' => 'Gebruiker',
                         default => $state,
                     })
@@ -187,6 +195,9 @@ class UserResource extends Resource
                     ->label('Rol')
                     ->options([
                         'admin' => 'Admin',
+                        'predikant' => 'Predikant',
+                        'koster' => 'Koster',
+                        'muntenuitgifte' => 'Muntenuitgifte',
                         'user' => 'Gebruiker',
                     ]),
                 Tables\Filters\TernaryFilter::make('blocked_at')
