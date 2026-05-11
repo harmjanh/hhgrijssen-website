@@ -18,6 +18,58 @@ const props = defineProps({
     }
 });
 
+const printService = (service) => {
+    const pastor = service.pastor && service.pastor !== service.title
+        ? ` &mdash; ${service.pastor}`
+        : '';
+
+    const vragen = service.vragen && service.vragen !== ''
+        ? `<h2>Vragen bij de dienst</h2>${service.vragen}`
+        : '';
+
+    const html = `<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <title>${service.title}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Georgia, serif; font-size: 9.5pt; line-height: 1.6; color: #111; padding: 12mm 14mm; }
+        .header { border-bottom: 1px solid #555; padding-bottom: 3mm; margin-bottom: 6mm; }
+        .header h1 { font-size: 14pt; font-weight: bold; margin-bottom: 1mm; }
+        .header p { font-size: 9pt; color: #444; }
+        h2 { font-size: 10pt; font-weight: bold; margin: 2mm 0 2mm; }
+        h3 { font-size: 10pt; font-weight: bold; margin: 2mm 0 1mm; }
+        p { margin-bottom: 1.5mm; }
+        ul, ol { padding-left: 5mm; margin-bottom: 1.5mm; }
+        li { margin-bottom: 1mm; padding-bottom: 21mm; list-style-position: outside; }
+        strong { font-weight: bold; }
+        em { font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>${service.title}</h1>
+        <p>${service.start_date} om ${service.start_time}${pastor}</p>
+    </div>
+    ${vragen}
+</body>
+</html>`;
+
+    const win = window.open('', '_blank', 'width=900,height=700');
+    win.document.write(html);
+    win.document.close();
+    win.document.querySelectorAll('p').forEach(p => {
+        if (p.textContent.trim().toLowerCase().includes('overige vragen')) {
+            p.style.pageBreakBefore = 'always';
+            p.style.paddingTop = '10mm';
+        }
+    });
+    win.focus();
+    win.print();
+    win.close();
+};
+
 // Check if service is still active (not ended yet)
 const isServiceActive = (service) => {
     if (!service.end_date) {
@@ -128,10 +180,10 @@ const isServiceActive = (service) => {
             <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <div v-for="(service, index) in upcomingServices" :key="service.id"
                     class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 text-xl/8 flex flex-col h-full">
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center">
                             <div :class="[
-                                'w-8 h-8 rounded-full flex items-center justify-center mr-3',
+                                'w-8 h-8 rounded-full flex items-center justify-center mr-3 shrink-0',
                                 index === 0 ? 'bg-blue-100' : index === 1 ? 'bg-green-100' : 'bg-purple-100'
                             ]">
                                 <span :class="[
@@ -148,6 +200,14 @@ const isServiceActive = (service) => {
                                     }}</p>
                             </div>
                         </div>
+                        <button v-if="service.liturgy" @click="printService(service)"
+                            title="Afdrukken"
+                            class="shrink-0 ml-2 p-2 text-gray-900 hover:text-black hover:bg-gray-100 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                        </button>
                     </div>
                     <div class="flex-grow space-y-3 text-sm text-gray-600 mb-4" v-if="service.liturgy">
                         <div class="prose prose-sm max-w-none text-xl/8" v-html="service.liturgy"></div>
