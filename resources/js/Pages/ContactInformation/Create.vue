@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import type { PageProps } from '@/types';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import InputError from '@/Components/InputError.vue';
@@ -19,6 +20,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const page = usePage<PageProps>();
 
 const form = useForm({
     name: props.user.name,
@@ -57,10 +60,10 @@ const submit = () => {
                         </div>
 
                         <!-- Success message -->
-                        <div v-if="$page.props.flash?.success"
+                        <div v-if="page.props.flash?.success"
                             class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                             <p class="text-green-800 dark:text-green-200">
-                                {{ $page.props.flash.success }}
+                                {{ page.props.flash.success }}
                             </p>
                         </div>
 

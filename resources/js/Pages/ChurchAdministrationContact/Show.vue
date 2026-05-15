@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
+import type { PageProps } from '@/types';
 import NavBar from '@/Components/NavBar.vue';
 import PageFooter from '@/Components/PageFooter.vue';
 import InputError from '@/Components/InputError.vue';
@@ -10,6 +11,8 @@ import TextInput from '@/Components/TextInput.vue';
 defineProps<{
     pages: Array<{ id: number; title: string; slug: string }>;
 }>();
+
+const page = usePage<PageProps>();
 
 const form = useForm({
     name: '',
@@ -41,11 +44,11 @@ const submit = () => {
                 Laat hier uw gegevens achter voor de kerkelijke administratie. We nemen zo spoedig mogelijk contact met u op.
             </p>
 
-            <div v-if="$page.props.flash?.error" class="mb-8 rounded-lg bg-red-50 border border-red-200 p-6">
-                <p class="text-sm text-red-700">{{ $page.props.flash.error }}</p>
+            <div v-if="page.props.flash?.error" class="mb-8 rounded-lg bg-red-50 border border-red-200 p-6">
+                <p class="text-sm text-red-700">{{ page.props.flash.error }}</p>
             </div>
 
-            <div v-if="$page.props.flash?.success" class="mb-8 rounded-lg bg-green-50 border border-green-200 p-6">
+            <div v-if="page.props.flash?.success" class="mb-8 rounded-lg bg-green-50 border border-green-200 p-6">
                 <div class="flex">
                     <div class="flex-shrink-0">
                         <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -57,13 +60,13 @@ const submit = () => {
                             Bedankt!
                         </h3>
                         <p class="text-sm text-green-700">
-                            {{ $page.props.flash?.success }}
+                            {{ page.props.flash?.success }}
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div v-show="!$page.props.flash?.success" class="bg-white shadow-sm sm:rounded-lg">
+            <div v-show="!page.props.flash?.success" class="bg-white shadow-sm sm:rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
                     <form @submit.prevent="submit" class="space-y-6">
                         <!-- Honeypot: verborgen voor bezoekers, zichtbaar voor bots -->

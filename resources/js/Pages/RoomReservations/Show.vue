@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import type { PageProps } from '@/types';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -31,6 +32,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const page = usePage<PageProps>();
 
 const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('nl-NL', {
@@ -86,7 +88,7 @@ const deleteReservation = () => {
 
         <div class="py-12">
             <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-                <div v-if="$page.props.flash?.success" class="mb-6 rounded-lg bg-green-50 border border-green-200 p-6">
+                <div v-if="page.props.flash?.success" class="mb-6 rounded-lg bg-green-50 border border-green-200 p-6">
                     <div class="flex">
                         <div class="flex-shrink-0">
                             <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -95,7 +97,7 @@ const deleteReservation = () => {
                         </div>
                         <div class="ml-3">
                             <p class="text-sm text-green-700">
-                                {{ $page.props.flash?.success }}
+                                {{ page.props.flash?.success }}
                             </p>
                         </div>
                     </div>

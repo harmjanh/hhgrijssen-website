@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import type { PageProps } from '@/types';
 import NavBar from "@/Components/NavBar.vue";
 import PageFooter from "@/Components/PageFooter.vue";
 import InputError from "@/Components/InputError.vue";
@@ -25,7 +26,7 @@ const props = defineProps<{
     };
 }>();
 
-const page = usePage();
+const page = usePage<PageProps>();
 
 const form = useForm({
     name: '',

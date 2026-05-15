@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import { PageProps } from '@/types';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -18,7 +19,7 @@ interface AuthenticatedPage {
 
 const showingNavigationDropdown = ref(false);
 
-const page = usePage();
+const page = usePage<PageProps>();
 const user = page.props.auth.user;
 const authenticatedPages = (page.props.authenticatedPages || []) as AuthenticatedPage[];
 const currentUrl = page.url;

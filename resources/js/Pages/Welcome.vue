@@ -19,6 +19,7 @@ defineProps<{
     };
     newsItems: {
         id: number;
+        slug: string;
         title: string;
         content: string;
         description: string;
