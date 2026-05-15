@@ -39,7 +39,18 @@ class NewsResource extends Resource
                             ->schema([
                                 Forms\Components\TextInput::make('title')
                                     ->required()
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function ($state, $set, $get, $record) {
+                                        if (! $record || ! $record->exists) {
+                                            $set('slug', \App\Models\News::generateUniqueSlug($state ?? ''));
+                                        }
+                                    }),
+                                Forms\Components\TextInput::make('slug')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->unique(ignoreRecord: true)
+                                    ->helperText('Wordt automatisch gegenereerd op basis van de titel.'),
                                 Forms\Components\FileUpload::make('image')
                                     ->nullable()
                                     ->directory('news')
@@ -47,6 +58,17 @@ class NewsResource extends Resource
                                 Forms\Components\Toggle::make('is_published')
                                     ->label('Published')
                                     ->default(false),
+                                Forms\Components\Toggle::make('contact_form_enabled')
+                                    ->label('Contactformulier tonen')
+                                    ->default(false)
+                                    ->live(),
+                                Forms\Components\TextInput::make('contact_form_recipient')
+                                    ->label('Ontvanger contactformulier (e-mailadres)')
+                                    ->email()
+                                    ->maxLength(255)
+                                    ->placeholder('ontvanger@example.com')
+                                    ->visible(fn ($get) => $get('contact_form_enabled'))
+                                    ->required(fn ($get) => $get('contact_form_enabled')),
                                 Forms\Components\DateTimePicker::make('visible_from')
                                     ->nullable(),
                                 Forms\Components\DateTimePicker::make('visible_until')

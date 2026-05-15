@@ -23,7 +23,7 @@
                             </div>
                             <div class="group relative max-w-xl">
                                 <h3 class="mt-3 text-lg/6 font-semibold text-gray-900 group-hover:text-gray-600">
-                                    <a :href="'/nieuws/' + news.id">
+                                    <a :href="'/nieuws/' + news.slug">
                                         <span class="absolute inset-0" />
                                         {{ news.title }}
                                     </a>
@@ -33,7 +33,7 @@
                             <div class="mt-6 flex border-t border-gray-900/5 pt-6 mt-auto">
                                 <div class="relative flex items-center gap-x-4">
 
-                                    <a :href="'/nieuws/' + news.id"
+                                    <a :href="'/nieuws/' + news.slug"
                                         class="text-sm font-semibold leading-6 hover:text-primary-500">
                                         Lees meer <span aria-hidden="true">→</span>
                                     </a>
@@ -51,6 +51,7 @@
 defineProps<{
     newsItems: {
         id: number;
+        slug: string;
         title: string;
         content: string;
         description: string;

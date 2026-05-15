@@ -44,7 +44,12 @@ Route::middleware(['auth', 'user.not.blocked'])->group(function () {
 
 // Add this route after any other specific routes to catch all page slugs
 Route::get('nieuws', [NewsController::class, 'index'])->name('news.index');
-Route::get('nieuws/{news}', [NewsController::class, 'show'])->name('news.show');
+Route::get('nieuws/{id}', function ($id) {
+    $news = \App\Models\News::findOrFail($id);
+    return redirect()->route('news.show', $news->slug, 301);
+})->where('id', '[0-9]+');
+Route::get('nieuws/{news:slug}', [NewsController::class, 'show'])->name('news.show');
+Route::post('nieuws/{news:slug}/contact', [NewsController::class, 'storeContact'])->middleware('throttle:3,1')->name('news.contact.store');
 
 Route::get('agenda', [PageController::class, 'agenda'])->name('agenda');
 Route::get('live', [PageController::class, 'live'])->name('live');
