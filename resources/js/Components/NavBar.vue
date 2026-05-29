@@ -18,10 +18,10 @@
             <div class="mt-6 flex w-full items-center justify-between">
                 <PopoverGroup class="hidden lg:flex lg:gap-x-12">
                     <div v-for="page in pages" :key="page.id">
-                        <a :href="'/' + page.slug" v-if="page.children?.length === 0"
+                        <a :href="'/' + page.slug" v-if="!hasNavigationChildren(page)"
                             class="text-sm/6 font-semibold text-gray-900">{{ page.title }}</a>
 
-                        <Popover class="relative" v-if="page.children?.length > 0">
+                        <Popover class="relative" v-if="hasNavigationChildren(page)">
                             <PopoverButton class="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
                                 {{ page.title }}
                                 <ChevronDownIcon class="size-5 flex-none text-gray-400" aria-hidden="true" />
@@ -33,7 +33,8 @@
                                 leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
                                 <PopoverPanel
                                     class="absolute -left-8 top-full z-10 mt-3 w-56 rounded-xl bg-white p-2 shadow-lg ring-1 ring-gray-900/5">
-                                    <a v-for="item in page.children" :key="item.title" :href="'/' + item.slug"
+                                    <a v-for="item in navigationChildren(page)" :key="item.id ?? item.title"
+                                        :href="childHref(item)"
                                         class="block rounded-lg px-3 py-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50">{{
                                             item.title }}</a>
                                 </PopoverPanel>
@@ -79,7 +80,7 @@
                         <div class="space-y-2 py-6">
                             <div v-for="page in pages" :key="page.id">
                                 <!-- Page without children -->
-                                <a v-if="page.children?.length === 0" :href="'/' + page.slug"
+                                <a v-if="!hasNavigationChildren(page)" :href="'/' + page.slug"
                                     class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
                                     {{ page.title }}
                                 </a>
@@ -93,8 +94,8 @@
                                             aria-hidden="true" />
                                     </DisclosureButton>
                                     <DisclosurePanel class="mt-2 space-y-2">
-                                        <DisclosureButton v-for="item in page.children" :key="item.id" as="a"
-                                            :href="'/' + item.slug"
+                                        <DisclosureButton v-for="item in navigationChildren(page)" :key="item.id ?? item.title"
+                                            as="a" :href="childHref(item)"
                                             class="block rounded-lg py-2 pl-6 pr-3 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50">
                                             {{ item.title }}
                                         </DisclosureButton>
@@ -149,5 +150,30 @@ defineProps({
     }
 });
 
-const mobileMenuOpen = ref(false)
+const treatOrderNavLink = {
+    id: 'treat-order',
+    title: 'Bestellen snoep en stroopwafelactie',
+    href: '/bestellen',
+};
+
+// "Overige" is een navigatiegroep met alleen subitems, geen eigen pagina
+const isOverigeNavGroup = (page) =>
+    page.title === 'Overige' || page.slug === 'overige' || page.slug === 'overig';
+
+const navigationChildren = (page) => {
+    const children = [...(page.children ?? [])];
+
+    if (isOverigeNavGroup(page)) {
+        children.push(treatOrderNavLink);
+    }
+
+    return children;
+};
+
+const hasNavigationChildren = (page) =>
+    isOverigeNavGroup(page) || (page.children?.length ?? 0) > 0;
+
+const childHref = (item) => item.href ?? `/${item.slug}`;
+
+const mobileMenuOpen = ref(false);
 </script>
