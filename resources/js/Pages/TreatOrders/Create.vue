@@ -6,6 +6,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import NumberInput from '@/Components/NumberInput.vue';
 import TextArea from '@/Components/TextArea.vue';
 import NavBar from '@/Components/NavBar.vue';
 import PageFooter from '@/Components/PageFooter.vue';
@@ -23,7 +24,15 @@ const props = defineProps<{
     };
 }>();
 
-const form = useForm({
+const form = useForm<{
+    name: string;
+    email: string;
+    phone: string;
+    snoeprollen_quantity: number;
+    stroopwafels_quantity: number;
+    remarks: string;
+    website: string;
+}>({
     name: '',
     email: '',
     phone: '',
@@ -141,15 +150,25 @@ const submit = () => {
                     <div>
                         <InputLabel for="snoeprollen_quantity"
                             :value="`Snoeprollen (${units.snoeprollen_per_order} stuks, ${formatPrice(prices.snoeprollen)} per bestelling)`" />
-                        <TextInput id="snoeprollen_quantity" type="number" min="0" max="99" class="mt-1 block w-full"
-                            v-model.number="form.snoeprollen_quantity" required />
+                        <NumberInput
+                            id="snoeprollen_quantity"
+                            class="mt-1 block w-full"
+                            v-model="form.snoeprollen_quantity"
+                            :min="0"
+                            :max="99"
+                        />
                         <InputError :message="form.errors.snoeprollen_quantity" class="mt-2" />
                     </div>
                     <div>
                         <InputLabel for="stroopwafels_quantity"
                             :value="`Markus stroopwafel (${units.stroopwafels_packages_per_order} pakjes, ${formatPrice(prices.stroopwafels)} per bestelling)`" />
-                        <TextInput id="stroopwafels_quantity" type="number" min="0" max="99" class="mt-1 block w-full"
-                            v-model.number="form.stroopwafels_quantity" required />
+                        <NumberInput
+                            id="stroopwafels_quantity"
+                            class="mt-1 block w-full"
+                            v-model="form.stroopwafels_quantity"
+                            :min="0"
+                            :max="99"
+                        />
                         <InputError :message="form.errors.stroopwafels_quantity" class="mt-2" />
                     </div>
                 </div>
@@ -157,7 +176,7 @@ const submit = () => {
 
             <div>
                 <InputLabel for="remarks" value="Opmerkingen (optioneel)" />
-                <TextArea id="remarks" class="mt-1 block w-full" v-model="form.remarks" rows="3" />
+                <TextArea id="remarks" class="mt-1 block w-full" v-model="form.remarks" :rows="3" />
                 <InputError :message="form.errors.remarks" class="mt-2" />
             </div>
 
