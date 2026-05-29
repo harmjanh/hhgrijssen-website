@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'user.not.blocked' => \App\Http\Middleware\EnsureUserNotBlocked::class,
+            'treat.orders.open' => \App\Http\Middleware\EnsureTreatOrdersOpen::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

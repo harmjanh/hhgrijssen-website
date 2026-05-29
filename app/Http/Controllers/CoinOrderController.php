@@ -121,8 +121,7 @@ class CoinOrderController extends Controller
         ]);
 
         // Check if Mollie API key is configured
-        $mollieKey = env('MOLLIE_KEY');
-        if (empty($mollieKey)) {
+        if (! filled(config('services.mollie.key'))) {
             Log::error('Mollie API key is not configured. Please set MOLLIE_KEY in your .env file.');
 
             $coinOrder->update([

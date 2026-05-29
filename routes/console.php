@@ -30,6 +30,12 @@ Schedule::command('mollie:check-payment-status')
     ->withoutOverlapping()
     ->runInBackground();
 
+Schedule::command('mollie:check-payment-status --type=treat')
+    ->hourlyAt(25)
+    ->between('06:00', '23:00')
+    ->withoutOverlapping()
+    ->runInBackground();
+
 // Schedule reservation reminders to run daily at 8 AM
 Schedule::command('reservations:send-reminders')
     ->daily()

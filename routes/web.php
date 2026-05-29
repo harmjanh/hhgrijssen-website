@@ -12,6 +12,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicDeclarationController;
+use App\Http\Controllers\TreatOrderController;
 use App\Http\Controllers\RoomReservationController;
 use App\Http\Controllers\PrivacyConsentController;
 use App\Http\Controllers\SolidarityFundAuthorizationController;
@@ -72,6 +73,17 @@ Route::post('contact', [ContactController::class, 'store'])->middleware('throttl
 // Church Administration Contact Routes (rate limit: max 3 verzendingen per minuut per IP)
 Route::get('kerkelijke-administratie', [ChurchAdministrationContactController::class, 'show'])->name('church-administration-contact.show');
 Route::post('kerkelijke-administratie', [ChurchAdministrationContactController::class, 'store'])->middleware('throttle:3,1')->name('church-administration-contact.store');
+
+// Treat order routes (public, no login required)
+Route::get('bestellen/gesloten', [TreatOrderController::class, 'closed'])->name('treat-orders.closed');
+Route::middleware('treat.orders.open')->group(function () {
+    Route::get('bestellen', [TreatOrderController::class, 'create'])->name('treat-orders.create');
+    Route::post('bestellen', [TreatOrderController::class, 'store'])->middleware('throttle:5,1')->name('treat-orders.store');
+});
+Route::get('bestellen/{treatOrder}/bedankt', [TreatOrderController::class, 'success'])->name('treat-orders.success');
+Route::post('bestellen/webhook', [TreatOrderController::class, 'webhook'])
+    ->name('treat-orders.webhook')
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
 
 // YouTube OAuth callback route
 Route::get('youtube/oauth/callback', function () {
