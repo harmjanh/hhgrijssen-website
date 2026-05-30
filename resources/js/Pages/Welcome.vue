@@ -124,14 +124,18 @@ function handleImageError() {
         </div>
     </div>
 
-    <div class="mx-auto w-full px-3 py-12 md:w-3/5 md:px-0">
-        <!-- <h1 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 text-left">{{ page.title }}</h1> -->
-        <div class="prose max-w-none text-left text-gray-700 text-xl/8" v-html="page.content"></div>
-    </div>
-
-
-
-    <NewsItems :newsItems="newsItems" />
+    <section class="border-t border-gray-900/10 bg-white">
+        <div class="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
+            <div class="grid grid-cols-1 gap-12 lg:grid-cols-5 lg:gap-16">
+                <div class="lg:col-span-3">
+                    <div class="prose max-w-none text-left text-gray-700 text-xl/8" v-html="page.content"></div>
+                </div>
+                <div class="lg:col-span-2">
+                    <NewsItems :newsItems="newsItems" />
+                </div>
+            </div>
+        </div>
+    </section>
 
     <Visit />
 
