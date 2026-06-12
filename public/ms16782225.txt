@@ -1,0 +1,5 @@
+﻿{
+  "Description": "Domain ownership verification file for Microsoft 365 - place in the website root",
+  "Domain": "hhgrijssen.nl",
+  "Id": "c980fa6a-c03e-4233-9670-6da2a1ebc0f7"
+}
