@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\News\LoadNewsItemsAction;
+use App\Jobs\DownloadYouTubeVideo;
 use App\Models\Page;
 use App\Models\Service;
 use App\Models\YouTubeVideo;
@@ -10,7 +11,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PageController extends Controller
 {
@@ -19,13 +19,14 @@ class PageController extends Controller
         $page = Page::where('slug', $slug)->firstOrFail();
 
         // Check if page requires authentication
-        if ($page->requires_authentication && !auth()->check()) {
+        if ($page->requires_authentication && ! auth()->check()) {
             abort(403, 'Deze pagina is alleen toegankelijk voor ingelogde gebruikers.');
         }
 
         // Check if authenticated user is blocked
         if ($page->requires_authentication && auth()->check() && auth()->user()->isBlocked()) {
             auth()->logout();
+
             return redirect()->route('login')
                 ->with('error', 'Uw account is geblokkeerd. Neem contact op met de beheerder.');
         }
@@ -56,7 +57,7 @@ class PageController extends Controller
     public function live(?Page $page = null)
     {
         // Get the live page if not provided
-        if (!$page) {
+        if (! $page) {
             $page = Page::query()
                 ->join('page_types', 'pages.page_type_id', '=', 'page_types.id')
                 ->where('page_types.name', 'live')
@@ -124,7 +125,7 @@ class PageController extends Controller
     public function archive(?Page $page = null)
     {
         // Get the archive page if not provided
-        if (!$page) {
+        if (! $page) {
             $page = Page::query()
                 ->join('page_types', 'pages.page_type_id', '=', 'page_types.id')
                 ->where('page_types.name', 'archive')
@@ -147,7 +148,7 @@ class PageController extends Controller
             ->toArray();
 
         // If no year is specified, use the most recent year
-        if (!$yearFilter && !empty($availableYears)) {
+        if (! $yearFilter && ! empty($availableYears)) {
             $yearFilter = $availableYears[0];
         }
 
@@ -191,7 +192,7 @@ class PageController extends Controller
                 $serviceData['youtube_video'] = [
                     'id' => $service->youtubeVideo->id,
                     'url' => $service->youtubeVideo->url,
-                    'has_audio' => !empty($service->youtubeVideo->audio_file_path),
+                    'has_audio' => ! empty($service->youtubeVideo->audio_file_path),
                     'download_status' => $service->youtubeVideo->download_status,
                 ];
             }
@@ -237,7 +238,7 @@ class PageController extends Controller
     {
         $startDate = $service->agendaItem->start_date;
 
-        if (!$startDate) {
+        if (! $startDate) {
             return null;
         }
 
@@ -253,14 +254,14 @@ class PageController extends Controller
         // Search for videos that contain both the date and time
         // This handles formats like "Woensdag 19-11-2025 19:30" or "Zondag 23-11-2025 10:00"
         $videos = YouTubeVideo::where(function ($query) use ($dateOnly, $timeOnly) {
-            $query->where('title', 'LIKE', '%' . $dateOnly . '%')
-                  ->where('title', 'LIKE', '%' . $timeOnly . '%');
+            $query->where('title', 'LIKE', '%'.$dateOnly.'%')
+                ->where('title', 'LIKE', '%'.$timeOnly.'%');
         })->orWhere(function ($query) use ($dateOnlyAlt, $timeOnly) {
-            $query->where('title', 'LIKE', '%' . $dateOnlyAlt . '%')
-                  ->where('title', 'LIKE', '%' . $timeOnly . '%');
-        })->orWhere('title', 'LIKE', '%' . $dateWithTime . '%')
-          ->orWhere('title', 'LIKE', '%' . $dateWithTimeAlt . '%')
-          ->get();
+            $query->where('title', 'LIKE', '%'.$dateOnlyAlt.'%')
+                ->where('title', 'LIKE', '%'.$timeOnly.'%');
+        })->orWhere('title', 'LIKE', '%'.$dateWithTime.'%')
+            ->orWhere('title', 'LIKE', '%'.$dateWithTimeAlt.'%')
+            ->get();
 
         // Return the first match (should be unique based on date+time)
         return $videos->first();
@@ -272,23 +273,23 @@ class PageController extends Controller
     public function downloadVideo(Service $service)
     {
         // Check if user is admin
-        if (!auth()->check() || !auth()->user()->hasRole('admin')) {
+        if (! auth()->check() || ! auth()->user()->hasRole('admin')) {
             abort(403, 'Alleen beheerders kunnen video\'s downloaden.');
         }
 
         // Check if service has a YouTube video
-        if (!$service->youtube_video_id) {
+        if (! $service->youtube_video_id) {
             abort(404, 'Geen YouTube video gevonden voor deze dienst.');
         }
 
         $youtubeVideo = YouTubeVideo::find($service->youtube_video_id);
 
-        if (!$youtubeVideo) {
+        if (! $youtubeVideo) {
             abort(404, 'YouTube video niet gevonden.');
         }
 
         // Dispatch the download job
-        \App\Jobs\DownloadYouTubeVideo::dispatch($youtubeVideo);
+        DownloadYouTubeVideo::dispatch($youtubeVideo);
 
         return response()->json([
             'message' => 'Download gestart. Het audio bestand zal binnenkort beschikbaar zijn.',
@@ -303,7 +304,7 @@ class PageController extends Controller
         // First check if service has a direct youtube_video_id
         if ($service->youtube_video_id) {
             $youtubeVideo = YouTubeVideo::find($service->youtube_video_id);
-            if ($youtubeVideo && !empty($youtubeVideo->audio_file_path)) {
+            if ($youtubeVideo && ! empty($youtubeVideo->audio_file_path)) {
                 return $this->streamAudioFile($youtubeVideo);
             }
         }
@@ -311,7 +312,7 @@ class PageController extends Controller
         // Fallback: Find matching YouTube video by date and time
         $youtubeVideo = $this->findYouTubeVideoByServiceDate($service);
 
-        if (!$youtubeVideo || empty($youtubeVideo->audio_file_path)) {
+        if (! $youtubeVideo || empty($youtubeVideo->audio_file_path)) {
             abort(404, 'Audio niet gevonden');
         }
 
@@ -331,7 +332,7 @@ class PageController extends Controller
         $audioPath = $youtubeVideo->audio_file_path;
 
         // Check if file exists
-        if (!$disk->exists($audioPath)) {
+        if (! $disk->exists($audioPath)) {
             abort(404, 'Audio bestand niet gevonden');
         }
 
@@ -339,33 +340,33 @@ class PageController extends Controller
         if (config('filesystems.disks.youtube.driver') === 's3') {
             return response()->streamDownload(function () use ($disk, $audioPath) {
                 $stream = $disk->readStream($audioPath);
-                while (!feof($stream)) {
+                while (! feof($stream)) {
                     echo fread($stream, 8192);
                     flush();
                 }
                 fclose($stream);
             }, basename($audioPath), [
                 'Content-Type' => 'audio/mpeg',
-                'Content-Disposition' => 'inline; filename="' . basename($audioPath) . '"',
+                'Content-Disposition' => 'inline; filename="'.basename($audioPath).'"',
             ]);
         }
 
         // Local storage fallback
         $localPath = $disk->path($audioPath);
-        if (!file_exists($localPath)) {
+        if (! file_exists($localPath)) {
             abort(404, 'Audio bestand niet gevonden');
         }
 
         return response()->streamDownload(function () use ($localPath) {
             $stream = fopen($localPath, 'rb');
-            while (!feof($stream)) {
+            while (! feof($stream)) {
                 echo fread($stream, 8192);
                 flush();
             }
             fclose($stream);
         }, basename($audioPath), [
             'Content-Type' => 'audio/mpeg',
-            'Content-Disposition' => 'inline; filename="' . basename($audioPath) . '"',
+            'Content-Disposition' => 'inline; filename="'.basename($audioPath).'"',
         ]);
     }
 
@@ -430,11 +431,18 @@ class PageController extends Controller
 
     private function getPageData(Page $page)
     {
+        $page->loadMissing(['files', 'pageType']);
+
         return [
             'title' => $page->title,
             'content' => $page->content,
             'type' => $page->pageType->name,
             'header_image' => $page->header_image,
+            'files' => $page->files->map(fn ($file) => [
+                'id' => $file->id,
+                'name' => $file->name,
+                'file_path' => $file->file_path,
+            ])->values(),
         ];
     }
 

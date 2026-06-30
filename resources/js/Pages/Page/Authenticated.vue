@@ -1,6 +1,7 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import PageFiles from '@/Components/PageFiles.vue';
 import PageHeader from '@/Components/PageHeader.vue';
 
 defineProps({
@@ -28,6 +29,7 @@ defineProps({
                                 class="w-full h-64 object-cover rounded-lg" />
                         </div>
                         <div class="prose max-w-none text-gray-700" v-html="page.content"></div>
+                        <PageFiles :files="page.files ?? []" />
                     </div>
                 </div>
             </div>

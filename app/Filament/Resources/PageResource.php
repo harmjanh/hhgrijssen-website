@@ -5,13 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PageResource\Pages;
 use App\Models\Page;
 use App\Models\PageType;
-use FilamentTiptapEditor\TiptapEditor;
 use Exception;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
@@ -30,6 +31,7 @@ class PageResource extends Resource
     public static function canViewAny(): bool
     {
         $user = auth()->user();
+
         return $user && $user->role === 'admin';
     }
 
@@ -136,8 +138,30 @@ class PageResource extends Resource
                                         'undo',
                                         'redo',
                                     ])
-                                    ->visible(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord),
-                            ])->visible(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord),
+                                    ->visible(fn ($livewire) => $livewire instanceof EditRecord),
+                            ])->visible(fn ($livewire) => $livewire instanceof EditRecord),
+                        Forms\Components\Tabs\Tab::make('Bestanden')
+                            ->schema([
+                                Forms\Components\Repeater::make('files')
+                                    ->relationship()
+                                    ->label('Bestanden')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')
+                                            ->label('Naam')
+                                            ->required()
+                                            ->maxLength(255),
+                                        Forms\Components\FileUpload::make('file_path')
+                                            ->label('PDF')
+                                            ->directory('page-files')
+                                            ->acceptedFileTypes(['application/pdf'])
+                                            ->required(),
+                                    ])
+                                    ->orderColumn('sort_order')
+                                    ->collapsible()
+                                    ->defaultItems(0)
+                                    ->addActionLabel('Bestand toevoegen')
+                                    ->columnSpanFull(),
+                            ])->visible(fn ($livewire) => $livewire instanceof EditRecord),
                     ]),
             ]);
     }

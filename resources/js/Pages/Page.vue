@@ -1,6 +1,7 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
 import NavBar from '@/Components/NavBar.vue';
+import PageFiles from '@/Components/PageFiles.vue';
 import PageFooter from '@/Components/PageFooter.vue';
 
 defineProps({
@@ -34,6 +35,7 @@ defineProps({
     <div class="mx-auto w-full px-3 py-12 md:w-3/5 md:px-0">
         <h1 class="mb-6 text-3xl font-bold tracking-tight text-gray-900 text-left">{{ page.title }}</h1>
         <div class="prose max-w-none text-left text-gray-700 text-xl/8" v-html="page.content"></div>
+        <PageFiles :files="page.files ?? []" />
     </div>
 
     <PageFooter :pages="pages" />

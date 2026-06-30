@@ -40,4 +40,9 @@ class Page extends Model
     {
         return $this->hasMany(Page::class, 'parent_id')->orderBy('sort_order');
     }
+
+    public function files()
+    {
+        return $this->hasMany(PageFile::class)->orderBy('sort_order');
+    }
 }
