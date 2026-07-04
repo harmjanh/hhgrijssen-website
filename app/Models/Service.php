@@ -28,6 +28,11 @@ class Service extends Model
         return $this->belongsTo(YouTubeVideo::class);
     }
 
+    public function files()
+    {
+        return $this->hasMany(ServiceFile::class)->orderBy('sort_order');
+    }
+
     public function getStartDateAttribute()
     {
         return $this->agendaItem?->start_date;

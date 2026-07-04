@@ -70,7 +70,7 @@ class PageController extends Controller
 
         // Get upcoming services with their agenda items, ordered by start date
         // Only show services from 'Erediensten' and 'Kerktijden' agendas
-        $upcomingServices = Service::with('agendaItem')
+        $upcomingServices = Service::with(['agendaItem', 'files'])
             ->whereHas('agendaItem', function ($query) use ($yesterday, $sevenDaysFromNow) {
                 $query->whereBetween('agenda_items.start_date', [$yesterday, $sevenDaysFromNow])
                     ->whereHas('agenda', function ($q) {
@@ -99,6 +99,11 @@ class PageController extends Controller
                     'end_date' => $endDate,
                     'title' => $service->agendaItem->title,
                     'youtube_url' => $service->youtube_url,
+                    'files' => $service->files->map(fn ($file) => [
+                        'id' => $file->id,
+                        'name' => $file->name,
+                        'file_path' => $file->file_path,
+                    ]),
                 ];
             });
 

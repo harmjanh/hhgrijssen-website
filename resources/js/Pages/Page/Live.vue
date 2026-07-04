@@ -1,5 +1,6 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
+import { DocumentArrowDownIcon } from '@heroicons/vue/24/outline';
 import NavBar from '@/Components/NavBar.vue';
 import PageFooter from '@/Components/PageFooter.vue';
 
@@ -218,6 +219,18 @@ const isServiceActive = (service) => {
                     </div>
                     <div v-else class="flex-grow text-sm text-gray-400 italic mb-4">
                         Nog geen liturgie beschikbaar
+                    </div>
+
+                    <div v-if="service.files && service.files.length" class="mb-4">
+                        <ul class="space-y-2">
+                            <li v-for="file in service.files" :key="file.id">
+                                <a :href="'/storage/' + file.file_path" target="_blank" rel="noopener noreferrer"
+                                    class="inline-flex items-center gap-2 text-amber-700 hover:text-amber-800 hover:underline">
+                                    <DocumentArrowDownIcon class="size-5 shrink-0" />
+                                    {{ file.name }}
+                                </a>
+                            </li>
+                        </ul>
                     </div>
 
                     <div class="mt-auto" v-if="service.youtube_url && isServiceActive(service)">

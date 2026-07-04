@@ -146,6 +146,30 @@ class ServiceResource extends Resource
                             ->helperText('Enter the full YouTube URL for the service recording'),
                     ])
                     ->columns(1),
+
+                Forms\Components\Section::make('Bestanden')
+                    ->schema([
+                        Forms\Components\Repeater::make('files')
+                            ->relationship()
+                            ->label('Bestanden (PDF)')
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Naam')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\FileUpload::make('file_path')
+                                    ->label('PDF')
+                                    ->directory('service-files')
+                                    ->acceptedFileTypes(['application/pdf'])
+                                    ->required(),
+                            ])
+                            ->orderColumn('sort_order')
+                            ->collapsible()
+                            ->defaultItems(0)
+                            ->addActionLabel('Bestand toevoegen')
+                            ->columnSpanFull(),
+                    ])
+                    ->visible(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord),
             ]);
     }
 
