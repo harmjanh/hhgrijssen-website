@@ -9,7 +9,10 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class NewsResource extends Resource
 {
@@ -25,7 +28,7 @@ class NewsResource extends Resource
      */
     public static function canViewAny(): bool
     {
-        $user = auth()->user();
+        $user = Auth::user();
         return $user && $user->role === 'admin';
     }
 
@@ -113,6 +116,18 @@ class NewsResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                ReplicateAction::make('copy')
+                    ->label('Kopieer')
+                    ->excludeAttributes(['slug'])
+                    ->mutateRecordDataUsing(function (array $data): array {
+                        $data['title'] = isset($data['title']) ? ($data['title'] . ' (kopie)') : $data['title'];
+                        $data['is_published'] = false;
+                        $data['visible_from'] = null;
+                        $data['visible_until'] = null;
+
+                        return $data;
+                    })
+                    ->successRedirectUrl(fn (Model $replica): string => static::getUrl('edit', ['record' => $replica])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
