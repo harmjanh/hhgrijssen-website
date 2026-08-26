@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AgendaSeeder::class);
         $this->call(RoomSeeder::class);
         $this->call(PickupMomentSeeder::class);
+        $this->call(CatechesisSeasonSeeder::class);
     }
 }

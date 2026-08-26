@@ -2,25 +2,27 @@
 
 use App\Http\Controllers\AddressSubmissionController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\CatechesisRegistrationController;
 use App\Http\Controllers\ChurchAdministrationContactController;
 use App\Http\Controllers\CoinOrderController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContactInformationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeclarationAttachmentController;
 use App\Http\Controllers\DeclarationController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\PublicDeclarationController;
-use App\Http\Controllers\TreatOrderController;
-use App\Http\Controllers\RoomReservationController;
 use App\Http\Controllers\PrivacyConsentController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicDeclarationController;
+use App\Http\Controllers\RoomReservationController;
 use App\Http\Controllers\SolidarityFundAuthorizationController;
+use App\Http\Controllers\TreatOrderController;
 use App\Http\Controllers\VoluntaryContributionController;
-use App\Http\Controllers\ContactInformationController;
 use App\Http\Controllers\ZaaierAuthorizationController;
-use App\Http\Controllers\YouTubeVideoController;
-use Inertia\Inertia;
+use App\Models\News;
+use App\Services\YouTubeService;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Route;
 
 $redirects = [
@@ -46,7 +48,8 @@ Route::middleware(['auth', 'user.not.blocked'])->group(function () {
 // Add this route after any other specific routes to catch all page slugs
 Route::get('nieuws', [NewsController::class, 'index'])->name('news.index');
 Route::get('nieuws/{id}', function ($id) {
-    $news = \App\Models\News::findOrFail($id);
+    $news = News::findOrFail($id);
+
     return redirect()->route('news.show', $news->slug, 301);
 })->where('id', '[0-9]+');
 Route::get('nieuws/{news:slug}', [NewsController::class, 'show'])->name('news.show');
@@ -81,9 +84,15 @@ Route::middleware('treat.orders.open')->group(function () {
     Route::post('bestellen', [TreatOrderController::class, 'store'])->middleware('throttle:5,1')->name('treat-orders.store');
 });
 Route::get('bestellen/{treatOrder}/bedankt', [TreatOrderController::class, 'success'])->name('treat-orders.success');
+
+// Catechesis registration routes (public, no login required)
+Route::get('catechisatie/gesloten', [CatechesisRegistrationController::class, 'closed'])->name('catechesis-registrations.closed');
+Route::get('catechisatie/bedankt', [CatechesisRegistrationController::class, 'success'])->name('catechesis-registrations.success');
+Route::get('catechisatie', [CatechesisRegistrationController::class, 'create'])->name('catechesis-registrations.create');
+Route::post('catechisatie', [CatechesisRegistrationController::class, 'store'])->middleware('throttle:5,1')->name('catechesis-registrations.store');
 Route::post('bestellen/webhook', [TreatOrderController::class, 'webhook'])
     ->name('treat-orders.webhook')
-    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
+    ->withoutMiddleware([ValidateCsrfToken::class]);
 
 // YouTube OAuth callback route
 Route::get('youtube/oauth/callback', function () {
@@ -91,29 +100,29 @@ Route::get('youtube/oauth/callback', function () {
     $error = request('error');
 
     if ($error) {
-        return response()->json(['error' => 'OAuth authorization failed: ' . $error], 400);
+        return response()->json(['error' => 'OAuth authorization failed: '.$error], 400);
     }
 
-    if (!$code) {
+    if (! $code) {
         return response()->json(['error' => 'No authorization code provided'], 400);
     }
 
     try {
-        $youtubeService = app(\App\Services\YouTubeService::class);
+        $youtubeService = app(YouTubeService::class);
         $token = $youtubeService->completeOAuthFlow($code);
 
         return response()->json([
             'message' => 'YouTube OAuth authentication successful!',
-            'token_saved' => true
+            'token_saved' => true,
         ]);
     } catch (\Exception $e) {
-        return response()->json(['error' => 'Authentication failed: ' . $e->getMessage()], 500);
+        return response()->json(['error' => 'Authentication failed: '.$e->getMessage()], 500);
     }
 })->name('youtube.oauth.callback');
 // Agenda routes
 Route::get('api/agenda/items', [AgendaController::class, 'getItems'])->name('agenda.items');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
 
 // auth routes
 Route::middleware(['auth', 'verified', 'user.not.blocked'])->group(function () {
