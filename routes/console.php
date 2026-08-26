@@ -1,8 +1,5 @@
 <?php
 
-use Carbon\Carbon;
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
 // Schedule::command('youtube:sync')
@@ -21,6 +18,14 @@ Schedule::command('import:ical-feeds')
 Schedule::command('app:create-services-command')
     ->hourlyAt(15)
     ->between('06:00', '23:00')
+    ->withoutOverlapping()
+    ->runInBackground();
+
+// Audio van diensten (4 uur na aanvang) naar het prekenarchief;
+// venster tot 23:59 zodat een avonddienst dezelfde avond verwerkt wordt.
+Schedule::command('services:process-audio --missing --queue --limit=3')
+    ->everyThirtyMinutes()
+    ->between('06:00', '23:59')
     ->withoutOverlapping()
     ->runInBackground();
 

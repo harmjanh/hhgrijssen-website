@@ -72,6 +72,17 @@ return [
             'after_commit' => false,
         ],
 
+        // Long-running media jobs (yt-dlp/ffmpeg); retry_after must exceed
+        // the job timeout (3900) so a running job is never re-dispatched.
+        'media' => [
+            'driver' => 'redis',
+            'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
+            'queue' => 'media',
+            'retry_after' => 4200,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
     ],
 
     /*

@@ -291,7 +291,7 @@ const servicesByYear = computed(() => {
                                             </svg>
                                         </button>
                                         <!-- Audio icon (for all users if audio exists) -->
-                                        <a v-if="service.youtube_video && service.youtube_video.has_audio"
+                                        <a v-if="service.has_audio"
                                             :href="`/audio/${service.id}`"
                                             class="text-blue-600 hover:text-blue-800 transition-colors"
                                             title="Luister naar audio">

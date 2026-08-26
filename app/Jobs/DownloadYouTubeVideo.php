@@ -13,6 +13,11 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 
+/**
+ * @deprecated Audio for services is now produced by ProcessServiceAudio,
+ *             which stores the mp3 path on the service itself. This job
+ *             remains for existing youtube_videos records only.
+ */
 class DownloadYouTubeVideo implements ShouldQueue
 {
     use Queueable, InteractsWithQueue, SerializesModels;

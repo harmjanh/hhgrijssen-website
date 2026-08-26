@@ -14,6 +14,12 @@ return [
     'channel_id' => env('YOUTUBE_CHANNEL_ID', null),
     'application_name' => env('YOUTUBE_APPLICATION_NAME', 'Church Website'),
     'yt_dlp_path' => env('YT_DLP_PATH', '/opt/homebrew/bin/yt-dlp'),
+    // Path to the ffmpeg binary (or its directory); yt-dlp does not resolve
+    // this via $PATH, so it must be absolute.
+    'ffmpeg_path' => env('FFMPEG_PATH', '/opt/homebrew/bin/ffmpeg'),
+    // Optional Netscape cookies file for private/members-only videos
+    // (yt-dlp no longer supports OAuth tokens for downloads).
+    'cookies_path' => env('YT_DLP_COOKIES_PATH'),
 
     // OAuth 2.0 Configuration for private video access
     'oauth' => [
@@ -22,7 +28,7 @@ return [
         'redirect_uri' => env('YOUTUBE_OAUTH_REDIRECT_URI', 'http://localhost:8080/oauth2callback'),
         'scopes' => [
             'https://www.googleapis.com/auth/youtube.readonly',
-            'https://www.googleapis.com/auth/youtube.force-ssl'
+            'https://www.googleapis.com/auth/youtube.force-ssl',
         ],
         'access_type' => 'offline',
         'approval_prompt' => 'force',

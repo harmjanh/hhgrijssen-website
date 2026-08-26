@@ -4,11 +4,15 @@ namespace App\Filament\Resources;
 
 use App\Exports\ServicesExport;
 use App\Filament\Resources\ServiceResource\Pages;
-use App\Models\Service;
+use App\Jobs\ProcessServiceAudio;
 use App\Models\AgendaItem;
+use App\Models\Service;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -28,24 +32,28 @@ class ServiceResource extends Resource
     public static function canViewAny(): bool
     {
         $user = auth()->user();
+
         return $user && in_array($user->role, ['admin', 'predikant']);
     }
 
     public static function canEdit($record): bool
     {
         $user = auth()->user();
+
         return $user && in_array($user->role, ['admin', 'predikant']);
     }
 
     public static function canCreate(): bool
     {
         $user = auth()->user();
+
         return $user && $user->role === 'admin';
     }
 
     public static function canDelete($record): bool
     {
         $user = auth()->user();
+
         return $user && $user->role === 'admin';
     }
 
@@ -169,7 +177,7 @@ class ServiceResource extends Resource
                             ->addActionLabel('Bestand toevoegen')
                             ->columnSpanFull(),
                     ])
-                    ->visible(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord),
+                    ->visible(fn ($livewire) => $livewire instanceof EditRecord),
             ]);
     }
 
@@ -207,6 +215,27 @@ class ServiceResource extends Resource
                     ->openUrlInNewTab()
                     ->formatStateUsing(fn ($state) => $state ? 'View Recording' : 'No Recording')
                     ->color(fn ($state) => $state ? 'success' : 'gray'),
+
+                Tables\Columns\TextColumn::make('audio_status')
+                    ->label('Audio')
+                    ->badge()
+                    ->formatStateUsing(fn ($state, $record) => $record->audio_file_path
+                        ? 'Beschikbaar'
+                        : match ($state) {
+                            Service::AUDIO_STATUS_QUEUED => 'In wachtrij',
+                            Service::AUDIO_STATUS_PROCESSING => 'Bezig',
+                            Service::AUDIO_STATUS_FAILED => 'Mislukt',
+                            default => 'Geen',
+                        })
+                    ->color(fn ($state, $record) => $record->audio_file_path
+                        ? 'success'
+                        : match ($state) {
+                            Service::AUDIO_STATUS_QUEUED, Service::AUDIO_STATUS_PROCESSING => 'warning',
+                            Service::AUDIO_STATUS_FAILED => 'danger',
+                            default => 'gray',
+                        })
+                    ->default('none')
+                    ->tooltip(fn ($record) => $record->audio_error),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created')
@@ -258,24 +287,41 @@ class ServiceResource extends Resource
                                 // Find services that overlap with the date range
                                 // Service overlaps if: start_date <= date_until AND end_date >= date_from
                                 $q->whereDate('start_date', '<=', $dateUntil)
-                                  ->whereDate('end_date', '>=', $dateFrom);
+                                    ->whereDate('end_date', '>=', $dateFrom);
                             } elseif ($dateFrom) {
                                 // Only date_from: find services that start or end on/after this date
                                 $q->where(function ($subQuery) use ($dateFrom) {
                                     $subQuery->whereDate('start_date', '>=', $dateFrom)
-                                             ->orWhereDate('end_date', '>=', $dateFrom);
+                                        ->orWhereDate('end_date', '>=', $dateFrom);
                                 });
                             } elseif ($dateUntil) {
                                 // Only date_until: find services that start or end on/before this date
                                 $q->where(function ($subQuery) use ($dateUntil) {
                                     $subQuery->whereDate('start_date', '<=', $dateUntil)
-                                             ->orWhereDate('end_date', '<=', $dateUntil);
+                                        ->orWhereDate('end_date', '<=', $dateUntil);
                                 });
                             }
                         });
                     }),
             ])
             ->actions([
+                Tables\Actions\Action::make('process_audio')
+                    ->label('Audio verwerken')
+                    ->icon('heroicon-o-musical-note')
+                    ->requiresConfirmation()
+                    ->modalHeading('Audio verwerken')
+                    ->modalDescription('De audio van de YouTube-opname wordt gedownload en op de bucket gezet. Dit kan even duren.')
+                    ->visible(fn (Service $record) => filled($record->youtube_url) && empty($record->audio_file_path))
+                    ->action(function (Service $record) {
+                        $record->update(['audio_status' => Service::AUDIO_STATUS_QUEUED]);
+                        ProcessServiceAudio::dispatch($record);
+
+                        Notification::make()
+                            ->title('Audioverwerking gestart')
+                            ->body("De audio van de dienst van {$record->formatted_start_date} wordt verwerkt.")
+                            ->success()
+                            ->send();
+                    }),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
@@ -307,7 +353,7 @@ class ServiceResource extends Resource
                         $dateUntil = $data['date_until'];
 
                         $export = new ServicesExport($dateFrom, $dateUntil);
-                        $filename = 'diensten_' . \Carbon\Carbon::parse($dateFrom)->format('Y-m-d') . '_' . \Carbon\Carbon::parse($dateUntil)->format('Y-m-d') . '.xlsx';
+                        $filename = 'diensten_' . Carbon::parse($dateFrom)->format('Y-m-d') . '_' . Carbon::parse($dateUntil)->format('Y-m-d') . '.xlsx';
 
                         return Excel::download($export, $filename);
                     })
