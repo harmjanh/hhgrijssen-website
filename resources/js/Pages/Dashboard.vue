@@ -57,7 +57,7 @@ onMounted(() => {
                 </div>
 
                 <!-- Missing Contact Information Warning -->
-                <div v-if="props.missingInScipio"
+                <!-- <div v-if="props.missingInScipio"
                     class="mb-6 rounded-lg bg-amber-50 border border-amber-200 p-4 dark:bg-amber-900/20 dark:border-amber-800">
                     <div class="flex items-start">
                         <svg class="mr-3 h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5"
@@ -84,10 +84,10 @@ onMounted(() => {
                             </Link>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Zaaier Subscription CTA Card -->
-                <div v-if="!props.hasZaaier"
+                <!-- <div v-if="!props.hasZaaier"
                     class="mb-6 overflow-hidden bg-white border border-gray-200 shadow-sm sm:rounded-lg dark:bg-gray-800 dark:border-gray-700">
                     <div class="p-6">
                         <div class="flex items-start">
@@ -116,10 +116,10 @@ onMounted(() => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Solidarity Fund CTA Card -->
-                <div v-if="!props.hasSolidarityFund"
+                <!-- <div v-if="!props.hasSolidarityFund"
                     class="mb-6 overflow-hidden bg-white border border-gray-200 shadow-sm sm:rounded-lg dark:bg-gray-800 dark:border-gray-700">
                     <div class="p-6">
                         <div class="flex items-start">
@@ -147,7 +147,7 @@ onMounted(() => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Voluntary Contribution CTA Card -->
                 <div

@@ -28,9 +28,9 @@ defineProps<{
 
     <AuthenticatedLayout>
         <template #header>
-            <PageHeader 
+            <PageHeader
                 title="Machtigingen Solidariteitsfonds"
-                description="Overzicht van uw ingediende machtigingen voor het Solidariteitsfonds" 
+                description="Overzicht van uw ingediende machtigingen voor het Solidariteitsfonds"
             />
         </template>
 
@@ -43,10 +43,10 @@ defineProps<{
                         </PrimaryButton>
                     </Link>
                 </div>
-                
+
                 <div v-if="authorizations.data.length === 0" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900 dark:text-gray-100 text-center">
-                        <p class="text-gray-500 dark:text-gray-400 mb-4">U heeft nog geen machtigingen ingediend.</p>
+                        <p class="text-gray-500 dark:text-gray-400 mb-4">Hier kunt u een machtiging afgeven, als u nog niet eerder een machtiging hebt afgegeven'</p>
                         <Link v-if="!hasAuthorization" :href="route('solidarity-fund-authorizations.create')">
                             <PrimaryButton>
                                 Eerste Machtiging Indienen
@@ -120,14 +120,14 @@ defineProps<{
 
                         <!-- Pagination -->
                         <div class="mt-4 flex justify-center" v-if="authorizations.last_page > 1">
-                            <Link 
-                                v-for="page in authorizations.last_page" 
+                            <Link
+                                v-for="page in authorizations.last_page"
                                 :key="page"
-                                :href="route('solidarity-fund-authorizations.index', { page })" 
+                                :href="route('solidarity-fund-authorizations.index', { page })"
                                 :class="{
                                     'bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800': page === authorizations.current_page,
                                     'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700': page !== authorizations.current_page
-                                }" 
+                                }"
                                 class="px-4 py-2 mx-1 rounded-md">
                                 {{ page }}
                             </Link>

@@ -23,14 +23,13 @@ defineProps<{
 </script>
 
 <template>
+
     <Head title="Privacy Toestemmingsformulieren" />
 
     <AuthenticatedLayout>
         <template #header>
-            <PageHeader 
-                title="Privacy Toestemmingsformulieren"
-                description="Overzicht van uw ingediende privacy toestemmingsformulieren" 
-            />
+            <PageHeader title="Privacy Toestemmingsformulieren"
+                description="Overzicht van uw ingediende privacy toestemmingsformulieren" />
         </template>
 
         <div class="py-12">
@@ -42,10 +41,13 @@ defineProps<{
                         </PrimaryButton>
                     </Link>
                 </div>
-                
-                <div v-if="consents.data.length === 0" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+
+                <div v-if="consents.data.length === 0"
+                    class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900 dark:text-gray-100 text-center">
-                        <p class="text-gray-500 dark:text-gray-400 mb-4">U heeft nog geen privacy toestemmingsformulier ingediend.</p>
+                        <p class="text-gray-500 dark:text-gray-400 mb-4">Hier kunt u een machtiging afgeven, als u nog
+                            niet
+                            eerder een machtiging hebt afgegeven'</p>
                         <Link v-if="!hasConsent" :href="route('privacy-consents.create')">
                             <PrimaryButton>
                                 Eerste Formulier Indienen
@@ -97,10 +99,12 @@ defineProps<{
                                                 {{ consent.zipcode }} {{ consent.city }}
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                             {{ new Date(consent.submission_date).toLocaleDateString('nl-NL') }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                             {{ new Date(consent.created_at).toLocaleDateString('nl-NL') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -116,15 +120,11 @@ defineProps<{
 
                         <!-- Pagination -->
                         <div class="mt-4 flex justify-center" v-if="consents.last_page > 1">
-                            <Link 
-                                v-for="page in consents.last_page" 
-                                :key="page"
-                                :href="route('privacy-consents.index', { page })" 
-                                :class="{
+                            <Link v-for="page in consents.last_page" :key="page"
+                                :href="route('privacy-consents.index', { page })" :class="{
                                     'bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800': page === consents.current_page,
                                     'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700': page !== consents.current_page
-                                }" 
-                                class="px-4 py-2 mx-1 rounded-md">
+                                }" class="px-4 py-2 mx-1 rounded-md">
                                 {{ page }}
                             </Link>
                         </div>
@@ -134,5 +134,3 @@ defineProps<{
         </div>
     </AuthenticatedLayout>
 </template>
-
-
