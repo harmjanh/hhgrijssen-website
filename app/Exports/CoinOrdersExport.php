@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\CoinOrder;
+use Illuminate\Support\Enumerable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -19,7 +20,7 @@ class CoinOrdersExport implements FromCollection, WithHeadings, WithMapping, Wit
         $this->pickupMomentId = $pickupMomentId;
     }
 
-    public function collection()
+    public function collection(): Enumerable
     {
         return CoinOrder::with('user')
             ->where('pickup_moment_id', $this->pickupMomentId)
@@ -71,7 +72,7 @@ class CoinOrdersExport implements FromCollection, WithHeadings, WithMapping, Wit
         ];
     }
 
-    public function styles(Worksheet $sheet)
+    public function styles(Worksheet $sheet): ?array
     {
         return [
             1 => ['font' => ['bold' => true]], // Header row

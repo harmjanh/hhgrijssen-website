@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\TreatOrder;
+use Illuminate\Support\Enumerable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -12,7 +13,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class TreatOrdersExport implements FromCollection, WithHeadings, WithMapping, WithColumnWidths, WithStyles
 {
-    public function collection()
+    public function collection(): Enumerable
     {
         return TreatOrder::query()
             ->orderBy('created_at', 'asc')
@@ -75,7 +76,7 @@ class TreatOrdersExport implements FromCollection, WithHeadings, WithMapping, Wi
         ];
     }
 
-    public function styles(Worksheet $sheet)
+    public function styles(Worksheet $sheet): ?array
     {
         return [
             1 => ['font' => ['bold' => true]],

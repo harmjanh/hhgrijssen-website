@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Service;
+use Illuminate\Support\Enumerable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -21,7 +22,7 @@ class ServicesExport implements FromCollection, WithHeadings, WithMapping, WithC
         $this->dateUntil = $dateUntil;
     }
 
-    public function collection()
+    public function collection(): Enumerable
     {
         $dateFrom = $this->dateFrom;
         $dateUntil = $this->dateUntil;
@@ -80,7 +81,7 @@ class ServicesExport implements FromCollection, WithHeadings, WithMapping, WithC
         ];
     }
 
-    public function styles(Worksheet $sheet)
+    public function styles(Worksheet $sheet): ?array
     {
         return [
             1 => ['font' => ['bold' => true]], // Header row

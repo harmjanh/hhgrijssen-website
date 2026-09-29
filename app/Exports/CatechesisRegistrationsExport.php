@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\CatechesisRegistration;
 use App\Models\CatechesisSeason;
+use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -16,7 +17,7 @@ class CatechesisRegistrationsExport implements FromQuery, WithColumnWidths, With
 {
     public function __construct(public CatechesisSeason $season) {}
 
-    public function query()
+    public function query(): Builder
     {
         return CatechesisRegistration::query()
             ->where('season_id', $this->season->id)
