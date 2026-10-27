@@ -3,11 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 
 class News extends Model
 {
     protected $guarded = [];
+
+    public static function generateUniqueSlug(string $title, ?int $excludeId = null): string
+    {
+        $base = Str::slug($title);
+        $slug = $base;
+        $i = 2;
+
+        while (static::where('slug', $slug)->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))->exists()) {
+            $slug = $base . '-' . $i++;
+        }
+
+        return $slug;
+    }
 
     protected static function booted(): void
     {
@@ -24,17 +38,9 @@ class News extends Model
         });
     }
 
-    public static function generateUniqueSlug(string $title, ?int $excludeId = null): string
+    public function pageViews(): MorphMany
     {
-        $base = Str::slug($title);
-        $slug = $base;
-        $i = 2;
-
-        while (static::where('slug', $slug)->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))->exists()) {
-            $slug = $base . '-' . $i++;
-        }
-
-        return $slug;
+        return $this->morphMany(PageView::class, 'viewable');
     }
 
     public function getRouteKeyName(): string

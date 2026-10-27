@@ -17,6 +17,9 @@ class TreatOrderTest extends TestCase
 
     public function test_guest_can_view_order_form(): void
     {
+        // Binnen de bestelperiode (zie config/treats.php: order_deadline)
+        Carbon::setTestNow('2026-07-06 12:00:00');
+
         $this->get(route('treat-orders.create'))
             ->assertOk()
             ->assertInertia(fn ($page) => $page
@@ -24,10 +27,15 @@ class TreatOrderTest extends TestCase
                 ->has('prices')
                 ->has('units')
                 ->where('prices.payment_fee', 0.35));
+
+        Carbon::setTestNow();
     }
 
     public function test_order_requires_at_least_one_product(): void
     {
+        // Binnen de bestelperiode (zie config/treats.php: order_deadline)
+        Carbon::setTestNow('2026-07-06 12:00:00');
+
         $this->post(route('treat-orders.store'), [
             'name' => 'Jan de Vries',
             'email' => 'jan@example.com',
@@ -37,6 +45,8 @@ class TreatOrderTest extends TestCase
         ])->assertSessionHasErrors('snoeprollen_quantity');
 
         $this->assertDatabaseCount('treat_orders', 0);
+
+        Carbon::setTestNow();
     }
 
     public function test_total_amount_includes_payment_fee(): void

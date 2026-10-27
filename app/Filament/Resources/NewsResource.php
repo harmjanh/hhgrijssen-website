@@ -6,10 +6,11 @@ use App\Filament\Resources\NewsResource\Pages;
 use App\Models\News;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Actions\ReplicateAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,7 @@ class NewsResource extends Resource
     public static function canViewAny(): bool
     {
         $user = Auth::user();
+
         return $user && $user->role === 'admin';
     }
 
@@ -46,7 +48,7 @@ class NewsResource extends Resource
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(function ($state, $set, $get, $record) {
                                         if (! $record || ! $record->exists) {
-                                            $set('slug', \App\Models\News::generateUniqueSlug($state ?? ''));
+                                            $set('slug', News::generateUniqueSlug($state ?? ''));
                                         }
                                     }),
                                 Forms\Components\TextInput::make('slug')
@@ -85,7 +87,7 @@ class NewsResource extends Resource
                                 Forms\Components\RichEditor::make('content')
                                     ->nullable(),
                             ])
-                            ->visible(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord),
+                            ->visible(fn ($livewire) => $livewire instanceof EditRecord),
                     ]),
             ]);
     }
@@ -109,6 +111,10 @@ class NewsResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('visible_until')
                     ->label('Visible Until')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('page_views_count')
+                    ->counts('pageViews')
+                    ->label('Bezoeken')
                     ->sortable(),
             ])
             ->filters([

@@ -1,8 +1,5 @@
 <?php
 
-use Carbon\Carbon;
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
 // Schedule::command('youtube:sync')
@@ -53,3 +50,8 @@ Schedule::command('reservations:send-weekly-overview')
 Schedule::command('telescope:prune --hours=168')
     ->daily()
     ->at('03:00');
+
+// Verwijder paginaweergaven ouder dan een jaar (zie App\Models\PageView::prunable)
+Schedule::command('model:prune')
+    ->daily()
+    ->at('03:30');
